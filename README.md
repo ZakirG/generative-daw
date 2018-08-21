@@ -3,7 +3,7 @@
 #### A mobile-friendly webapp focused on generative music composition. Built with Flask and Angular 2.
 
 This project will be a digital audio workstation (DAW) webapp that provides a suite of tools
-for generative music composition, in which the software system itself will compose the music.
+for <a href='https://en.wikipedia.org/wiki/Generative_music'>generative music composition</a>, in which the software system itself will compose the music.
 
 The primary use case: a composer specifies generative settings they are interested in, 
 which the software system responds to with a randomized piece of music. The composer then
