@@ -12,13 +12,12 @@ which the software system responds to with a randomized piece of music. The comp
 edits the result to their taste and continues work on the composition in their usual music creation
 domain of choice (an instrument, sheet music, or a more high-powered DAW).
 
-#### Build instructions:
+#### To build and run the application:
 Install Python 3 and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
 ```
 git clone https://github.com/ZakirG/generative-daw.git
-cd generative-daw/
-export FLASK_APP=index.py
-flask run
+cd generative-daw/ClientApp
+ng serve --open
 ```
 
 #### Feature goals for version 0.01:
