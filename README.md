@@ -33,6 +33,7 @@ ng serve --open
 - A responsive DAW-like interface wrapped in a modern Bootstrap layout
 - An editable piano roll that can play back melodies
 - A sampler with stock drum sounds that can play back rhythms
+- Ability to generate random configurations of the drum machine and piano roll
 - Ability to bounce and export tracks to .wav files
 
 
