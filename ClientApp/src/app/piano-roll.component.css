@@ -43,7 +43,7 @@ ul {
     z-index:0;
     position:relative;
     /* border-radius:0px 4px 4px 0px; */
-    height:28px;
+    height:24px;
 }
 
 .piano-key-set .white:last-child {
@@ -65,6 +65,8 @@ ul {
     padding:0;
     border-bottom: solid 1px #a5f2ff;
     border-right: solid 1px #a5f2ff;
+    border-radius: 0 5px 5px 0;
+    overflow:hidden;
 }
 
 .note-rows li {
@@ -73,20 +75,37 @@ ul {
 }
 
 .note-rows li.white {
-    height:20px;
     background:#eafbff;
 }
 
 .note-rows li.a, .note-rows li.g, .note-rows li.d {
-    height:16px;
+    height:15px;
 }
 
-.note-rows li.b, .note-rows li.f, .note-rows li.e, .note-rows li.c {
-    height:22px;
+.note-rows li.b, .note-rows li.f {
+    height:15px;
+}
+
+.note-rows li.c, .note-rows li.e {
+    height:17px;
 }
 
 .note-rows li.black {
     height:12px;
     background:#c6f7ff;
+}
+
+.note-rows li.black .grid-state {
+    top:-4px;
+    position:relative;
+}
+
+.grid-state {
+    top:-1px;
+    position:relative;
+    display:inline-block;
+    border-left: solid 1px white;
+    border-right: solid 1px white;
+    height:100%;
 }
 
