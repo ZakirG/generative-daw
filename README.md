@@ -25,3 +25,5 @@ ng serve --open
 - An editable piano roll that can play back melodies
 - A sampler with stock drum sounds that can play back rhythms
 - Ability to bounce and export tracks to .wav files
+
+Credit to https://codepen.io/zastrow/ for CSS piano

@@ -1,0 +1,92 @@
+.piano-roll {
+    padding:5px;
+    margin: 10px 0px;
+    border: #e6e6e6;
+    border-left:0;
+    border-right:0;
+}
+
+.piano {
+    width:70px;
+    padding:0;
+
+}
+
+.note-grid {
+    width:100%;
+    padding-left:0;
+}
+
+.piano-keys {
+    border-radius:2px;
+    height:auto;
+    width:100%;
+}
+
+ul {
+    list-style: none;
+}
+
+.piano-key-set {
+    width:100%;
+    padding:0;
+    margin:0;
+    border:solid 1px black;
+    border-radius:5px 0 0 5px;
+    overflow:hidden;
+}
+
+.piano-key-set .white {
+    background: white;
+    border-bottom: solid 1px #00869e;
+    width:100%;
+    z-index:0;
+    position:relative;
+    /* border-radius:0px 4px 4px 0px; */
+    height:28px;
+}
+
+.piano-key-set .white:last-child {
+    border:0;
+}
+
+.piano-key-set .black {
+    background: #00869e;
+    margin-top:-8px;
+    margin-bottom:-8px;
+    width:50%;
+    z-index:1;
+    position:relative;
+    border-radius:0px 5px 5px 0px;
+    height:16px;
+}
+
+.note-rows {
+    padding:0;
+    border-bottom: solid 1px #a5f2ff;
+    border-right: solid 1px #a5f2ff;
+}
+
+.note-rows li {
+    border-top: solid 1px #a5f2ff;
+    width:100%;
+}
+
+.note-rows li.white {
+    height:20px;
+    background:#eafbff;
+}
+
+.note-rows li.a, .note-rows li.g, .note-rows li.d {
+    height:16px;
+}
+
+.note-rows li.b, .note-rows li.f, .note-rows li.e, .note-rows li.c {
+    height:22px;
+}
+
+.note-rows li.black {
+    height:12px;
+    background:#c6f7ff;
+}
+
