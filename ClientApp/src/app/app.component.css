@@ -3,16 +3,17 @@
 }
 
 header {
-  padding: 15px;
+  padding: 10px;
   border-bottom: solid 1px #baf3fc;
+  color: #1d626d;
 }
 
 .title-box {
   border: solid #1d626d 1px;
-  color: #1d626d;
-  padding:5px;
+  padding:5px 10px;
   border-radius:2px;
   font-size:18px;
+  margin-right:10px;
 }
 
 .no-select {
@@ -25,9 +26,41 @@ header {
 
 #github-link {
     display:inline-block;
+    opacity:0.7;
+    -webkit-transition: opacity .2s;
+    -moz-transition: opacity .2s;
+    transition: opacity .2s;
 }
+
+#github-link:hover {
+    opacity:1;
+}
+
 
 #github-link img {
     height:25px;
-    opacity:0.7;
+    position:relative;
+    top:-2px;
+}
+
+.top-bar-button {
+  position:relative;
+  top:-1px;
+  height: 33px;
+  width: 33px;
+  border-radius:2px;
+  box-shadow:none;
+  border:solid 1px #1d626d;
+  background:none;
+  color: #1d626d;
+  padding:5px;
+  margin: 0 10px;
+  -webkit-transition: color .2s, border-color .2s;
+  -moz-transition: color .2s, border-color .2s;
+  transition: color .2s, border-color .2s;
+}
+
+.top-bar-button:hover {
+    border-color: black;
+    color: black;
 }
