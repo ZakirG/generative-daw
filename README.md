@@ -21,9 +21,9 @@ ng serve --open
 ```
 
 #### Overview of technologies used:
-- The client-side audio-manipulation application is an Angular 2 app, making use of
-the WebAudio API
+- The client-side audio-manipulation application is Angular 2 app that uses the WebAudio API
 - The server-side generative-composition tools are Python 3 in a Flask environment
+- The frontend design uses Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
 
 #### Feature goals for version 0.01:
 - A responsive DAW-like interface wrapped in a modern Bootstrap layout
