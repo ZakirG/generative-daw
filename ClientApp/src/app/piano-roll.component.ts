@@ -13,9 +13,8 @@ export class PianoRollComponent implements OnInit {
 
     // constructor(private service: NoteService) { }
 
-    ngOnInit() {
-        var timeStateLength = 8;
-        var stateWidth = (100 / timeStateLength) + "%";
+    initializeEmptyGridState() {
+        var stateWidth = (100 / this.timeStateLength) + "%";
 
         this.notes = [
             {'color' : 'white', 'note' : 'b', 'octave' : 2},
@@ -51,15 +50,26 @@ export class PianoRollComponent implements OnInit {
                 'color' : note.color,
                 'octave' : note.octave,
                 'note' : note.note,
-                'timeStates' : Array.apply(null, Array(timeStateLength)).map(Number.prototype.valueOf,0),
+                'timeStates' : Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0),
                 'stateWidth' : stateWidth,
                 'id' : note.note + note.octave
             };
             this.gridState.push(noteRow);
         }
-        console.log(this.gridState);
-
     }
+
+    ngOnInit() {
+        this.timeStateLength = 8;
+        this.initializeEmptyGridState();
+    }
+
+    clearPianoRoll() {
+        // this.initializeEmptyGridState();
+        for (var i = 0; i < this.gridState.length; i++) {
+            this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
+        }
+    }
+
 
     addNote(note: Note) { this.selectedNotes.append(note); }
 }
