@@ -120,16 +120,9 @@ ul {
     top:0;
 }
 
-
-.grid-state-wrapper .drawn-note {
-    height:12px;
-    width:100%;
-    position:relative;
-}
-
 .grid-state-wrapper[data-active='true'] {
-    background:green;
-    border:solid 1px black;
+    background:#00b2ce;
+    border:solid 1px #00889e;
 }
 
 .grid-state-wrapper hr {

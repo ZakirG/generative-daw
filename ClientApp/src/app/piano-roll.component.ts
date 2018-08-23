@@ -14,7 +14,7 @@ export class PianoRollComponent implements OnInit {
     // constructor(private service: NoteService) { }
 
     ngOnInit() {
-        var timeStateLength = 4;
+        var timeStateLength = 8;
         var stateWidth = (100 / timeStateLength) + "%";
 
         this.notes = [
