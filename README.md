@@ -25,7 +25,7 @@ ng serve --open
 - A control bar with tempo selection and play/pause buttons
 
 #### Overview of technologies used:
-- The client-side audio-manipulation application is Angular 2 app that uses the WebAudio API
+- The client-side audio-manipulation application is an Angular 2 app that uses the WebAudio API
 - The server-side generative-composition tools are Python 3 in a Flask framework
 - The frontend design uses Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
 
