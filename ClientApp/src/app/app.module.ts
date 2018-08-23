@@ -17,4 +17,5 @@ import { PianoRollComponent } from './piano-roll.component';
   providers: [Title],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

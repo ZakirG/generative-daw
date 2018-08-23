@@ -57,6 +57,7 @@ button:focus, button:active, input:focus, input:active {
 
 .top-bar-button {
     width:33px;
+    height:100%;
     -webkit-transition: color .2s, border-color .2s;
     -moz-transition: color .2s, border-color .2s;
     transition: color .2s, border-color .2s;

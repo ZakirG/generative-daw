@@ -20,8 +20,17 @@ cd generative-daw/ClientApp
 ng serve --open
 ```
 
+#### Overview of technologies used:
+- The client-side audio-manipulation application is an Angular 2 app, making use of
+the WebAudio API
+- The server-side generative-composition tools are Python 3 in a Flask environment
+
 #### Feature goals for version 0.01:
 - A responsive DAW-like interface wrapped in a modern Bootstrap layout
 - An editable piano roll that can play back melodies
 - A sampler with stock drum sounds that can play back rhythms
 - Ability to bounce and export tracks to .wav files
+
+
+Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
+for their examples on audio manipulation in Angular 2; code snippets of theirs are used in this application.
