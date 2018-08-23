@@ -23,6 +23,10 @@ header {
   user-select: none;          /* Likely future */
 }
 
+button:focus, button:active, input:focus, input:active {
+    box-shadow:none;
+    outline:none;
+}
 
 #github-link {
     display:inline-block;
@@ -43,24 +47,46 @@ header {
     top:-2px;
 }
 
+.top-bar-input, .top-bar-button {
+    position:relative;
+    box-shadow:none;
+    background:none;
+    padding:5px;
+    border:0;
+}
+
 .top-bar-button {
-  position:relative;
-  top:-1px;
-  height: 33px;
-  width: 33px;
-  border-radius:2px;
-  box-shadow:none;
-  border:solid 1px #1d626d;
-  background:none;
-  color: #1d626d;
-  padding:5px;
-  margin: 0 10px;
-  -webkit-transition: color .2s, border-color .2s;
-  -moz-transition: color .2s, border-color .2s;
-  transition: color .2s, border-color .2s;
+    width:33px;
+    -webkit-transition: color .2s, border-color .2s;
+    -moz-transition: color .2s, border-color .2s;
+    transition: color .2s, border-color .2s;
+    border-right:solid 1px #1d626d;
+}
+
+.top-bar-button:last-child {
+    border:0;
 }
 
 .top-bar-button:hover {
     border-color: black;
     color: black;
+}
+
+.top-bar-input {
+    width:40px;
+}
+
+#tempo-label {
+  position:relative;
+  left:-5px;
+}
+
+.control-panel {
+    border-radius:2px;
+    display: inline-block;
+    border:solid 1px #1d626d;
+    color: #1d626d;
+    top:-1px;
+    height: 33px;
+    position:relative;
 }

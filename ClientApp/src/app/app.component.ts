@@ -16,5 +16,6 @@ export class AppComponent {
 
   ngOnInit() {
     this.setTitle('GenerativeDAW');
+    this.tempo = 167;
   }
 }

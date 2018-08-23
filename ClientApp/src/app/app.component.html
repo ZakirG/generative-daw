@@ -11,12 +11,16 @@
                 </a>
                 Generative<b>DAW</b>
             </span>
-            <button id='play-button' class='top-bar-button'>
-                <span class='glyphicon glyphicon-play'></span>
-            </button>
-            <button id='play-button' class='top-bar-button'>
-                <span class='glyphicon glyphicon-pause'></span>
-            </button>
+            <div class='control-panel'>
+                <button id='play-button' class='top-bar-button'>
+                    <span class='glyphicon glyphicon-play'></span>
+                </button>
+                <button id='play-button' class='top-bar-button'>
+                    <span class='glyphicon glyphicon-pause'></span>
+                </button>
+                <input class='top-bar-input' id='tempo' [(ngModel)]="tempo" max='500'/>
+                <span id='tempo-label' class='no-select'>BPM</span>
+            </div>
         </div>
         <div class="row secondary-color" id="control-bar">
             <div class="col-sm-6"></div>

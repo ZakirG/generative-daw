@@ -1,3 +1,8 @@
+button:focus, button:active, input:focus, input:active {
+    box-shadow:none;
+    outline:none;
+}
+
 .action-button {
     background:#c6f7ff;
     border: solid #1d626d 1px;
@@ -18,7 +23,7 @@
 
 
 .piano-roll {
-    padding:5px;
+    padding:0 5px;
     margin: 10px 0px;
     border: #e6e6e6;
     border-left:0;
