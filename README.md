@@ -13,7 +13,7 @@ edits the result to their taste and continues work on the composition in their u
 domain of choice (an instrument, sheet music, or a more high-powered DAW).
 
 #### To build and run the application:
-Install Python 3 and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
+Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular 2</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
 ```
 git clone https://github.com/ZakirG/generative-daw.git
 cd generative-daw/ClientApp
