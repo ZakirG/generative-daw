@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector:    'piano-roll',
@@ -10,6 +10,9 @@ import { Component } from '@angular/core';
 export class PianoRollComponent implements OnInit {
     notes: Note[];
     selectedNotes: Note[];
+
+    @Output()
+    noteDrawn = new EventEmitter<string>();
 
     // constructor(private service: NoteService) { }
 
@@ -70,6 +73,11 @@ export class PianoRollComponent implements OnInit {
         }
     }
 
-
-    addNote(note: Note) { this.selectedNotes.append(note); }
+    previewNoteSound(noteName, noteOctave, noteState) {
+        if(noteState) {
+            // If we are switching from a drawn to not-drawn state, don't play the sound.
+            return;
+        }
+        this.noteDrawn.emit(noteName + noteOctave);
+    }
 }

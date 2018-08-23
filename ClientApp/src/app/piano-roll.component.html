@@ -24,7 +24,7 @@
                     *ngFor="let state of note.timeStates; let index= index;"
                     [style.width]="note.stateWidth"
                     attr.data-active="{{ note.timeStates[index] }}"
-
+                    (click)="previewNoteSound(note.note, note.octave, note.timeStates[index])"
                     [attr.id]="note.id"
                     [attr.data-step]="index"
                     >
