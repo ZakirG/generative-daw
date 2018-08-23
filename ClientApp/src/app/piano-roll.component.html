@@ -11,11 +11,11 @@
         <ul class='note-rows'>
             <li *ngFor="let note of gridState"
                 class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
-                <span class="grid-state-wrapper"
+                <label class="grid-state-wrapper"
                     *ngFor="let state of note.timeStates; let index= index;"
                     [style.width]="note.stateWidth"
                     attr.data-active="{{ note.timeStates[index] }}"
-                    (click)="gridStateToggle($event)"
+
                     [attr.id]="note.id"
                     [attr.data-step]="index"
                     >
@@ -24,7 +24,7 @@
                         attr.data-active="{{ state }}"
                         [(ngModel)]="note.timeStates[index]"
                         >
-                </span>
+                </label>
             </li>
         </ul>
      </div>

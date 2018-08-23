@@ -61,18 +61,5 @@ export class PianoRollComponent implements OnInit {
 
     }
 
-    gridStateToggle(event : any) {
-        if(!event.target.getAttribute('data-step')) {
-            return;
-        }
-        // console.log(event.target);
-        // console.log("#" + event.target.id + "[data-step='" + event.target.getAttribute('data-step') + "']");
-        var associated_checkbox = document.querySelector("#" + event.target.id +
-            "[data-step='" + event.target.getAttribute('data-step') + "']" + " input");
-        // console.log(associated_checkbox);
-        associated_checkbox.click();
-        console.log(this.gridState);
-    }
-
     addNote(note: Note) { this.selectedNotes.append(note); }
 }
