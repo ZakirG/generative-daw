@@ -14,7 +14,7 @@ export class PianoRollComponent implements OnInit {
     // constructor(private service: NoteService) { }
 
     ngOnInit() {
-        var timeStateLength = 16;
+        var timeStateLength = 4;
         var stateWidth = (100 / timeStateLength) + "%";
 
         this.notes = [
@@ -52,12 +52,26 @@ export class PianoRollComponent implements OnInit {
                 'octave' : note.octave,
                 'note' : note.note,
                 'timeStates' : Array.apply(null, Array(timeStateLength)).map(Number.prototype.valueOf,0),
-                'stateWidth' : stateWidth
+                'stateWidth' : stateWidth,
+                'id' : note.note + note.octave
             };
             this.gridState.push(noteRow);
         }
         console.log(this.gridState);
 
+    }
+
+    gridStateToggle(event : any) {
+        if(!event.target.getAttribute('data-step')) {
+            return;
+        }
+        // console.log(event.target);
+        // console.log("#" + event.target.id + "[data-step='" + event.target.getAttribute('data-step') + "']");
+        var associated_checkbox = document.querySelector("#" + event.target.id +
+            "[data-step='" + event.target.getAttribute('data-step') + "']" + " input");
+        // console.log(associated_checkbox);
+        associated_checkbox.click();
+        console.log(this.gridState);
     }
 
     addNote(note: Note) { this.selectedNotes.append(note); }

@@ -11,10 +11,20 @@
         <ul class='note-rows'>
             <li *ngFor="let note of gridState"
                 class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
-                <span class='grid-state'
-                    *ngFor="let state of note.timeStates" [style.width]="note.stateWidth"
-                    attr.data-active="{{ state }}"></span>
-
+                <span class="grid-state-wrapper"
+                    *ngFor="let state of note.timeStates; let index= index;"
+                    [style.width]="note.stateWidth"
+                    attr.data-active="{{ note.timeStates[index] }}"
+                    (click)="gridStateToggle($event)"
+                    [attr.id]="note.id"
+                    [attr.data-step]="index"
+                    >
+                    <hr/>
+                    <input class='grid-state' type='checkbox'
+                        attr.data-active="{{ state }}"
+                        [(ngModel)]="note.timeStates[index]"
+                        >
+                </span>
             </li>
         </ul>
      </div>

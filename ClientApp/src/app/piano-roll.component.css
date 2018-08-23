@@ -79,19 +79,19 @@ ul {
 }
 
 .note-rows li.a, .note-rows li.g, .note-rows li.d {
-    height:15px;
+    height:14px;
 }
 
 .note-rows li.b, .note-rows li.f {
-    height:15px;
+    height:14px;
 }
 
 .note-rows li.c, .note-rows li.e {
-    height:17px;
+    height:14px;
 }
 
 .note-rows li.black {
-    height:12px;
+    height:14px;
     background:#c6f7ff;
 }
 
@@ -100,12 +100,55 @@ ul {
     position:relative;
 }
 
-.grid-state {
+.grid-state-wrapper {
     top:-1px;
     position:relative;
     display:inline-block;
     border-left: solid 1px white;
     border-right: solid 1px white;
     height:100%;
+    cursor:pointer;
 }
 
+.grid-state-wrapper input {
+    opacity:0;
+    position:absolute;
+    height:0;
+    width:0;
+    margin:0;
+    padding:0;
+    top:0;
+}
+
+
+.grid-state-wrapper .drawn-note {
+    height:12px;
+    width:100%;
+    position:relative;
+}
+
+.grid-state-wrapper[data-active='true'] {
+    background:green;
+    border:solid 1px black;
+}
+
+.grid-state-wrapper hr {
+    opacity:0;
+    width:80%;
+    height:1px;
+    margin:0;
+    padding:0;
+}
+
+.grid-state-wrapper[data-active='true'] hr {
+    color:white;
+    opacity:1;
+    position:relative;
+    top:5px;
+    left:3px;
+}
+
+.note-rows li.white .grid-state-wrapper {
+    top:-3px;
+    position:relative;
+}
