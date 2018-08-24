@@ -83,7 +83,7 @@ export class AppComponent {
             this.fetchNoteSample(filename).then(audioBuffer => {
                 this.loadingSample = false;
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
-            }).catch(error => throw error);
+            }).catch(error => { throw error; });
         }
     }
 
