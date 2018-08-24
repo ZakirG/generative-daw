@@ -22,7 +22,7 @@ export class AppComponent {
     ngOnInit() {
         this.setTitle('GenerativeDAW');
         this.audioContext = new AudioContext();
-        this.tempo = 167;
+        this.tempo = 180;
         this.tracks = [];
         this.notes = [];
         this.audioBuffers = {};
@@ -40,27 +40,31 @@ export class AppComponent {
     }
 
     playNoteDrawn(soundName) {
-        this.playSound(soundName);
+        this.playSound(soundName, 0);
     }
 
     togglePlayState() {
-        var timeState = 0;
         for (let note of this.tracks[0]) {
-            if(note.timeStates[timeState]) {
-                this.playNote(note.note, note.octave);
+            for (var timeStateIndex = 0; timeStateIndex < note.timeStates.length; timeStateIndex++) {
+                if(note.timeStates[timeStateIndex]) {
+                    // bar number * beats in a bar * seconds per beat
+                    var timeToPlay = timeStateIndex * 4 * (60 / this.tempo);
+                    this.playNote(note.note, note.octave, timeToPlay);
+                }
             }
         }
     }
 
-    playNote(noteName : string, noteOctave : number) {
-        this.playSound(noteName + noteOctave);
+    playNote(noteName : string, noteOctave : number, time : number) {
+        this.playSound(noteName + noteOctave, time);
     }
 
-    playSound(soundName) {
+    playSound(soundName, time) {
+        console.log('time: ' , time);
         let bufferSource = this.audioContext.createBufferSource();
         bufferSource.buffer = this.audioBuffers[soundName];
         bufferSource.connect(this.audioContext.destination);
-        bufferSource.start(0);
+        bufferSource.start(this.audioContext.currentTime + time);
     }
 
     fetchNoteSample(filename) : Promise<AudioBuffer> {
@@ -80,8 +84,7 @@ export class AppComponent {
             this.fetchNoteSample(filename).then(audioBuffer => {
                 this.loadingSample = false;
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
-            })
-            .catch(error => throw error);
+            }).catch(error => throw error);
         }
     }
 
