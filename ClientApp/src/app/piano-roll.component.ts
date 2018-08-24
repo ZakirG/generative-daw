@@ -14,8 +14,6 @@ export class PianoRollComponent implements OnInit {
     @Output()
     noteDrawn = new EventEmitter<string>();
 
-    // constructor(private service: NoteService) { }
-
     initializeEmptyGridState() {
         var stateWidth = (100 / this.timeStateLength) + "%";
 
@@ -67,11 +65,14 @@ export class PianoRollComponent implements OnInit {
     }
 
     clearPianoRoll() {
-        // this.initializeEmptyGridState();
         for (var i = 0; i < this.gridState.length; i++) {
             this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
         }
     }
+
+    // showGenerationModal() {
+//         $('#generationModal').modal('show');
+//     }
 
     previewNoteSound(noteName, noteOctave, noteState) {
         if(noteState) {

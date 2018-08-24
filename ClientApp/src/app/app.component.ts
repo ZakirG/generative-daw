@@ -60,7 +60,6 @@ export class AppComponent {
     }
 
     playSound(soundName, time) {
-        console.log('time: ' , time);
         let bufferSource = this.audioContext.createBufferSource();
         bufferSource.buffer = this.audioBuffers[soundName];
         bufferSource.connect(this.audioContext.destination);
