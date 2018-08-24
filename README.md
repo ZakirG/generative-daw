@@ -13,7 +13,7 @@ edits the result to their taste and continues work on the composition in their u
 domain of choice (an instrument, sheet music, or a more high-powered DAW).
 
 #### To build and run the application:
-Install Python 3 and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
+Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular 2</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
 ```
 git clone https://github.com/ZakirG/generative-daw.git
 cd generative-daw/ClientApp
@@ -25,7 +25,7 @@ ng serve --open
 - A control bar with tempo selection and play/pause buttons
 
 #### Overview of technologies used:
-- The client-side audio-manipulation application is Angular 2 app that uses the WebAudio API
+- The client-side audio-manipulation application is an Angular 2 app that uses the WebAudio API
 - The server-side generative-composition tools are Python 3 in a Flask framework
 - The frontend design uses Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
 
@@ -33,6 +33,7 @@ ng serve --open
 - A responsive DAW-like interface wrapped in a modern Bootstrap layout
 - An editable piano roll that can play back melodies
 - A sampler with stock drum sounds that can play back rhythms
+- Ability to generate random configurations of the drum machine and piano roll
 - Ability to bounce and export tracks to .wav files
 
 
