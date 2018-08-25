@@ -87,9 +87,24 @@ export class PianoRollComponent implements OnInit {
                 generatedNotes = data['generationResult'];
                 console.log('notes: ', generatedNotes);
                 console.log('data: ', data);
+                this.renderNotes(generatedNotes);
             });
         } else if(generationType == 'chords') {
             this.generationService.getChords(this.timeStateLength);
+        }
+    }
+
+    renderNotes(notesToRender) {
+        var timeStateIndex = 0;
+        for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
+            for (var noteIndex = 0; noteIndex < this.gridState.length; noteIndex++) {
+                if(this.gridState[noteIndex].note == notesToRender[timeStateIndex].note
+                    && this.gridState[noteIndex].octave == notesToRender[timeStateIndex].octave) {
+                    this.gridState[noteIndex]['timeStates'][timeStateIndex] = true;
+                } else {
+                    this.gridState[noteIndex]['timeStates'][timeStateIndex] = false;
+                }
+            }
         }
     }
 }
