@@ -65,11 +65,9 @@ def generate_chords(generation_type, length):
 def generate_random_melody(length):
     result = []
     for i in range(length):
-        chord_size = random.choice(allowed_chord_sizes)
-        this_time_step = []
-        for i in range(chord_size):
-            this_time_step.append(random.choice(possible_notes))
-        result.append(this_time_step)
+        result.append([random.choice(possible_notes)])
+    
+    print('melody:' + str(result))
     return result
     
 def generate_random_chords(length):
