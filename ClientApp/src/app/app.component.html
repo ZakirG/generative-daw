@@ -12,10 +12,7 @@
             </span>
             <div class='control-panel'>
                 <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
-                    <span class='glyphicon glyphicon-play'></span>
-                </button>
-                <button id='play-button' class='top-bar-button'>
-                    <span class='glyphicon glyphicon-pause'></span>
+                    <span class='glyphicon' [class.glyphicon-play]="!inPlayState" [class.glyphicon-pause]="inPlayState"></span>
                 </button>
                 <input class='top-bar-input' id='tempo' [(ngModel)]="tempo" max='500'/>
                 <span id='tempo-label' class='no-select'>BPM</span>

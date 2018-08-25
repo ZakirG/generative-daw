@@ -26,6 +26,9 @@ export class AppComponent {
         this.tracks = [];
         this.notes = [];
         this.audioBuffers = {};
+        this.timeStateLength = 8;
+        this.inPlayState = false;
+        this.queuedSounds = [];
     }
 
     ngAfterViewInit() {
@@ -44,6 +47,17 @@ export class AppComponent {
     }
 
     togglePlayState() {
+
+        if(this.inPlayState) {
+            this.inPlayState = false;
+            for (var i = 0; i < this.queuedSounds.length; i++) {
+                this.queuedSounds[i].stop(0);
+            }
+            this.queuedSounds = [];
+            return;
+        }
+        this.queuedSounds = [];
+        this.inPlayState = true;
         for (let note of this.tracks[0]) {
             for (var timeStateIndex = 0; timeStateIndex < note.timeStates.length; timeStateIndex++) {
                 if(note.timeStates[timeStateIndex]) {
@@ -53,6 +67,10 @@ export class AppComponent {
                 }
             }
         }
+        var root = this;
+        setTimeout(function(){
+            root.inPlayState = false;
+        }, 1000 * root.timeStateLength * 4 * (60 / root.tempo) );
     }
 
     playNote(noteName : string, noteOctave : number, time : number) {
@@ -61,6 +79,7 @@ export class AppComponent {
 
     playSound(soundName, time) {
         let bufferSource = this.audioContext.createBufferSource();
+        this.queuedSounds.push(bufferSource);
         bufferSource.buffer = this.audioBuffers[soundName];
         bufferSource.connect(this.audioContext.destination);
         bufferSource.start(this.audioContext.currentTime + time);
