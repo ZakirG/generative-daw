@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+import { GenerationService } from './generation.service';
 
 @Component({
     selector:    'piano-roll',
@@ -14,6 +15,8 @@ export class PianoRollComponent implements OnInit {
 
     @Output()
     noteDrawn = new EventEmitter<string>();
+
+    constructor(private generationService: GenerationService) { }
 
     initializeEmptyGridState() {
         var stateWidth = (100 / this.timeStateLength) + "%";
@@ -71,16 +74,16 @@ export class PianoRollComponent implements OnInit {
         }
     }
 
-    generate(generationType) {
-        console.log(generationType);
-
-    }
-
     previewNoteSound(noteName, noteOctave, noteState) {
         if(noteState) {
             // If we are switching from a drawn to not-drawn state, don't play the sound.
             return;
         }
         this.noteDrawn.emit(noteName + noteOctave);
+    }
+
+    generate(generationType) {
+        var generatedNotes = this.generationService.getNotes();
+        console.log(generatedNotes);
     }
 }
