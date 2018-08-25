@@ -37,6 +37,8 @@ possible_notes = [
     {'note' : 'cs', 'octave' : 1},
     {'note' : 'c', 'octave' : 1}]
 
+allowed_chord_sizes = range(3, 7)
+
 @app.route('/generate/melody/<string:generation_type>/<int:length>', methods=['GET'])
 @crossdomain(origin='*')
 def generate_melody(generation_type, length):
@@ -48,10 +50,39 @@ def generate_melody(generation_type, length):
     response = {'generationResult' : result}
     return json.dumps(response);
 
+@app.route('/generate/chords/<string:generation_type>/<int:length>', methods=['GET'])
+@crossdomain(origin='*')
+def generate_chords(generation_type, length):
+    print(generation_type + ' ' + str(length))
+    result = None
+    if generation_type == 'random':    
+        result = generate_random_chords(length)
+    
+    response = {'generationResult' : result}
+    return json.dumps(response);
+
+
 def generate_random_melody(length):
     result = []
     for i in range(length):
-        result.append(random.choice(possible_notes))
+        chord_size = random.choice(allowed_chord_sizes)
+        this_time_step = []
+        for i in range(chord_size):
+            this_time_step.append(random.choice(possible_notes))
+        result.append(this_time_step)
+    return result
+    
+def generate_random_chords(length):
+    result = []
+    
+    for i in range(length):
+        num_notes_in_chord = random.choice(allowed_chord_sizes)
+        chord = []
+        for j in range(num_notes_in_chord):
+            chord.append(random.choice(possible_notes))
+        result.append(chord)
+            
+    print('chords:' + str(result))
     return result
     
 @app.errorhandler(404)

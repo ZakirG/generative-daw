@@ -85,24 +85,30 @@ export class PianoRollComponent implements OnInit {
         if(generationType == 'melody') {
             this.generationService.getMelody(this.timeStateLength).subscribe((data) => {
                 generatedNotes = data['generationResult'];
-                console.log('notes: ', generatedNotes);
-                console.log('data: ', data);
                 this.renderNotes(generatedNotes);
             });
         } else if(generationType == 'chords') {
-            this.generationService.getChords(this.timeStateLength);
+            this.generationService.getChords(this.timeStateLength).subscribe((data) => {
+                generatedNotes = data['generationResult'];
+                this.renderNotes(generatedNotes);
+            });
         }
     }
 
     renderNotes(notesToRender) {
+        this.clearPianoRoll();
         var timeStateIndex = 0;
         for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
+            this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
+        }
+    }
+
+    renderNotesInOneTimeStep(notesToRenderInThisTimeStep, timeStateIndex) {
+        for (let noteToRender of notesToRenderInThisTimeStep) {
             for (var noteIndex = 0; noteIndex < this.gridState.length; noteIndex++) {
-                if(this.gridState[noteIndex].note == notesToRender[timeStateIndex].note
-                    && this.gridState[noteIndex].octave == notesToRender[timeStateIndex].octave) {
+                if(this.gridState[noteIndex].note == noteToRender.note && this.gridState[noteIndex].octave == noteToRender.octave) {
                     this.gridState[noteIndex]['timeStates'][timeStateIndex] = true;
-                } else {
-                    this.gridState[noteIndex]['timeStates'][timeStateIndex] = false;
+                    break;
                 }
             }
         }

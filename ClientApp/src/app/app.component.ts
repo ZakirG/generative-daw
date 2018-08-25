@@ -22,7 +22,7 @@ export class AppComponent {
     ngOnInit() {
         this.setTitle('GenerativeDAW');
         this.audioContext = new AudioContext();
-        this.tempo = 180;
+        this.tempo = 145;
         this.tracks = [];
         this.notes = [];
         this.audioBuffers = {};

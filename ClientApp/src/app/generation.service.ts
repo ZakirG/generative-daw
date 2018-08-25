@@ -14,12 +14,12 @@ export class GenerationService {
     melodyGenerationURL = this.serverURL + 'generate/melody/random';
     chordsGenerationURL = this.serverURL + 'generate/chords/random';
 
-    getMelody(length) : Observable<[]> {
+    getMelody(length) : Observable<> {
         return this.http.get(this.melodyGenerationURL + '/' + length);
     }
 
     getChords(length) {
-        return this.http.get(this.chordsGenerationURL);
+        return this.http.get(this.chordsGenerationURL + '/' + length);
     }
 
 }
