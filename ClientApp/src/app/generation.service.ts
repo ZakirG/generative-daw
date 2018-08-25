@@ -1,14 +1,24 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root',
 })
 export class GenerationService {
 
-    constructor() { }
+    constructor(private http: HttpClient) { }
 
-    getNotes() {
-        return [2];
+    melodyGenerationURL = '/generate/melody';
+    chordsGenerationURL = '/generate/chords';
+
+    getMelody() {
+        console.log('inside melody generator');
+        return this.http.get(this.melodyGenerationURL);
+    }
+
+    getChords() {
+        console.log('inside chords generator');
+        return this.http.get(this.chordsGenerationURL);
     }
 
 }
