@@ -11,16 +11,14 @@ export class GenerationService {
 
     serverURL = 'http://localhost:5000/'
 
-    melodyGenerationURL = this.serverURL + 'generate/melody';
-    chordsGenerationURL = this.serverURL + 'generate/chords';
+    melodyGenerationURL = this.serverURL + 'generate/melody/random';
+    chordsGenerationURL = this.serverURL + 'generate/chords/random';
 
-    getMelody() : Observable<[]> {
-        console.log('inside melody generator');
-        return this.http.get(this.melodyGenerationURL);
+    getMelody(length) : Observable<[]> {
+        return this.http.get(this.melodyGenerationURL + '/' + length);
     }
 
-    getChords() {
-        console.log('inside chords generator');
+    getChords(length) {
         return this.http.get(this.chordsGenerationURL);
     }
 

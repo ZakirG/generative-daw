@@ -61,8 +61,8 @@ export class AppComponent {
         for (let note of this.tracks[0]) {
             for (var timeStateIndex = 0; timeStateIndex < note.timeStates.length; timeStateIndex++) {
                 if(note.timeStates[timeStateIndex]) {
-                    // bar number * beats in a bar * seconds per beat
-                    var timeToPlay = timeStateIndex * 4 * (60 / this.tempo);
+                    // beat number * seconds per beat
+                    var timeToPlay = timeStateIndex * (60 / this.tempo);
                     this.playNote(note.note, note.octave, timeToPlay);
                 }
             }

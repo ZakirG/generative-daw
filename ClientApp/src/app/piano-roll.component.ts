@@ -10,8 +10,7 @@ import { GenerationService } from './generation.service';
 })
 
 export class PianoRollComponent implements OnInit {
-    notes: Note[];
-    selectedNotes: Note[];
+    timeStateLength = 8;
 
     @Output()
     noteDrawn = new EventEmitter<string>();
@@ -64,7 +63,6 @@ export class PianoRollComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.timeStateLength = 8;
         this.initializeEmptyGridState();
     }
 
@@ -85,13 +83,13 @@ export class PianoRollComponent implements OnInit {
     generate(generationType) {
         var generatedNotes = [];
         if(generationType == 'melody') {
-            this.generationService.getMelody().subscribe((data) => {
+            this.generationService.getMelody(this.timeStateLength).subscribe((data) => {
                 generatedNotes = data['generationResult'];
                 console.log('notes: ', generatedNotes);
                 console.log('data: ', data);
             });
         } else if(generationType == 'chords') {
-            this.generationService.getChords();
+            this.generationService.getChords(this.timeStateLength);
         }
     }
 }
