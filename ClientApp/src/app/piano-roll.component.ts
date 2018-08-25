@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import {FormControl, FormGroup} from '@angular/forms';
 
 @Component({
     selector:    'piano-roll',
@@ -70,9 +71,10 @@ export class PianoRollComponent implements OnInit {
         }
     }
 
-    // showGenerationModal() {
-//         $('#generationModal').modal('show');
-//     }
+    generate(generationType) {
+        console.log(generationType);
+
+    }
 
     previewNoteSound(noteName, noteOctave, noteState) {
         if(noteState) {
