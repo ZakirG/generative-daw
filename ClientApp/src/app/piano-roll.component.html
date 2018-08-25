@@ -22,22 +22,20 @@
                 </button>
             </div>
             <div class="modal-body">
-               <div class="dropdown show">
-                  <a class="btn btn-primary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    What would you like to generate?
-                  </a>
+                What would you like to generate?
+                <label class="custom-radio-button">
+                    <input type="radio" checked="checked" name="generation-type">A chord progression
+                    <span class="checkmark"></span>
+                </label>
 
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-
+                <label class="custom-radio-button">A melody
+                    <input type="radio" name="generation-type">
+                    <span class="checkmark"></span>
+                </label>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Generate</button>
+                <button type="button" class="btn btn-light">Generate</button>
             </div>
         </div>
     </div>
