@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -8,10 +9,12 @@ export class GenerationService {
 
     constructor(private http: HttpClient) { }
 
-    melodyGenerationURL = '/generate/melody';
-    chordsGenerationURL = '/generate/chords';
+    serverURL = 'http://localhost:5000/'
 
-    getMelody() {
+    melodyGenerationURL = this.serverURL + 'generate/melody';
+    chordsGenerationURL = this.serverURL + 'generate/chords';
+
+    getMelody() : Observable<[]> {
         console.log('inside melody generator');
         return this.http.get(this.melodyGenerationURL);
     }

@@ -83,12 +83,15 @@ export class PianoRollComponent implements OnInit {
     }
 
     generate(generationType) {
+        var generatedNotes = [];
         if(generationType == 'melody') {
-            var generatedNotes = this.generationService.getMelody();
+            this.generationService.getMelody().subscribe((data) => {
+                generatedNotes = data['generationResult'];
+                console.log('notes: ', generatedNotes);
+                console.log('data: ', data);
+            });
         } else if(generationType == 'chords') {
-            var generatedNotes = this.generationService.getChords();
+            this.generationService.getChords();
         }
-
-        console.log(generatedNotes);
     }
 }
