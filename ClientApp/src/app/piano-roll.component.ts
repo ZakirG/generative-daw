@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import { GenerationService } from './generation.service';
+import { ConfigDataService } from './configdata.service';
 
 @Component({
     selector:    'piano-roll',
@@ -20,7 +21,7 @@ export class PianoRollComponent implements OnInit {
     @Output()
     noteDrawn = new EventEmitter<string>();
 
-    constructor(private generationService: GenerationService) { }
+    constructor(public generationService: GenerationService, public configDataService: ConfigDataService) { }
 
     initializeEmptyGridState() {
         var stateWidth = (100 / this.timeStateLength) + "%";
@@ -68,6 +69,7 @@ export class PianoRollComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.getConfigData();
         this.initializeEmptyGridState();
     }
 
@@ -85,7 +87,17 @@ export class PianoRollComponent implements OnInit {
         this.noteDrawn.emit(noteName + noteOctave);
     }
 
+    getConfigData() {
+        this.key = this.configDataService.getKey();
+        this.scale = this.configDataService.getScale().name;
+    }
+
     generate(generationOptions) {
+        console.log(this.configDataService.key);
+
+        generationOptions.key = generationOptions.conformToKeyScale ? this.configDataService.getKey() : 'any';
+        generationOptions.scale = generationOptions.conformToKeyScale ? this.scale : 'any';
+
         var generatedNotes = [];
         this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {
             generatedNotes = data['generationResult'];

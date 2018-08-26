@@ -1,8 +1,8 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { Title }     from '@angular/platform-browser';
-import {FormControl, FormGroup} from '@angular/forms';
-
+import { FormControl, FormGroup } from '@angular/forms';
 import { PianoRollComponent } from './piano-roll.component';
+import { ConfigDataService } from './configdata.service';
 
 @Component({
     selector: 'app-root',
@@ -14,7 +14,7 @@ export class AppComponent {
     private audioContext: AudioContext;
     @ViewChild(PianoRollComponent) pianoRoll;
 
-    public constructor(private titleService: Title ) { }
+    public constructor(private titleService: Title, private configDataService: ConfigDataService) { }
 
     public setTitle( newTitle: string) {
         this.titleService.setTitle( newTitle );
@@ -30,21 +30,21 @@ export class AppComponent {
         this.inPlayState = false;
         this.queuedSounds = [];
         this.scales = this.getScales();
-        this.scale = this.scales[2];
+        this.configDataService.scale = this.scales[2];
         this.keys = this.getKeys();
-        this.key = this.keys[2];
+        this.configDataService.key = this.keys[2];
         this.tempo = 100;
         this.controlPanelForm = new FormGroup({
-            scale: new FormControl(this.scale),
-            key: new FormControl(this.key),
+            scale: new FormControl(this.configDataService.scale),
+            key: new FormControl(this.configDataService.key),
             tempo: new FormControl(this.tempo)
         });
     }
 
     updateConfigState() {
         this.tempo = this.controlPanelForm.value.tempo;
-        this.scale = this.controlPanelForm.value.scale;
-        this.key = this.controlPanelForm.value.key;
+        this.configDataService.scale = this.controlPanelForm.value.scale;
+        this.configDataService.key = this.controlPanelForm.value.key;
     }
 
     ngAfterViewInit() {

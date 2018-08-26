@@ -15,9 +15,19 @@ export class GenerationService {
     chordsGenerationURL = this.serverURL + 'generate/chords/random';
 
     generate(generationOptions, length) {
+        console.log(this.serverURL
+            + 'generate/'
+            + generationOptions.generationType + '/'
+            // + generationOptions.key + '/'
+            // + generationOptions.scale + '/'
+            + 'random/'
+            + length);
+
         return this.http.get(this.serverURL
             + 'generate/'
             + generationOptions.generationType + '/'
+            // + generationOptions.key + '/'
+            // + generationOptions.scale + '/'
             + 'random/'
             + length
         );

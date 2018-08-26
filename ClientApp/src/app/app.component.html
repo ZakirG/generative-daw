@@ -11,18 +11,18 @@
                 Generative<b>DAW</b>
             </span>
             <div class='control-panel'>
-                <form [formGroup]='controlPanelForm'>
+                <form [formGroup]='controlPanelForm' (change)='updateConfigState()'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
                         <span class='glyphicon' [class.glyphicon-play]="!inPlayState" [class.glyphicon-pause]="inPlayState"></span>
                     </button>
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>
-                        <input class='top-bar-input' type='number' max='500' id='tempo' (keyup)='updateConfigState()'  style='width:50px;' formControlName="tempo"/>
+                        <input class='top-bar-input' type='number' max='500' id='tempo' style='width:50px;' formControlName="tempo"/>
                         <span id='tempo-label' class='no-select'>BPM</span>
                     </span>
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>
-                        <select name="key" style="text-align-last:center;width:50px" class='top-bar-input' formControlName='key'>
+                        <select name="key" style="text-align-last:center;width:50px"  class='top-bar-input' formControlName='key'>
                             <option *ngFor="let key of keys" [ngValue]="key">
                                 {{ key }}
                             </option>
