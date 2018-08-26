@@ -1,5 +1,6 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { Title }     from '@angular/platform-browser';
+import {FormControl, FormGroup} from '@angular/forms';
 
 import { PianoRollComponent } from './piano-roll.component';
 
@@ -22,13 +23,24 @@ export class AppComponent {
     ngOnInit() {
         this.setTitle('GenerativeDAW');
         this.audioContext = new AudioContext();
-        this.tempo = 145;
         this.tracks = [];
         this.notes = [];
         this.audioBuffers = {};
         this.timeStateLength = 8;
         this.inPlayState = false;
         this.queuedSounds = [];
+        this.scales = this.getScales();
+        this.scale = this.scales[0];
+        this.tempo = 100;
+        this.controlPanelForm = new FormGroup({
+            scale: new FormControl(this.scale),
+            tempo: new FormControl(this.tempo)
+        });
+    }
+
+    updateConfigState() {
+        this.tempo = this.controlPanelForm.value.tempo;
+        this.scale = this.controlPanelForm.value.scale;
     }
 
     ngAfterViewInit() {
@@ -47,7 +59,6 @@ export class AppComponent {
     }
 
     togglePlayState() {
-
         if(this.inPlayState) {
             this.inPlayState = false;
             for (var i = 0; i < this.queuedSounds.length; i++) {
@@ -104,6 +115,15 @@ export class AppComponent {
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
             }).catch(error => { throw error; });
         }
+    }
+
+    getScales() {
+        return [
+            {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ] },
+            {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ] },
+            {'name' : 'maj (b2 b6)', 'intervals' : [1,3,1,2,1,3,1 ] },
+//            {'name' : 'maj (b2 b6)', 'notes' : ['d','ds','fs','g','a','as','cs' ] },
+        ]
     }
 
 }

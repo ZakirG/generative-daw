@@ -11,11 +11,27 @@
                 Generative<b>DAW</b>
             </span>
             <div class='control-panel'>
-                <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
-                    <span class='glyphicon' [class.glyphicon-play]="!inPlayState" [class.glyphicon-pause]="inPlayState"></span>
-                </button>
-                <input class='top-bar-input' id='tempo' [(ngModel)]="tempo" max='500'/>
-                <span id='tempo-label' class='no-select'>BPM</span>
+                <form [formGroup]='controlPanelForm'>
+                    <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
+                        <span class='glyphicon' [class.glyphicon-play]="!inPlayState" [class.glyphicon-pause]="inPlayState"></span>
+                    </button>
+                    <span class='divider'></span>
+                    <span class='top-bar-input-group'>
+                        <input class='top-bar-input' type='number' max='500' id='tempo' (keyup)='updateConfigState()'  style='width:50px;' formControlName="tempo"/>
+                        <span id='tempo-label' class='no-select'>BPM</span>
+                    </span>
+                    <span class='divider'></span>
+                    <span class='top-bar-input-group'>
+    <!--                     <input class='top-bar-input' id='scale' style='width:110px;' [(ngModel)]="scale"/> -->
+                        <select name="scale" style="text-align-last:center;" class='top-bar-input' formControlName='scale'>
+                            <option *ngFor="let scale of scales" [ngValue]="scale">
+                                {{ scale.name }}
+                            </option>
+                        </select>
+
+                        <span id='scale-label' class='no-select'>SCALE</span>
+                    </span>
+                </form>
             </div>
         </div>
         <div class="row secondary-color" id="control-bar">

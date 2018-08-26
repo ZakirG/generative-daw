@@ -11,6 +11,7 @@ import { GenerationService } from './generation.service';
 
 export class PianoRollComponent implements OnInit {
     timeStateLength = 8;
+    gridState = [];
 
     @Output()
     noteDrawn = new EventEmitter<string>();

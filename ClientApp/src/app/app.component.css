@@ -3,14 +3,14 @@
 }
 
 header {
-  padding: 10px;
+  padding: 15px;
   border-bottom: solid 1px #baf3fc;
   color: #1d626d;
 }
 
 .title-box {
   border: solid #1d626d 1px;
-  padding:5px 10px;
+  padding:10px 10px;
   border-radius:2px;
   font-size:18px;
   margin-right:10px;
@@ -23,7 +23,7 @@ header {
   user-select: none;          /* Likely future */
 }
 
-button:focus, button:active, input:focus, input:active {
+button:focus, button:active, input:focus, input:active, select:focus, select:active {
     box-shadow:none;
     outline:none;
 }
@@ -51,17 +51,36 @@ button:focus, button:active, input:focus, input:active {
     position:relative;
     box-shadow:none;
     background:none;
-    padding:5px;
+    padding:10px;
     border:0;
 }
 
 .top-bar-button {
-    width:33px;
-    height:100%;
+    width:40px;
     -webkit-transition: color .2s, border-color .2s;
     -moz-transition: color .2s, border-color .2s;
     transition: color .2s, border-color .2s;
+}
+
+.top-bar-input {
+    position:relative;
+    top:-3px;
+    text-align:center;
+    padding-right:0;
+}
+
+.top-bar-input, .top-bar-button {
+/*     border-right:solid 1px #1d626d; */
+    height:100%;
+}
+
+.divider {
     border-right:solid 1px #1d626d;
+    height:100%;
+}
+
+.top-bar-input-group:last-child .top-bar-input {
+    border:0;
 }
 
 .top-bar-button:last-child {
@@ -73,13 +92,22 @@ button:focus, button:active, input:focus, input:active {
     color: black;
 }
 
-.top-bar-input {
-    width:40px;
+.top-bar-input-group {
+    position:relative;
 }
 
 #tempo-label {
-  position:relative;
-  left:-5px;
+    position:absolute;
+    left:15px;
+    top:15px;
+    font-size:8px;
+}
+
+#scale-label {
+    position:absolute;
+    left:30px;
+    top:15px;
+    font-size:8px;
 }
 
 .control-panel {
@@ -88,6 +116,6 @@ button:focus, button:active, input:focus, input:active {
     border:solid 1px #1d626d;
     color: #1d626d;
     top:-1px;
-    height: 33px;
+    height: 41px;
     position:relative;
 }
