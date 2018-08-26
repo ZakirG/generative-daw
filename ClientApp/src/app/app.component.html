@@ -22,13 +22,20 @@
                     </span>
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>
-    <!--                     <input class='top-bar-input' id='scale' style='width:110px;' [(ngModel)]="scale"/> -->
+                        <select name="key" style="text-align-last:center;width:50px" class='top-bar-input' formControlName='key'>
+                            <option *ngFor="let key of keys" [ngValue]="key">
+                                {{ key }}
+                            </option>
+                        </select>
+                        <span id='key-label' class='no-select'>KEY</span>
+                    </span>
+                    <span class='divider'></span>
+                    <span class='top-bar-input-group'>
                         <select name="scale" style="text-align-last:center;" class='top-bar-input' formControlName='scale'>
                             <option *ngFor="let scale of scales" [ngValue]="scale">
                                 {{ scale.name }}
                             </option>
                         </select>
-
                         <span id='scale-label' class='no-select'>SCALE</span>
                     </span>
                 </form>

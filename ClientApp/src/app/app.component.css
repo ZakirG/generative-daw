@@ -3,7 +3,7 @@
 }
 
 header {
-  padding: 15px;
+  padding: 15px 5px;
   border-bottom: solid 1px #baf3fc;
   color: #1d626d;
 }
@@ -96,18 +96,22 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     position:relative;
 }
 
-#tempo-label {
+.top-bar-input-group span {
     position:absolute;
-    left:15px;
-    top:15px;
     font-size:8px;
+    top:15px;
+}
+
+#tempo-label {
+    left:15px;
 }
 
 #scale-label {
-    position:absolute;
     left:30px;
-    top:15px;
-    font-size:8px;
+}
+
+#key-label {
+    left:17px;
 }
 
 .control-panel {

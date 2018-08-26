@@ -30,10 +30,13 @@ export class AppComponent {
         this.inPlayState = false;
         this.queuedSounds = [];
         this.scales = this.getScales();
-        this.scale = this.scales[0];
+        this.scale = this.scales[2];
+        this.keys = this.getKeys();
+        this.key = this.keys[2];
         this.tempo = 100;
         this.controlPanelForm = new FormGroup({
             scale: new FormControl(this.scale),
+            key: new FormControl(this.key),
             tempo: new FormControl(this.tempo)
         });
     }
@@ -41,6 +44,7 @@ export class AppComponent {
     updateConfigState() {
         this.tempo = this.controlPanelForm.value.tempo;
         this.scale = this.controlPanelForm.value.scale;
+        this.key = this.controlPanelForm.value.key;
     }
 
     ngAfterViewInit() {
@@ -122,8 +126,11 @@ export class AppComponent {
             {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ] },
             {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ] },
             {'name' : 'maj (b2 b6)', 'intervals' : [1,3,1,2,1,3,1 ] },
-//            {'name' : 'maj (b2 b6)', 'notes' : ['d','ds','fs','g','a','as','cs' ] },
         ]
+    }
+
+    getKeys() {
+        return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     }
 
 }
