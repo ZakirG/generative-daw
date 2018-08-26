@@ -85,19 +85,12 @@ export class PianoRollComponent implements OnInit {
         this.noteDrawn.emit(noteName + noteOctave);
     }
 
-    generate(generationType) {
+    generate(generationOptions) {
         var generatedNotes = [];
-        if(generationType == 'melody') {
-            this.generationService.getMelody(this.timeStateLength).subscribe((data) => {
-                generatedNotes = data['generationResult'];
-                this.renderNotes(generatedNotes);
-            });
-        } else if(generationType == 'chords') {
-            this.generationService.getChords(this.timeStateLength).subscribe((data) => {
-                generatedNotes = data['generationResult'];
-                this.renderNotes(generatedNotes);
-            });
-        }
+        this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {
+            generatedNotes = data['generationResult'];
+            this.renderNotes(generatedNotes);
+        });
     }
 
     renderNotes(notesToRender) {
