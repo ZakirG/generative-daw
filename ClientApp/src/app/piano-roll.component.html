@@ -25,12 +25,17 @@
                  <form #f="ngForm">
                     What would you like to generate?
                     <label class="custom-radio-button">
-                        <input [(ngModel)]="generationType" type="radio" value="melody" checked="checked" name="generationType">A melody
-                        <span class="checkmark"></span>
+                        <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">A melody
+                        <span class="radio"></span>
                     </label>
 
                     <label class="custom-radio-button">A chord progression
                         <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
+                        <span class="radio"></span>
+                    </label>
+                    <hr/>
+                    <label class='custom-checkbox'>Only generate notes within {{ key }} {{ scale }}
+                         <input [(ngModel)]="conformToKeyScale" type="checkbox" name="conformToKeyScale">
                         <span class="checkmark"></span>
                     </label>
                 </form>

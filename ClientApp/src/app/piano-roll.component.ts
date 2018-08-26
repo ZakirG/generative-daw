@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import { GenerationService } from './generation.service';
 
@@ -12,6 +12,10 @@ import { GenerationService } from './generation.service';
 export class PianoRollComponent implements OnInit {
     timeStateLength = 8;
     gridState = [];
+    conformToKeyScale = true;
+
+    @Input() key: string;
+    @Input() scale: Object;
 
     @Output()
     noteDrawn = new EventEmitter<string>();
