@@ -23,7 +23,7 @@
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>
                         <select name="key" style="text-align-last:center;width:50px"  class='top-bar-input' formControlName='key'>
-                            <option *ngFor="let key of keys" [ngValue]="key">
+                            <option *ngFor="let key of configDataService.keys" [ngValue]="key">
                                 {{ key }}
                             </option>
                         </select>
@@ -32,7 +32,7 @@
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>
                         <select name="scale" style="text-align-last:center;" class='top-bar-input' formControlName='scale'>
-                            <option *ngFor="let scale of scales" [ngValue]="scale">
+                            <option *ngFor="let scale of configDataService.scales" [ngValue]="scale">
                                 {{ scale.name }}
                             </option>
                         </select>
@@ -46,7 +46,7 @@
             <div class="col-sm-6"></div>
         </div>
     </header>
-    <piano-roll (noteDrawn)="playNoteDrawn($event)" [key]="key" [scale]="scale.name"></piano-roll>
+    <piano-roll (noteDrawn)="playNoteDrawn($event)" [key]="configDataService.key" [scale]="configDataService.scale.name"></piano-roll>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

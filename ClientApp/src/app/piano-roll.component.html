@@ -34,7 +34,7 @@
                         <span class="radio"></span>
                     </label>
                     <hr/>
-                    <label class='custom-checkbox'>Only generate notes within {{ key }} {{ scale }}
+                    <label class='custom-checkbox'>Only generate notes within {{ configDataService.key }} {{ configDataService.scale.name }}
                          <input [(ngModel)]="conformToKeyScale" type="checkbox" name="conformToKeyScale">
                         <span class="checkmark"></span>
                     </label>

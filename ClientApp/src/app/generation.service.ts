@@ -18,8 +18,8 @@ export class GenerationService {
         console.log(this.serverURL
             + 'generate/'
             + generationOptions.generationType + '/'
-            // + generationOptions.key + '/'
-            // + generationOptions.scale + '/'
+            + generationOptions.key + '/'
+            + generationOptions.scale.code + '/'
             + 'random/'
             + length);
 

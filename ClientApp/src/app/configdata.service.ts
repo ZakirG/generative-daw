@@ -4,20 +4,25 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ConfigDataService {
-    public key ='C';
-    data : string;
-    scale : string = 'C';
-    conformToKeyScale : boolean = true;
+    tempo : number;
 
-    getKey() : string {
-        return this.key;
+    key : string;
+
+    scale : string;
+
+    scales = [
+            {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' },
+            {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ], 'code' : 'min' },
+            {'name' : 'maj (b2 b6)', 'intervals' : [1,3,1,2,1,3,1 ], 'code' : 'dhmaj' },
+        ];
+
+    keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+    constructor() {
+        this.scale = this.scales[2];
+        this.key = this.keys[2];
+        this.tempo = 100;
     }
-
-    getScale() : string {
-        return this.scale;
-    }
-
-    constructor() { }
 
 }
 

@@ -69,7 +69,6 @@ export class PianoRollComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getConfigData();
         this.initializeEmptyGridState();
     }
 
@@ -87,16 +86,11 @@ export class PianoRollComponent implements OnInit {
         this.noteDrawn.emit(noteName + noteOctave);
     }
 
-    getConfigData() {
-        this.key = this.configDataService.getKey();
-        this.scale = this.configDataService.getScale().name;
-    }
-
     generate(generationOptions) {
         console.log(this.configDataService.key);
 
-        generationOptions.key = generationOptions.conformToKeyScale ? this.configDataService.getKey() : 'any';
-        generationOptions.scale = generationOptions.conformToKeyScale ? this.scale : 'any';
+        generationOptions.key = generationOptions.conformToKeyScale ? this.configDataService.key : 'any';
+        generationOptions.scale = generationOptions.conformToKeyScale ? this.configDataService.scale : 'any';
 
         var generatedNotes = [];
         this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {

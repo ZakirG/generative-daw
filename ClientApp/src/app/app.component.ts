@@ -29,20 +29,16 @@ export class AppComponent {
         this.timeStateLength = 8;
         this.inPlayState = false;
         this.queuedSounds = [];
-        this.scales = this.getScales();
-        this.configDataService.scale = this.scales[2];
-        this.keys = this.getKeys();
-        this.configDataService.key = this.keys[2];
-        this.tempo = 100;
+
         this.controlPanelForm = new FormGroup({
             scale: new FormControl(this.configDataService.scale),
             key: new FormControl(this.configDataService.key),
-            tempo: new FormControl(this.tempo)
+            tempo: new FormControl(this.configDataService.tempo)
         });
     }
 
     updateConfigState() {
-        this.tempo = this.controlPanelForm.value.tempo;
+        this.configDataService.tempo = this.controlPanelForm.value.tempo;
         this.configDataService.scale = this.controlPanelForm.value.scale;
         this.configDataService.key = this.controlPanelForm.value.key;
     }
@@ -77,7 +73,7 @@ export class AppComponent {
             for (var timeStateIndex = 0; timeStateIndex < note.timeStates.length; timeStateIndex++) {
                 if(note.timeStates[timeStateIndex]) {
                     // beat number * seconds per beat
-                    var timeToPlay = timeStateIndex * (60 / this.tempo);
+                    var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo);
                     this.playNote(note.note, note.octave, timeToPlay);
                 }
             }
@@ -121,16 +117,6 @@ export class AppComponent {
         }
     }
 
-    getScales() {
-        return [
-            {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ] },
-            {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ] },
-            {'name' : 'maj (b2 b6)', 'intervals' : [1,3,1,2,1,3,1 ] },
-        ]
-    }
 
-    getKeys() {
-        return ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-    }
 
 }
