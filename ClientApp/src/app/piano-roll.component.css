@@ -152,9 +152,10 @@ ul {
 .grid-state-wrapper hr {
     opacity:0;
     width:80%;
+    padding-left:10%;
     height:1px;
+    margin:auto;
     margin:0;
-    padding:0;
 }
 
 .grid-state-wrapper[data-active='true'] hr {

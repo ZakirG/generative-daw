@@ -25,7 +25,7 @@ ng serve --open
 #### Current functionalities:
 - A piano roll component where you can draw in melodies and chords
 - A control bar with tempo selection and play/pause buttons
-- Ability to generate a random melody or random chord progression in a key & scale of choice
+- Ability to generate a random melody or random chord progression in a scale of your choice
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
