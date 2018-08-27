@@ -26,8 +26,8 @@ export class GenerationService {
         return this.http.get(this.serverURL
             + 'generate/'
             + generationOptions.generationType + '/'
-            // + generationOptions.key + '/'
-            // + generationOptions.scale + '/'
+            + generationOptions.key + '/'
+            + generationOptions.scale.code + '/'
             + 'random/'
             + length
         );
