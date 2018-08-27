@@ -4,6 +4,10 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ConfigDataService {
+    inPlayState : boolean;
+
+    timeStateLength : number;
+
     tempo : number;
 
     key : string;
@@ -22,6 +26,8 @@ export class ConfigDataService {
         this.scale = this.scales[2];
         this.key = this.keys[2];
         this.tempo = 100;
+        this.inPlayState = false;
+        this.timeStateLength = 8;
     }
 
 }

@@ -13,7 +13,7 @@
             <div class='control-panel'>
                 <form [formGroup]='controlPanelForm' (change)='updateConfigState()'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
-                        <span class='glyphicon' [class.glyphicon-play]="!inPlayState" [class.glyphicon-pause]="inPlayState"></span>
+                        <span class='glyphicon' [class.glyphicon-play]="!configDataService.inPlayState" [class.glyphicon-pause]="configDataService.inPlayState"></span>
                     </button>
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>

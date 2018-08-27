@@ -52,13 +52,14 @@ def generate_melody(key, scale, generation_type, length):
     response = {'generationResult' : result}
     return json.dumps(response);
 
-@app.route('/generate/chords/<string:generation_type>/<int:length>', methods=['GET'])
+@app.route('/generate/chords/<string:key>/<string:scale>/<string:generation_type>/<int:length>', methods=['GET'])
 @crossdomain(origin='*')
-def generate_chords(generation_type, length):
+def generate_chords(key, scale, generation_type, length):
     print(generation_type + ' ' + str(length))
+    print('key: ' + key + ' scale: ' + scale)
     result = None
     if generation_type == 'random':    
-        result = generate_random_chords(length)
+        result = generate_random_chords(length, key, scale)
     
     response = {'generationResult' : result}
     return json.dumps(response);
@@ -89,14 +90,17 @@ def generate_random_melody(length, key, scale):
     print('melody:' + str(result))
     return result
     
-def generate_random_chords(length):
-    result = []
+def generate_random_chords(length, key, scale):
+    key_scale_possible_notes = possible_notes
+    if key != 'any':
+        key_scale_possible_notes = get_key_scale_notes(key, scale)
     
+    result = []
     for i in range(length):
         num_notes_in_chord = random.choice(allowed_chord_sizes)
         chord = []
         for j in range(num_notes_in_chord):
-            chord.append(random.choice(possible_notes))
+            chord.append(random.choice(key_scale_possible_notes))
         result.append(chord)
             
     print('chords:' + str(result))

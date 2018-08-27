@@ -14,6 +14,7 @@ export class PianoRollComponent implements OnInit {
     timeStateLength = 8;
     gridState = [];
     conformToKeyScale = true;
+    generationType = 'melody';
 
     @Input() key: string;
     @Input() scale: Object;

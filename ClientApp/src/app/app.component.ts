@@ -26,8 +26,6 @@ export class AppComponent {
         this.tracks = [];
         this.notes = [];
         this.audioBuffers = {};
-        this.timeStateLength = 8;
-        this.inPlayState = false;
         this.queuedSounds = [];
 
         this.controlPanelForm = new FormGroup({
@@ -59,16 +57,17 @@ export class AppComponent {
     }
 
     togglePlayState() {
-        if(this.inPlayState) {
-            this.inPlayState = false;
+        if(this.configDataService.inPlayState) {
+            this.configDataService.inPlayState = false;
             for (var i = 0; i < this.queuedSounds.length; i++) {
                 this.queuedSounds[i].stop(0);
             }
             this.queuedSounds = [];
             return;
         }
+
         this.queuedSounds = [];
-        this.inPlayState = true;
+        this.configDataService.inPlayState = true;
         for (let note of this.tracks[0]) {
             for (var timeStateIndex = 0; timeStateIndex < note.timeStates.length; timeStateIndex++) {
                 if(note.timeStates[timeStateIndex]) {
@@ -80,8 +79,8 @@ export class AppComponent {
         }
         var root = this;
         setTimeout(function(){
-            root.inPlayState = false;
-        }, 1000 * root.timeStateLength * 4 * (60 / root.tempo) );
+            root.configDataService.inPlayState = false;
+        }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) );
     }
 
     playNote(noteName : string, noteOctave : number, time : number) {
