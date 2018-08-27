@@ -4,12 +4,12 @@
 
 #### Built with Flask, Angular 6, and Python 3.
 
-This project will be a <a href='https://en.wikipedia.org/wiki/Digital_audio_workstation'>digital audio workstation (DAW)</a> webapp that provides a suite of tools
+This project is a <a href='https://en.wikipedia.org/wiki/Digital_audio_workstation'>digital audio workstation (DAW)</a> webapp that provides a suite of tools
 for <a href='https://en.wikipedia.org/wiki/Generative_music' target='_blank'>generative music composition</a>, in which the software system itself will compose the music.
 
-The primary use case: a composer specifies generative settings they are interested in, 
+The primary use case of the application (still in progress): A composer specifies the generative settings they are interested in, 
 which the software system responds to with a randomized piece of music. The composer then
-edits the result to their taste and continues work on the composition in their usual music creation
+edits the result to their taste, downloads the MIDI files, and continues work on the composition in their usual music creation
 domain of choice (an instrument, sheet music, or a more high-powered DAW).
 
 <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="550"/> <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="550"/>
@@ -23,9 +23,9 @@ ng serve --open
 ```
 
 #### Current functionalities:
-- A piano roll component where you can draw in melodies and chords
-- A control bar with tempo selection and play/pause buttons
 - Ability to generate a random melody or random chord progression in a scale of your choice
+- A piano roll component where you can draw & edit notes
+- A control bar with tempo selection and play/pause buttons
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
