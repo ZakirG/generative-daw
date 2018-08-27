@@ -178,6 +178,10 @@ ul {
     top:70px;
 }
 
+#generationModal input {
+    display:inline-block;
+}
+
 .custom-radio-button, .custom-checkbox {
     display: block;
     position: relative;

@@ -15,6 +15,8 @@ export class PianoRollComponent implements OnInit {
     gridState = [];
     conformToKeyScale = true;
     generationType = 'melody';
+    octaveConstraint = 1;
+    octaveConstraintCheck = true;
 
     @Input() key: string;
     @Input() scale: Object;
@@ -88,10 +90,12 @@ export class PianoRollComponent implements OnInit {
     }
 
     generate(generationOptions) {
-        console.log(this.configDataService.key);
+        console.log(generationOptions);
 
         generationOptions.key = generationOptions.conformToKeyScale ? this.configDataService.key : 'any';
         generationOptions.scale = generationOptions.conformToKeyScale ? this.configDataService.scale : 'any';
+        generationOptions.octaveConstraint = generationOptions.octaveConstraintCheck ? generationOptions.octaveConstraint : 'any';
+
 
         var generatedNotes = [];
         this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {
