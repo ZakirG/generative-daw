@@ -23,21 +23,22 @@ ng serve --open
 ```
 
 #### Current functionalities:
-- A piano roll module where you can draw in melodies and chords
+- A piano roll component where you can draw in melodies and chords
 - A control bar with tempo selection and play/pause buttons
-- Ability to generate a random melody or random chord progression
+- Ability to generate a random melody or random chord progression in a key & scale of choice
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
 - The server-side generative-composition tools are Python 3 in a Flask framework
 - The frontend design uses Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
 
-#### Feature goals for version 0.01:
+#### Project goals for version 0.01:
 - A responsive DAW-like interface wrapped in a modern Bootstrap layout
 - An editable piano roll that can play back melodies
 - A sampler with stock drum sounds that can play back rhythms
 - Ability to generate random configurations of the drum machine and piano roll
 - Ability to bounce and export tracks to .wav files
+- Unit tests for the Flask backend, End-to-end tests in Selenium
 
 
 Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
