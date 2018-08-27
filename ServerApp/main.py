@@ -96,8 +96,11 @@ def generate_random_chords(length, key, scale, octave):
     for i in range(length):
         num_notes_in_chord = random.choice(allowed_chord_sizes)
         chord = []
+        unused_chord_tones = allowed_notes.copy()
         for j in range(num_notes_in_chord):
-            chord.append(random.choice(allowed_notes))
+            generated_note_index = random.choice(range(len(unused_chord_tones)))
+            chord.append(unused_chord_tones[generated_note_index])
+            unused_chord_tones.pop(generated_note_index)
         result.append(chord)
             
     print('chords:' + str(result))
