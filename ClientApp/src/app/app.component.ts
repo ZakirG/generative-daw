@@ -13,6 +13,11 @@ import { ConfigDataService } from './configdata.service';
 export class AppComponent {
     private audioContext: AudioContext;
     @ViewChild(PianoRollComponent) pianoRoll;
+    notes: Array<any>;
+    tracks: Array<any>;
+    audioBuffers: Object;
+    queuedSounds: Array<any>;
+    controlPanelForm: FormGroup;
 
     public constructor(private titleService: Title, private configDataService: ConfigDataService) { }
 
@@ -95,7 +100,7 @@ export class AppComponent {
         bufferSource.start(this.audioContext.currentTime + time);
     }
 
-    fetchNoteSample(filename) : Promise<AudioBuffer> {
+    fetchNoteSample(filename) : Promise<any> {
         return fetch(filename)
                 .then(response => response.arrayBuffer())
                 .then(buffer => {
@@ -110,7 +115,6 @@ export class AppComponent {
             var filename = 'assets/' + note.note + (note.octave + 1) + '.wav';
 
             this.fetchNoteSample(filename).then(audioBuffer => {
-                this.loadingSample = false;
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
             }).catch(error => { throw error; });
         }

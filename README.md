@@ -18,7 +18,11 @@ domain of choice (an instrument, sheet music, or a more high-powered DAW).
 Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
 ```
 git clone https://github.com/ZakirG/generative-daw.git
-cd generative-daw/ClientApp
+cd generative-daw/ServerApp
+export FLASK_APP=main.py
+export FLASK_ENV=development
+flask run &
+cd ../ClientApp
 ng serve --open
 ```
 

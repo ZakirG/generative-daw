@@ -5,14 +5,10 @@ import { Injectable } from '@angular/core';
 })
 export class ConfigDataService {
     inPlayState : boolean;
-
     timeStateLength : number;
-
     tempo : number;
-
     key : string;
-
-    scale : string;
+    scale : any;
 
     scales = [
             {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' },

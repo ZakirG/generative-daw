@@ -10,13 +10,14 @@ import { ConfigDataService } from './configdata.service';
     styleUrls: ['./piano-roll.component.css']
 })
 
-export class PianoRollComponent implements OnInit {
+export class PianoRollComponent {
     timeStateLength = 8;
     gridState = [];
     conformToKeyScale = true;
     generationType = 'melody';
     octaveConstraint = 1;
     octaveConstraintCheck = true;
+    notes: Array<any>;
 
     @Input() key: string;
     @Input() scale: Object;
