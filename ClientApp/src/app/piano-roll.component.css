@@ -84,6 +84,22 @@ ul {
     height:16px;
 }
 
+span.note-label {
+    font-weight:bold;
+    width:100%;
+    padding-right:5px;
+    font-size:12px;
+    text-align:right;
+    display:inline-block;
+    opacity:0;
+    color:#00869e;
+}
+
+/*Only label the C keys*/
+span.note-label[data-note='C'] {
+    opacity:1;
+}
+
 .note-rows {
     padding:0;
     border-bottom: solid 1px #a5f2ff;

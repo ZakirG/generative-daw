@@ -59,7 +59,7 @@
         <div class='piano-keys'>
             <ul class="piano-key-set">
                 <li *ngFor="let note of notes"
-                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}"></li>
+                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}"><span class='note-label' attr.data-note='{{ note.note.toUpperCase() }}'>{{ note.note.toUpperCase() + note.octave }}</span></li>
             </ul>
         </div>
     </div>
