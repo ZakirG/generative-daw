@@ -31,6 +31,12 @@ def generate_chords(key, scale, octave_constraint, generation_type, length):
     response = {'generationResult' : result}
     return json.dumps(response);
 
+@app.route('/daw-state', methods=['POST'])
+@crossdomain(origin='*')
+def update_daw_state(data):
+    print('inside update daw state')
+    print(data)
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404

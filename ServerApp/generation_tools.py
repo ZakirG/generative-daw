@@ -1,4 +1,5 @@
 import random
+from music21 import chord as music21_chords
 
 chromatic_scale = [{'note': 'c'}, {'note': 'cs'}, {'note': 'd'}, {'note': 'ds'}, {'note': 'e'}, {'note': 'f'}, {'note': 'fs'}, {'note': 'g'}, {'note': 'gs'}, {'note': 'a'}, {'note': 'as'}, {'note': 'b'}]
 
@@ -67,3 +68,8 @@ def generate_random_chords(length, key, scale, octave):
     print('chords:' + str(result))
     return result
     
+def determine_chord_name(chord):
+    notes = map(lambda x: x['note'].upper(), chord)
+    notes = map(lambda x: x.replace('S', '#'), notes)
+    c = music21_chords.Chord(list(notes))
+    return c.pitchedCommonName
