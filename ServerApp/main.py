@@ -12,6 +12,8 @@ CORS(app)
 BASE_URL = os.path.abspath(os.path.dirname(__file__))
 CLIENT_APP_FOLDER = os.path.join(BASE_URL, "ClientApp")
 
+DawState = {}
+
 @app.route('/generate/melody/<string:key>/<string:scale>/<string:octave_constraint>/<string:generation_type>/<int:length>', methods=['GET'])
 @crossdomain(origin='*')
 def generate_melody(key, scale, octave_constraint, generation_type, length):
@@ -32,11 +34,18 @@ def generate_chords(key, scale, octave_constraint, generation_type, length):
     response = {'generationResult' : result}
     return json.dumps(response);
 
-@app.route('/daw-state', methods=['POST'])
+@app.route('/daw-state', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def update_daw_state():
     print('inside update daw state')
-    print(request)
+    content = request.get_json()
+    DawState['scale'] =  content['scale']
+    DawState['key'] =  content['key']
+    DawState['tracks'] =  content['tracks']
+    # DawState['chord_names'] = generation_tools.name_chords_in_tracks(content['tracks'])
+    
+    response = DawState
+    return json.dumps(response)
 
 @app.errorhandler(404)
 def page_not_found(error):
