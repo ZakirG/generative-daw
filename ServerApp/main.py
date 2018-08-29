@@ -1,4 +1,5 @@
 from flask import Flask, render_template, send_from_directory
+from flask import request
 from flask_cors import CORS
 import os
 import json
@@ -33,9 +34,9 @@ def generate_chords(key, scale, octave_constraint, generation_type, length):
 
 @app.route('/daw-state', methods=['POST'])
 @crossdomain(origin='*')
-def update_daw_state(data):
+def update_daw_state():
     print('inside update daw state')
-    print(data)
+    print(request)
 
 @app.errorhandler(404)
 def page_not_found(error):
