@@ -69,18 +69,30 @@ def generate_random_chords(length, key, scale, octave):
     return result
     
 def determine_chord_name(chord):
-    notes = map(lambda x: x['note'].upper(), chord)
+    if len(chord) <= 2:
+        return ''
+    
+    notes = map(lambda x: x.upper(), chord)
     notes = map(lambda x: x.replace('S', '#'), notes)
     c = music21_chords.Chord(list(notes))
     return c.pitchedCommonName
     
 def transpose_notes_to_grid(notes):
     grid = []
-    for n in notes:
-        pass
-    
-def name_chords_in_tracks(tracks):
-    names = []
-    for track in tracks:
+    timeStateLength = 8
+    for step in range(timeStateLength):
+        notes_at_this_step = []
+        for note in notes:
+            if note['timeStates'][step] == True:
+                notes_at_this_step.append(note['note'])
+        grid.append(notes_at_this_step)
+    return grid
         
-        names_on_this_track = map(lambda x: determine_chord_name(x), track)
+def name_chords_in_tracks(tracks):
+    grid_by_tracks = list(map(transpose_notes_to_grid, tracks))
+    chord_names_by_tracks = []
+    for grid in grid_by_tracks:
+        chord_names_by_tracks.append(list(map(lambda x: determine_chord_name(x), grid)))
+    return chord_names_by_tracks
+        
+        

@@ -39,10 +39,11 @@ def generate_chords(key, scale, octave_constraint, generation_type, length):
 def update_daw_state():
     print('inside update daw state')
     content = request.get_json()
+    print(content)
     DawState['scale'] =  content['scale']
     DawState['key'] =  content['key']
     DawState['tracks'] =  content['tracks']
-    # DawState['chord_names'] = generation_tools.name_chords_in_tracks(content['tracks'])
+    DawState['chord_names'] = generation_tools.name_chords_in_tracks(content['tracks'])
     
     response = DawState
     return json.dumps(response)
