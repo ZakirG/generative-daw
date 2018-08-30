@@ -10,6 +10,7 @@ export class ConfigDataService {
     key : string;
     scale : any;
     dawState : any;
+    stateWidth: string;
 
     scales = [
             {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' },
@@ -26,6 +27,7 @@ export class ConfigDataService {
         this.inPlayState = false;
         this.timeStateLength = 8;
         this.dawState = {};
+        this.stateWidth = (100 / this.timeStateLength)  + '%';
     }
 
 }

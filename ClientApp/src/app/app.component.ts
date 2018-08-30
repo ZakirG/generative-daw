@@ -130,7 +130,6 @@ export class AppComponent {
 
     updateDawState() {
         // Daw State: data in the interface that the server needs to know
-        console.log('hi');
         var dawState = {};
 
         var minimizedTracks = [];

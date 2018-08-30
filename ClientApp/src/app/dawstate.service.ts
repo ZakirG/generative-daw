@@ -15,10 +15,7 @@ export class DawStateService {
 
     updateDawState(dawState) {
         var urlEndpoint = this.dawStateURL;
-        console.log(urlEndpoint);
-
         var postData = JSON.stringify(dawState);
-        console.log(postData);
 
         const httpOptions = {
             headers: new HttpHeaders({
@@ -26,8 +23,6 @@ export class DawStateService {
             'Authorization': ''
             })
         };
-
-        console.log('posting');
 
         return this.http.post(urlEndpoint, postData, httpOptions);
     }

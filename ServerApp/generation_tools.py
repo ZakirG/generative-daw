@@ -75,8 +75,9 @@ def determine_chord_name(chord):
     notes = map(lambda x: x.upper(), chord)
     notes = map(lambda x: x.replace('S', '#'), notes)
     c = music21_chords.Chord(list(notes))
-    print('CHORD IN: ' + str(c))
-    return c.pitchedCommonName
+    full_name = c.pitchedCommonName
+    abbreviation = full_name.replace('minor', 'min').replace('major', 'maj').replace('seventh', '7').replace('augmented', 'aug').replace('diminished', 'dim')
+    return abbreviation
     
 def transpose_notes_to_grid(notes):
     grid = []

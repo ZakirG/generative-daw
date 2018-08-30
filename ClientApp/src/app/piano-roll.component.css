@@ -295,9 +295,11 @@ span.note-label[data-note='C'] {
     height: 35px;
     border-radius: 2px;
     border: solid 1px #c6f7ff;
-    font-size:10px;
+    font-size:12px;
+    color:#42dcf4;
+    font-weight:bold;
 }
 
 .chord-name {
-
+    display:inline-block;
 }

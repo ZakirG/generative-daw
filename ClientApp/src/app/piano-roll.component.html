@@ -69,7 +69,7 @@
                 class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
                 <label class="grid-state-wrapper"
                     *ngFor="let state of note.timeStates; let index= index;"
-                    [style.width]="note.stateWidth"
+                    [style.width]="configDataService.stateWidth"
                     attr.data-active="{{ note.timeStates[index] }}"
                     [attr.id]="note.id"
                     [attr.data-step]="index"
@@ -89,6 +89,6 @@
     <div class="col-1"></div>
     <div class='col chord-data'>
         <span *ngFor="let chord of configDataService.dawState.chord_names"
-                class="chord-name">{{ chord }} </span>
+                class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
     </div>
 </div>
