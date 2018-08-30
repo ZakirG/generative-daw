@@ -9,6 +9,7 @@ export class ConfigDataService {
     tempo : number;
     key : string;
     scale : any;
+    dawState : any;
 
     scales = [
             {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' },
@@ -24,6 +25,7 @@ export class ConfigDataService {
         this.tempo = 100;
         this.inPlayState = false;
         this.timeStateLength = 8;
+        this.dawState = {};
     }
 
 }

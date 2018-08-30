@@ -23,7 +23,7 @@ button:focus, button:active, input:focus, input:active {
 
 .piano-roll {
     padding:0 5px;
-    margin: 10px 0px;
+    margin: 10px 0px 0px 0;
     border: #e6e6e6;
     border-left:0;
     border-right:0;
@@ -286,3 +286,18 @@ span.note-label[data-note='C'] {
     transform: rotate(45deg);
 }
 
+.piano-metadata {
+    margin:0px 0 10px 0;
+    padding:0 15px 0 5px;
+}
+
+.chord-data {
+    height: 35px;
+    border-radius: 2px;
+    border: solid 1px #c6f7ff;
+    font-size:10px;
+}
+
+.chord-name {
+
+}

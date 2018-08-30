@@ -23,7 +23,7 @@ export class PianoRollComponent {
     @Input() scale: Object;
 
     @Output()
-    noteDrawn = new EventEmitter<string>();
+    noteDrawn = new EventEmitter<any>();
 
     constructor(public generationService: GenerationService, public configDataService: ConfigDataService) { }
 
@@ -83,11 +83,11 @@ export class PianoRollComponent {
     }
 
     previewNoteSound(noteName, noteOctave, noteState) {
-        if(noteState) {
-            // If we are switching from a drawn to not-drawn state, don't play the sound.
-            return;
-        }
-        this.noteDrawn.emit(noteName + noteOctave);
+        // if(noteState) {
+//             // If we are switching from a drawn to not-drawn state, don't play the sound.
+//             return;
+//         }
+        this.noteDrawn.emit({ 'note' : noteName + noteOctave, 'state' : noteState});
     }
 
     generate(generationOptions) {

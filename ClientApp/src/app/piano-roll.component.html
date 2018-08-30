@@ -71,7 +71,6 @@
                     *ngFor="let state of note.timeStates; let index= index;"
                     [style.width]="note.stateWidth"
                     attr.data-active="{{ note.timeStates[index] }}"
-                    (click)="previewNoteSound(note.note, note.octave, note.timeStates[index])"
                     [attr.id]="note.id"
                     [attr.data-step]="index"
                     >
@@ -79,9 +78,17 @@
                     <input class='grid-state' type='checkbox'
                         attr.data-active="{{ state }}"
                         [(ngModel)]="note.timeStates[index]"
+                        (change)="previewNoteSound(note.note, note.octave, note.timeStates[index])"
                         >
                 </label>
             </li>
         </ul>
      </div>
+</div>
+<div class='row piano-metadata'>
+    <div class="col-1"></div>
+    <div class='col chord-data'>
+        <span *ngFor="let chord of configDataService.dawState.chord_names"
+                class="chord-name">{{ chord }} </span>
+    </div>
 </div>

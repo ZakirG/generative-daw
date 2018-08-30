@@ -75,6 +75,7 @@ def determine_chord_name(chord):
     notes = map(lambda x: x.upper(), chord)
     notes = map(lambda x: x.replace('S', '#'), notes)
     c = music21_chords.Chord(list(notes))
+    print('CHORD IN: ' + str(c))
     return c.pitchedCommonName
     
 def transpose_notes_to_grid(notes):
@@ -93,6 +94,6 @@ def name_chords_in_tracks(tracks):
     chord_names_by_tracks = []
     for grid in grid_by_tracks:
         chord_names_by_tracks.append(list(map(lambda x: determine_chord_name(x), grid)))
-    return chord_names_by_tracks
+    return chord_names_by_tracks[0] # pretending there's only one track for now
         
         

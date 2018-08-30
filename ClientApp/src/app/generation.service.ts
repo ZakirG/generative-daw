@@ -29,5 +29,4 @@ export class GenerationService {
 
         return this.http.get(URL_endpoint);
     }
-
 }

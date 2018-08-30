@@ -3,6 +3,7 @@ import { Title }     from '@angular/platform-browser';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PianoRollComponent } from './piano-roll.component';
 import { ConfigDataService } from './configdata.service';
+import { DawStateService } from './dawstate.service';
 
 @Component({
     selector: 'app-root',
@@ -19,7 +20,10 @@ export class AppComponent {
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
 
-    public constructor(private titleService: Title, private configDataService: ConfigDataService) { }
+    public constructor(
+        private titleService: Title,
+        private configDataService: ConfigDataService,
+        private dawStateService: DawStateService) { }
 
     public setTitle( newTitle: string) {
         this.titleService.setTitle( newTitle );
@@ -57,8 +61,12 @@ export class AppComponent {
         this.fetchNoteSamples();
     }
 
-    playNoteDrawn(soundName) {
-        this.playSound(soundName, 0);
+    registerNoteDrawn(event) {
+        if(event['state']) {
+            this.playSound(event['note'], 0);
+        }
+
+        this.updateDawState();
     }
 
     togglePlayState() {
@@ -120,6 +128,27 @@ export class AppComponent {
         }
     }
 
+    updateDawState() {
+        // Daw State: data in the interface that the server needs to know
+        console.log('hi');
+        var dawState = {};
 
+        var minimizedTracks = [];
+        for (let track of this.tracks) {
+            console.log('track: ' , track);
+            var minTrack = track.map((x, i, track) => ({'note' : x.note, 'octave' : x.octave, 'timeStates' : x.timeStates }));
+            console.log('mintrack: ' , minTrack);
+            minimizedTracks.push(minTrack);
+        }
+
+        dawState['tracks'] = minimizedTracks;
+        dawState['scale'] = this.configDataService.scale;
+        dawState['key'] = this.configDataService.key;
+
+        this.dawStateService.updateDawState(dawState).subscribe((data) => {
+            console.log(data);
+            this.configDataService.dawState = data;
+        });
+    }
 
 }
