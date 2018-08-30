@@ -62,7 +62,7 @@ export class AppComponent {
     }
 
     registerNoteDrawn(event) {
-        if(event['state']) {
+        if(event['event'] == 'noteDrawn' && event['state']) {
             this.playSound(event['note'], 0);
         }
 
@@ -134,9 +134,7 @@ export class AppComponent {
 
         var minimizedTracks = [];
         for (let track of this.tracks) {
-            console.log('track: ' , track);
             var minTrack = track.map((x, i, track) => ({'note' : x.note, 'octave' : x.octave, 'timeStates' : x.timeStates }));
-            console.log('mintrack: ' , minTrack);
             minimizedTracks.push(minTrack);
         }
 
