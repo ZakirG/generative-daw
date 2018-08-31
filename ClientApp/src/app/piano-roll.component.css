@@ -66,7 +66,7 @@ ul {
     z-index:0;
     position:relative;
     /* border-radius:0px 4px 4px 0px; */
-    height:18px;
+    height:24px;
 }
 
 .piano-key-set .white:last-child {
@@ -75,13 +75,13 @@ ul {
 
 .piano-key-set .black {
     background: #00869e;
-    margin-top:-6px;
-    margin-bottom:-6px;
+    margin-top:-8px;
+    margin-bottom:-8px;
     width:50%;
     z-index:1;
     position:relative;
     border-radius:0px 5px 5px 0px;
-    height:13px;
+    height:16px;
 }
 
 span.note-label {
@@ -118,7 +118,7 @@ span.note-label[data-note='C'] {
 }
 
 .note-rows li {
-    height:11px;
+    height:14px;
 }
 
 .note-rows li.black {
