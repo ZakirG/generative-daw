@@ -21,12 +21,36 @@ button:focus, button:active, input:focus, input:active {
     color: black;
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 .piano-roll {
     padding:0 5px;
     margin: 10px 0px 0px 0;
-    border: #e6e6e6;
+    border: solid 1px #e6e6e6;
     border-left:0;
     border-right:0;
+    overflow-y: scroll;
+    height:240px;
 }
 
 .piano {
@@ -307,4 +331,6 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 .chord-name {
     display:inline-block;
+    height:35px;
+    overflow:auto;
 }

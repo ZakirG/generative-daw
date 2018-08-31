@@ -126,3 +126,11 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     height: 41px;
     position:relative;
 }
+
+.track {
+    background:#eafbff;
+    border:solid 1px #c6f7ff;
+    border-radius:3px;
+    padding:5px;
+    margin:10px 0;
+}
