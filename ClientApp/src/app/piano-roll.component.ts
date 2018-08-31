@@ -83,11 +83,7 @@ export class PianoRollComponent {
         this.noteDrawn.emit({'event': 'clear'});
     }
 
-    previewNoteSound(noteName, noteOctave, noteState) {
-        // if(noteState) {
-//             // If we are switching from a drawn to not-drawn state, don't play the sound.
-//             return;
-//         }
+    noteDrawnHandler(noteName, noteOctave, noteState) {
         this.noteDrawn.emit({ 'event': 'noteDrawn', 'note' : noteName + noteOctave, 'state' : noteState});
     }
 

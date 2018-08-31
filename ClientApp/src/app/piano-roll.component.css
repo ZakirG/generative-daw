@@ -66,7 +66,7 @@ ul {
     z-index:0;
     position:relative;
     /* border-radius:0px 4px 4px 0px; */
-    height:24px;
+    height:18px;
 }
 
 .piano-key-set .white:last-child {
@@ -75,13 +75,13 @@ ul {
 
 .piano-key-set .black {
     background: #00869e;
-    margin-top:-8px;
-    margin-bottom:-8px;
+    margin-top:-6px;
+    margin-bottom:-6px;
     width:50%;
     z-index:1;
     position:relative;
     border-radius:0px 5px 5px 0px;
-    height:16px;
+    height:13px;
 }
 
 span.note-label {
@@ -117,20 +117,11 @@ span.note-label[data-note='C'] {
     background:#eafbff;
 }
 
-.note-rows li.a, .note-rows li.g, .note-rows li.d {
-    height:14px;
-}
-
-.note-rows li.b, .note-rows li.f {
-    height:14px;
-}
-
-.note-rows li.c, .note-rows li.e {
-    height:14px;
+.note-rows li {
+    height:11px;
 }
 
 .note-rows li.black {
-    height:14px;
     background:#c6f7ff;
 }
 
@@ -164,6 +155,20 @@ span.note-label[data-note='C'] {
     background:#00b2ce;
     border:solid 1px #00889e;
 }
+
+/*
+Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data-active='true'] + .grid-state-wrapper[data-active='true'] {
+    border-left:0;
+    margin-left:-3%;
+    width:15.5% !important;
+}
+
+.grid-state-wrapper[data-active='true'] + .grid-state-wrapper[data-active='true'] hr {
+    width:90%;
+    padding-right:10%;
+    padding-left:0;
+}
+ */
 
 .grid-state-wrapper hr {
     opacity:0;

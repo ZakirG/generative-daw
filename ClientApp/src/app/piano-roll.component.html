@@ -78,7 +78,7 @@
                     <input class='grid-state' type='checkbox'
                         attr.data-active="{{ state }}"
                         [(ngModel)]="note.timeStates[index]"
-                        (change)="previewNoteSound(note.note, note.octave, note.timeStates[index])"
+                        (change)="noteDrawnHandler(note.note, note.octave, note.timeStates[index])"
                         >
                 </label>
             </li>

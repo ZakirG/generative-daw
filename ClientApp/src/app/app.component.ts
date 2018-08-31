@@ -120,7 +120,7 @@ export class AppComponent {
 
     fetchNoteSamples() {
         for (let note of this.notes) {
-            var filename = 'assets/' + note.note + (note.octave + 1) + '.wav';
+            var filename = 'assets/sounds/' + note.note + (note.octave + 1) + '.wav';
 
             this.fetchNoteSample(filename).then(audioBuffer => {
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
@@ -143,7 +143,7 @@ export class AppComponent {
         dawState['key'] = this.configDataService.key;
 
         this.dawStateService.updateDawState(dawState).subscribe((data) => {
-            console.log(data);
+            // console.log(data);
             this.configDataService.dawState = data;
         });
     }

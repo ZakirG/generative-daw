@@ -12,7 +12,7 @@ which the software system responds to by composing a piece of music. The user th
 edits the result to their taste, downloads the MIDI files, and continues work on the composition in their usual music creation
 domain of choice (an instrument, sheet music, or a more high-powered DAW).
 
-<img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="550"/> <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="550"/>
+<img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
 
 #### To build and run the application:
 Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
@@ -40,6 +40,11 @@ cd generative-daw
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
 - A responsive DAW-like interface wrapped in a modern Bootstrap layout
+
+#### Stretch goals for a possible version 0.02:
+- Draggable and resizable piano roll notes with http://interactjs.io/
+- A lyric generator that responds to drawn melodies using an Hidden Markov Model
+- Machine learning algorithms applied to a dataset of MIDI files from pop music
 
 
 Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
