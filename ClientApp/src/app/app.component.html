@@ -10,8 +10,8 @@
                 </a>
                 Generative<b>DAW</b>
             </span>
-            <div class='control-panel'>
-                <form [formGroup]='controlPanelForm' (change)='updateConfigState()'>
+            <form [formGroup]='controlPanelForm' (change)='updateConfigState()' style='display:inline-block'>
+                <div class='control-panel'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
                         <span class='glyphicon' [class.glyphicon-play]="!configDataService.inPlayState" [class.glyphicon-pause]="configDataService.inPlayState"></span>
                     </button>
@@ -38,14 +38,19 @@
                         </select>
                         <span id='scale-label' class='no-select'>SCALE</span>
                     </span>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
         <div class="row secondary-color" id="control-bar">
             <div class="col-sm-6"></div>
             <div class="col-sm-6"></div>
         </div>
     </header>
+    <div class='row control-bar'>
+        <button id='add-track-button' class='control-bar-button' (click)="addTrack()">
+            <span class='glyphicon glyphicon-plus'></span> NEW TRACK
+        </button>
+    </div>
     <div class='track'>
         <piano-roll (noteDrawn)="registerNoteDrawn($event)" [key]="configDataService.key" [scale]="configDataService.scale.name"></piano-roll>
     </div>

@@ -125,12 +125,30 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     top:-1px;
     height: 41px;
     position:relative;
+    margin-right:10px;
 }
 
 .track {
     background:#eafbff;
-    border:solid 1px #c6f7ff;
+    border:solid 1px #1d626d;
     border-radius:3px;
     padding:5px;
     margin:10px 0;
+}
+
+.control-bar {
+    padding: 5px 20px;
+    color: #1d626d;
+    font-size:12px;
+    background:#42dcf4;
+    border-top:solid 1px #1d626d;
+    border-bottom:solid 1px #1d626d;
+    /* background:linear-gradient(#42dcf4, #35acbf); */
+}
+
+.control-bar-button {
+    background:#c6f7ff;
+    border: solid #1d626d 1px;
+    border-radius:2px;
+    padding:5px 10px;
 }
