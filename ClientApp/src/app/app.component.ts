@@ -1,4 +1,5 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+//import { Component, ViewChild, AfterViewInit, ViewContainerRef } from '@angular/core';
+import {Component, NgModule,Input,ComponentFactory,ComponentRef, AfterViewInit, ComponentFactoryResolver, ViewContainerRef, ChangeDetectorRef, TemplateRef, ViewChild, Output, EventEmitter} from '@angular/core';
 import { Title }     from '@angular/platform-browser';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PianoRollComponent } from './piano-roll.component';
@@ -14,6 +15,7 @@ import { DawStateService } from './dawstate.service';
 export class AppComponent {
     private audioContext: AudioContext;
     @ViewChild(PianoRollComponent) pianoRoll;
+    @ViewChild("newPianoRoll", { read: ViewContainerRef }) container;
     notes: Array<any>;
     tracks: Array<any>;
     audioBuffers: Object;
@@ -23,7 +25,8 @@ export class AppComponent {
     public constructor(
         private titleService: Title,
         private configDataService: ConfigDataService,
-        private dawStateService: DawStateService) { }
+        private dawStateService: DawStateService,
+        private resolver: ComponentFactoryResolver) { }
 
     public setTitle( newTitle: string) {
         this.titleService.setTitle( newTitle );
@@ -128,6 +131,17 @@ export class AppComponent {
         }
     }
 
+    addTrack() {
+         // var newPianoRoll = new PianoRollComponent();
+
+
+        const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
+        var newPianoRoll : ComponentRef = this.container.createComponent(factory);
+        this.tracks.push(newPianoRoll.instance.gridState);
+        console.log(this.tracks);
+
+    }
+
     updateDawState() {
         // Daw State: data in the interface that the server needs to know
         var dawState = {};
@@ -147,5 +161,4 @@ export class AppComponent {
             this.configDataService.dawState = data;
         });
     }
-
 }

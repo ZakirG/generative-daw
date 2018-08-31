@@ -25,7 +25,9 @@ export class PianoRollComponent {
     @Output()
     noteDrawn = new EventEmitter<any>();
 
-    constructor(public generationService: GenerationService, public configDataService: ConfigDataService) { }
+    constructor(public generationService: GenerationService, public configDataService: ConfigDataService) {
+        this.initializeEmptyGridState();
+    }
 
     initializeEmptyGridState() {
         var stateWidth = (100 / this.timeStateLength) + "%";
@@ -73,7 +75,7 @@ export class PianoRollComponent {
     }
 
     ngOnInit() {
-        this.initializeEmptyGridState();
+
     }
 
     clearPianoRoll() {
