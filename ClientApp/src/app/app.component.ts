@@ -94,12 +94,16 @@ export class AppComponent {
 
         this.queuedSounds = [];
         this.configDataService.inPlayState = true;
-        for (let note of this.tracks[0]) {
-            for (var timeStateIndex = 0; timeStateIndex < note.timeStates.length; timeStateIndex++) {
-                if(note.timeStates[timeStateIndex]) {
-                    // beat number * seconds per beat
-                    var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo);
-                    this.playNote(note.note, note.octave, timeToPlay);
+
+        for (var noteIndex = 0; noteIndex < this.notes.length; noteIndex++) {
+            for (var timeStateIndex = 0; timeStateIndex < this.configDataService.timeStateLength; timeStateIndex++) {
+                for (let track of this.tracks) {
+                    var note = track.gridState[noteIndex];
+                    if(note['timeStates'][timeStateIndex]) {
+                        // beat number * seconds per beat
+                        var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo);
+                        this.playNote(note.note, note.octave, timeToPlay);
+                    }
                 }
             }
         }
