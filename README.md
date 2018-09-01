@@ -27,7 +27,7 @@ cd generative-daw
 
 #### Current functionalities:
 - Ability to generate & play back a random melody or random chord progression in a scale of your choice
-- A piano roll component where you can draw & edit notes
+- Ability to create piano roll components where you can draw & edit notes
 - A control bar with tempo selection and play/pause buttons
 
 #### Overview of technologies used:
@@ -37,11 +37,12 @@ cd generative-daw
 
 #### Project goals for version 0.01:
 - Unit tests for the Flask backend, End-to-end tests in Selenium
-- Ability to bounce and export tracks to .wav files
+- A responsive, mobile-friendly interface
+- Ability to download the state of all tracks in the application as a single multi-instrument MIDI file
 - Chord generation informed by chord leading charts, diatonic chord groups, and voice leading principles
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
-- A responsive DAW-like interface wrapped in a modern Bootstrap layout
+
 
 #### Project goals for a possible version 0.02:
 - Draggable and resizable piano roll notes with http://interactjs.io/
