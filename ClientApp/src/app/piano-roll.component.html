@@ -1,94 +1,101 @@
-<div class="row">
-    <div class="col">
-        <button class="action-button" type="button" id="generate-button" data-toggle="modal" data-target="#generationModal">
-            <span class='glyphicon glyphicon-fire'></span>
-            GENERATE
-        </button>
+<div class='track'>
+    <div class="row">
+        <div class="col">
+            <button class="action-button" type="button" id="generate-button" data-toggle="modal" data-target="#generationModal">
+                <span class='glyphicon glyphicon-fire'></span>
+                GENERATE
+            </button>
 
-        <button class="action-button" id="clear-button" (click)="clearPianoRoll()">
-            <span class='glyphicon glyphicon-trash'></span>
-            CLEAR
-        </button>
+            <button class="action-button" id="clear-button" (click)="clearPianoRoll()">
+                <span class='glyphicon glyphicon-ban-circle'></span>
+                CLEAR
+            </button>
+        </div>
+        <div class='col text-right'>
+            <button class="delete-track-button" id="clear-button" (click)="deleteTrack()">
+                <span class='glyphicon glyphicon-remove'></span>
+            </button>
+        </div>
     </div>
-</div>
 
-<div class="modal fade" id="generationModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Configure generation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                 <form #generationForm="ngForm">
-                    What would you like to generate?
-                    <label class="custom-radio-button">
-                        <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">A melody
-                        <span class="radio"></span>
-                    </label>
+    <div class="modal fade" id="generationModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Configure generation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                     <form #generationForm="ngForm">
+                        What would you like to generate?
+                        <label class="custom-radio-button">
+                            <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">A melody
+                            <span class="radio"></span>
+                        </label>
 
-                    <label class="custom-radio-button">A chord progression
-                        <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
-                        <span class="radio"></span>
-                    </label>
-                    <hr/>
-                    <label class='custom-checkbox'>Only generate notes within {{ configDataService.key }} {{ configDataService.scale.name }}
-                        <input [(ngModel)]="conformToKeyScale" type="checkbox" name="conformToKeyScale">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class='custom-checkbox' style='display:inline-block;margin-right:15px;'>
-                        Only generate notes in octave
-                        <input [(ngModel)]="octaveConstraintCheck" type="checkbox" name="octaveConstraintCheck">
-                        <span class="checkmark"></span>
-                    </label>
-                    <input class='form-control' style='width:70px' [(ngModel)]="octaveConstraint" type="number" name="octaveConstraint">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                <button type="button" (click)="generate(generationForm.value)" class="btn btn-success" data-dismiss="modal">Generate</button>
+                        <label class="custom-radio-button">A chord progression
+                            <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
+                            <span class="radio"></span>
+                        </label>
+                        <hr/>
+                        <label class='custom-checkbox'>Only generate notes within {{ configDataService.key }} {{ configDataService.scale.name }}
+                            <input [(ngModel)]="conformToKeyScale" type="checkbox" name="conformToKeyScale">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class='custom-checkbox' style='display:inline-block;margin-right:15px;'>
+                            Only generate notes in octave
+                            <input [(ngModel)]="octaveConstraintCheck" type="checkbox" name="octaveConstraintCheck">
+                            <span class="checkmark"></span>
+                        </label>
+                        <input class='form-control' style='width:70px' [(ngModel)]="octaveConstraint" type="number" name="octaveConstraint">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                    <button type="button" (click)="generate(generationForm.value)" class="btn btn-success" data-dismiss="modal">Generate</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="row piano-roll">
-    <div class="col-1 piano">
-        <div class='piano-keys'>
-            <ul class="piano-key-set">
-                <li *ngFor="let note of notes"
-                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}"><span class='note-label' attr.data-note='{{ note.note.toUpperCase() }}'>{{ note.note.toUpperCase() + note.octave }}</span></li>
-            </ul>
+    <div class="row piano-roll">
+        <div class="col-1 piano">
+            <div class='piano-keys'>
+                <ul class="piano-key-set">
+                    <li *ngFor="let note of notes"
+                    class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}"><span class='note-label' attr.data-note='{{ note.note.toUpperCase() }}'>{{ note.note.toUpperCase() + note.octave }}</span></li>
+                </ul>
+            </div>
         </div>
-    </div>
-    <div class='col note-grid'>
-        <ul class='note-rows'>
-            <li *ngFor="let note of gridState"
-                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
-                <label class="grid-state-wrapper"
-                    *ngFor="let state of note.timeStates; let index= index;"
-                    [style.width]="configDataService.stateWidth"
-                    attr.data-active="{{ note.timeStates[index] }}"
-                    [attr.id]="note.id"
-                    [attr.data-step]="index"
-                    >
-                    <hr/>
-                    <input class='grid-state' type='checkbox'
-                        attr.data-active="{{ state }}"
-                        [(ngModel)]="note.timeStates[index]"
-                        (change)="noteDrawnHandler(note.note, note.octave, note.timeStates[index])"
+        <div class='col note-grid'>
+            <ul class='note-rows'>
+                <li *ngFor="let note of gridState"
+                    class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
+                    <label class="grid-state-wrapper"
+                        *ngFor="let state of note.timeStates; let index= index;"
+                        [style.width]="configDataService.stateWidth"
+                        attr.data-active="{{ note.timeStates[index] }}"
+                        [attr.id]="note.id"
+                        [attr.data-step]="index"
                         >
-                </label>
-            </li>
-        </ul>
-     </div>
-</div>
-<div class='row piano-metadata'>
-    <div class="col-1"></div>
-    <div class='col chord-data'>
-        <span *ngFor="let chord of configDataService.dawState.chord_names"
-                class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
+                        <hr/>
+                        <input class='grid-state' type='checkbox'
+                            attr.data-active="{{ state }}"
+                            [(ngModel)]="note.timeStates[index]"
+                            (change)="noteDrawnHandler(note.note, note.octave, note.timeStates[index])"
+                            >
+                    </label>
+                </li>
+            </ul>
+         </div>
+    </div>
+    <div class='row piano-metadata'>
+        <div class="col-1"></div>
+        <div class='col chord-data'>
+            <span *ngFor="let chord of configDataService.dawState.chord_names"
+                    class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
+        </div>
     </div>
 </div>

@@ -2,7 +2,7 @@
 
 ### A Digital Audio Workstation webapp focused on generative music composition. 
 
-#### Built with Flask, Angular 6, and Python 3.
+#### Built with Flask, Angular 6, and Python 3. 
 
 This project is a <a href='https://en.wikipedia.org/wiki/Digital_audio_workstation'>digital audio workstation (DAW)</a> webapp that provides a suite of tools
 for <a href='https://en.wikipedia.org/wiki/Generative_music' target='_blank'>generative music composition</a>, in which the software system itself will compose the music.
@@ -11,6 +11,8 @@ The primary use case of the application (still in progress): The user specifies 
 which the software system responds to by composing a piece of music. The user then
 edits the result to their taste, downloads the MIDI files, and continues work on the composition in their usual music creation
 domain of choice (an instrument, sheet music, or a more high-powered DAW).
+
+Project started 8/21/2018.
 
 <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
 

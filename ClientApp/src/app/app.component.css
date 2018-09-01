@@ -128,14 +128,6 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     margin-right:10px;
 }
 
-.track {
-    background:#eafbff;
-    border:solid 1px #1d626d;
-    border-radius:3px;
-    padding:5px;
-    margin:10px 0;
-}
-
 .control-bar {
     padding: 5px 20px;
     color: #1d626d;

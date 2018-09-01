@@ -1,3 +1,11 @@
+.track {
+    background:#eafbff;
+    border:solid 1px #1d626d;
+    border-radius:3px;
+    padding:5px;
+    margin:10px 0;
+}
+
 button:focus, button:active, input:focus, input:active {
     box-shadow:none;
     outline:none;
@@ -19,6 +27,23 @@ button:focus, button:active, input:focus, input:active {
 .action-button:hover {
     border-color: black;
     color: black;
+}
+
+.delete-track-button {
+    background:none;
+    border:0;
+    color:#1d626d;
+    opacity:0.6;
+    padding:5px 10px;
+    font-size:12px;
+    margin:10px 10px 0 5px;
+    transition:color .2s;
+    -webkit-transition:opacity .2s;
+    -moz-transition:opacity .2s;
+}
+
+.delete-track-button:hover {
+    opacity:1;
 }
 
 /* width */
@@ -50,7 +75,7 @@ button:focus, button:active, input:focus, input:active {
     border-left:0;
     border-right:0;
     overflow-y: scroll;
-    height:240px;
+    height:190px;
 }
 
 .piano {
@@ -332,5 +357,5 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 .chord-name {
     display:inline-block;
     height:35px;
-    overflow:auto;
+    overflow:hidden;
 }

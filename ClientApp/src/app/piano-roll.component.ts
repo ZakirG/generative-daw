@@ -25,6 +25,9 @@ export class PianoRollComponent {
     @Output()
     noteDrawn = new EventEmitter<any>();
 
+    @Output()
+    trackChange = new EventEmitter<any>();
+
     constructor(public generationService: GenerationService, public configDataService: ConfigDataService) {
         this.initializeEmptyGridState();
     }
@@ -86,7 +89,11 @@ export class PianoRollComponent {
     }
 
     noteDrawnHandler(noteName, noteOctave, noteState) {
-        this.noteDrawn.emit({ 'event': 'noteDrawn', 'note' : noteName + noteOctave, 'state' : noteState});
+        this.noteDrawn.emit({ 'event' : 'noteDrawn', 'note' : noteName + noteOctave, 'state' : noteState});
+    }
+
+    deleteTrack() {
+        this.trackChange.emit({'event' : 'deleteTrack'});
     }
 
     generate(generationOptions) {

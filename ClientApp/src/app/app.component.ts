@@ -72,6 +72,14 @@ export class AppComponent {
         this.updateDawState();
     }
 
+    registerTrackChange(event) {
+        if(event['event'] == 'deleteTrack') {
+            console.log('deleting');
+        }
+
+        this.updateDawState();
+    }
+
     togglePlayState() {
         if(this.configDataService.inPlayState) {
             this.configDataService.inPlayState = false;
@@ -132,9 +140,6 @@ export class AppComponent {
     }
 
     addTrack() {
-         // var newPianoRoll = new PianoRollComponent();
-
-
         const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
         var newPianoRoll : ComponentRef = this.container.createComponent(factory);
         this.tracks.push(newPianoRoll.instance.gridState);
