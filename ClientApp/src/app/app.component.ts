@@ -14,7 +14,6 @@ import { DawStateService } from './dawstate.service';
 
 export class AppComponent {
     private audioContext: AudioContext;
-    @ViewChild(PianoRollComponent) pianoRoll;
     @ViewChild("newPianoRoll", { read: ViewContainerRef }) container;
     notes: Array<any>;
     tracks: Array<any>;
@@ -45,6 +44,8 @@ export class AppComponent {
             key: new FormControl(this.configDataService.key),
             tempo: new FormControl(this.configDataService.tempo)
         });
+
+        this.addTrack();
     }
 
     updateConfigState() {
@@ -54,8 +55,7 @@ export class AppComponent {
     }
 
     ngAfterViewInit() {
-        this.tracks[0] = this.pianoRoll.gridState;
-        this.notes = this.pianoRoll.notes;
+        this.notes = this.tracks[0].notes;
 
         for (let note of this.notes) {
             this.audioBuffers[note.note + note.octave] = 0;
@@ -142,9 +142,15 @@ export class AppComponent {
     addTrack() {
         const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
         var newPianoRoll : ComponentRef = this.container.createComponent(factory);
-        this.tracks.push(newPianoRoll.instance.gridState);
-        console.log(this.tracks);
-
+        newPianoRoll.instance.key = this.configDataService.key;
+        newPianoRoll.instance.scale = this.configDataService.scale.name;
+        newPianoRoll.instance.noteDrawn.subscribe((event) => {
+            this.registerNoteDrawn(event);
+        });
+        newPianoRoll.instance.trackChange.subscribe((event) => {
+            this.registerTrackChange(event);
+        });
+        this.tracks.push(newPianoRoll.instance);
     }
 
     updateDawState() {
@@ -153,7 +159,8 @@ export class AppComponent {
 
         var minimizedTracks = [];
         for (let track of this.tracks) {
-            var minTrack = track.map((x, i, track) => ({'note' : x.note, 'octave' : x.octave, 'timeStates' : x.timeStates }));
+            var trackGridState = track.gridState;
+            var minTrack = trackGridState.map((x, i, trackGridState) => ({'note' : x.note, 'octave' : x.octave, 'timeStates' : x.timeStates }));
             minimizedTracks.push(minTrack);
         }
 
