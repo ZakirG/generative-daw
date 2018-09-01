@@ -74,12 +74,9 @@ export class AppComponent {
 
     registerTrackChange(event) {
         if(event['event'] == 'deleteTrack') {
-            console.log('deleting');
-            console.log(event['trackNumber']);
             var trackInstance = this.tracks[event['trackNumber']]
             trackInstance.destroyReference();
             this.tracks.splice(event['trackNumber'], 1);
-            console.log(this.tracks);
         }
 
         this.updateDawState();
@@ -176,7 +173,7 @@ export class AppComponent {
         dawState['key'] = this.configDataService.key;
 
         this.dawStateService.updateDawState(dawState).subscribe((data) => {
-            // console.log(data);
+            console.log(data);
             this.configDataService.dawState = data;
         });
     }

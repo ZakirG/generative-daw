@@ -28,6 +28,7 @@ export class ConfigDataService {
         this.timeStateLength = 8;
         this.dawState = {};
         this.stateWidth = (100 / this.timeStateLength)  + '%';
+        this.dawState.chord_names = [[]];
     }
 
 }

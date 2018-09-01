@@ -1,7 +1,7 @@
 <div class='track'>
     <div class="row">
         <div class="col">
-            <button class="action-button" type="button" id="generate-button" data-toggle="modal" data-target="#generationModal">
+            <button class="action-button" type="button" id="generate-button" data-toggle="modal" [attr.data-target]="'#generationModal' + trackNumber ">
                 <span class='glyphicon glyphicon-fire'></span>
                 GENERATE
             </button>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="generationModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" [id]="'generationModal' + trackNumber" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -94,7 +94,7 @@
     <div class='row piano-metadata'>
         <div class="col-1"></div>
         <div class='col chord-data'>
-            <span *ngFor="let chord of configDataService.dawState.chord_names"
+            <span *ngFor="let chord of configDataService.dawState.chord_names[trackNumber]"
                     class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
         </div>
     </div>

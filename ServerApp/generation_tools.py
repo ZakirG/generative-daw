@@ -98,6 +98,6 @@ def name_chords_in_tracks(tracks):
     chord_names_by_tracks = []
     for grid in grid_by_tracks:
         chord_names_by_tracks.append(list(map(lambda x: determine_chord_name(x), grid)))
-    return chord_names_by_tracks[0] # pretending there's only one track for now
+    return chord_names_by_tracks
         
         
