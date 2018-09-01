@@ -75,6 +75,11 @@ export class AppComponent {
     registerTrackChange(event) {
         if(event['event'] == 'deleteTrack') {
             console.log('deleting');
+            console.log(event['trackNumber']);
+            var trackInstance = this.tracks[event['trackNumber']]
+            trackInstance.destroyReference();
+            this.tracks.splice(event['trackNumber'], 1);
+            console.log(this.tracks);
         }
 
         this.updateDawState();
@@ -142,8 +147,10 @@ export class AppComponent {
     addTrack() {
         const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
         var newPianoRoll : ComponentRef = this.container.createComponent(factory);
+        newPianoRoll.instance._ref = newPianoRoll;
         newPianoRoll.instance.key = this.configDataService.key;
         newPianoRoll.instance.scale = this.configDataService.scale.name;
+        newPianoRoll.instance.trackNumber = this.tracks.length;
         newPianoRoll.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
         });

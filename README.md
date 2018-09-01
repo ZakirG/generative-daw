@@ -43,7 +43,7 @@ cd generative-daw
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
 - A responsive DAW-like interface wrapped in a modern Bootstrap layout
 
-#### Stretch goals for a possible version 0.02:
+#### Project goals for a possible version 0.02:
 - Draggable and resizable piano roll notes with http://interactjs.io/
 - A lyric generator that responds to drawn melodies using an Hidden Markov Model
 - Machine learning algorithms applied to a dataset of MIDI files from pop music

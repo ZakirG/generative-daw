@@ -18,6 +18,7 @@ export class PianoRollComponent {
     octaveConstraint = 1;
     octaveConstraintCheck = true;
     notes: Array<any>;
+    _ref: any;
 
     @Input() trackNumber: number;
     @Input() key: string;
@@ -95,6 +96,10 @@ export class PianoRollComponent {
 
     deleteTrack() {
         this.trackChange.emit({'event' : 'deleteTrack', 'trackNumber' : this.trackNumber});
+    }
+
+    destroyReference() {
+        this._ref.destroy();
     }
 
     generate(generationOptions) {
