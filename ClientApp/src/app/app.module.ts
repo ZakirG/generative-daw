@@ -5,11 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { TrackComponent } from './track.component';
+import { PianoRollComponent } from './piano-roll.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TrackComponent
+    TrackComponent,
+    PianoRollComponent
   ],
   imports: [
     BrowserModule,
@@ -19,7 +21,7 @@ import { TrackComponent } from './track.component';
   ],
   providers: [Title],
   bootstrap: [AppComponent],
-  entryComponents: [ TrackComponent ],
+  entryComponents: [ TrackComponent, PianoRollComponent ],
 })
 
 export class AppModule { }

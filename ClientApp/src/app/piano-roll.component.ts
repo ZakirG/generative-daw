@@ -5,7 +5,7 @@ import { ConfigDataService } from './configdata.service';
 
 @Component({
     selector:    'piano-roll',
-    templateUrl: './piano-roll.html',
+    templateUrl: './piano-roll.component.html',
     providers:  [ /*NoteService*/ ],
     styleUrls: ['./piano-roll.component.css']
 })

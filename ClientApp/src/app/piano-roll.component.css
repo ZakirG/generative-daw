@@ -1,10 +1,8 @@
 .piano-roll-wrapper {
-/*     display:none; */
     position:absolute;
     margin:0;
     border-top:solid 2px #1d626d;
     border-radius:0;
-
 }
 
 .piano-roll-wrapper .row {

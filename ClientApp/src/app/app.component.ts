@@ -3,6 +3,7 @@ import {Component, NgModule,Input,ComponentFactory,ComponentRef, AfterViewInit, 
 import { Title }     from '@angular/platform-browser';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TrackComponent } from './track.component';
+import { PianoRollComponent } from './piano-roll.component';
 import { ConfigDataService } from './configdata.service';
 import { DawStateService } from './dawstate.service';
 
@@ -15,6 +16,7 @@ import { DawStateService } from './dawstate.service';
 export class AppComponent {
     private audioContext: AudioContext;
     @ViewChild("newTrack", { read: ViewContainerRef }) container;
+    @ViewChild("pianoRoll", { read: ViewContainerRef }) pianoRollContainer;
     notes: Array<any>;
     tracks: Array<any>;
     audioBuffers: Object;
@@ -46,6 +48,7 @@ export class AppComponent {
         });
 
         this.addTrack();
+        this.showPianoRoll();
     }
 
     updateConfigState() {
@@ -159,6 +162,22 @@ export class AppComponent {
             this.registerTrackChange(event);
         });
         this.tracks.push(newTrack.instance);
+    }
+
+    showPianoRoll() {
+        const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
+        var pianoRoll : ComponentRef = this.container.createComponent(factory);
+        pianoRoll.instance._ref = pianoRoll;
+        pianoRoll.instance.key = this.configDataService.key;
+        pianoRoll.instance.scale = this.configDataService.scale.name;
+        pianoRoll.instance.trackNumber = this.tracks.length;
+        pianoRoll.instance.noteDrawn.subscribe((event) => {
+            this.registerNoteDrawn(event);
+        });
+        pianoRoll.instance.trackChange.subscribe((event) => {
+            this.registerTrackChange(event);
+        });
+        // this.tracks.push(pianoRoll.instance);
     }
 
     updateDawState() {
