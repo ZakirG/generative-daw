@@ -6,6 +6,19 @@
     margin:10px 0;
 }
 
+.track-number {
+    display:inline-block;
+    background:#42dcf4;
+    color:white;
+    font-weight:bold;
+    border-radius:50%;
+    width:35px;
+    height:35px;
+    font-size:16px;
+    padding:6px 5px 10px 13px;
+
+}
+
 button:focus, button:active, input:focus, input:active {
     box-shadow:none;
     outline:none;
@@ -365,7 +378,9 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     border:solid 1px #1d626d;
     border-radius:3px;
     margin: 10px 0px 0px 0;
-    padding:5px;
+    padding:3px;
+    display:inline-block;
+    cursor:pointer;
 }
 
 .region-preview input, .region-preview label {
@@ -378,7 +393,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .region-preview .note-rows li {
-    height:4px;
+    height:3px;
     border:0;
     background:#eafbff;
 
@@ -389,7 +404,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .piano-roll-wrapper {
-/*     display:none; */
+    display:none;
     position:absolute;
     margin:0;
     border-top:solid 2px #1d626d;

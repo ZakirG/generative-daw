@@ -83,6 +83,10 @@ export class PianoRollComponent {
 
     }
 
+    togglePianoRollOpen() {
+        console.log('hey');
+    }
+
     clearPianoRoll() {
         for (var i = 0; i < this.gridState.length; i++) {
             this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
