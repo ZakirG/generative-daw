@@ -19,29 +19,6 @@
 
 }
 
-button:focus, button:active, input:focus, input:active {
-    box-shadow:none;
-    outline:none;
-}
-
-.action-button {
-    background:#c6f7ff;
-    border: solid #1d626d 1px;
-    color:#1d626d;
-    padding:5px 10px;
-    border-radius:2px;
-    font-size:12px;
-    margin:10px 10px 0 5px;
-    transition:color .2s, border-color .2s;
-    -webkit-transition:color .2s, border-color .2s;
-    -moz-transition:color .2s, border-color .2s;
-}
-
-.action-button:hover {
-    border-color: black;
-    color: black;
-}
-
 .delete-track-button {
     background:none;
     border:0;
@@ -59,108 +36,36 @@ button:focus, button:active, input:focus, input:active {
     opacity:1;
 }
 
-/* width */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-.piano-roll {
-    padding:0 5px;
+.region-preview {
+    width: 250px;
+    border:solid 1px #1d626d;
+    border-radius:3px;
     margin: 10px 0px 0px 0;
-    border: solid 1px #e6e6e6;
-    border-left:0;
-    border-right:0;
-    overflow-y: scroll;
-    height:190px;
+    padding:3px;
+    display:inline-block;
+    cursor:pointer;
 }
 
-.piano {
-    width:70px;
-    padding:0;
-
+.region-preview input, .region-preview label {
+    pointer-events:none;
+    cursor:default !important;
 }
 
-.note-grid {
-    width:100%;
-    padding-left:0;
-}
-
-.piano-keys {
-    border-radius:2px;
-    height:auto;
-    width:100%;
-}
-
-ul {
-    list-style: none;
-}
-
-.piano-key-set {
-    width:100%;
-    padding:0;
-    margin:0;
-    border:solid 1px black;
-    border-radius:5px 0 0 5px;
-    overflow:hidden;
-}
-
-.piano-key-set .white {
-    background: white;
-    border-bottom: solid 1px #00869e;
-    width:100%;
-    z-index:0;
-    position:relative;
-    /* border-radius:0px 4px 4px 0px; */
-    height:24px;
-}
-
-.piano-key-set .white:last-child {
+.region-preview .note-rows {
     border:0;
 }
 
-.piano-key-set .black {
-    background: #00869e;
-    margin-top:-8px;
-    margin-bottom:-8px;
-    width:50%;
-    z-index:1;
-    position:relative;
-    border-radius:0px 5px 5px 0px;
-    height:16px;
+.region-preview .note-rows li {
+    height:3px;
+    border:0;
+    background:#eafbff;
+
 }
 
-span.note-label {
-    font-weight:bold;
-    width:100%;
-    padding-right:5px;
-    font-size:12px;
-    text-align:right;
-    display:inline-block;
-    opacity:0;
-    color:#00869e;
+.region-preview .note-rows li .grid-state-wrapper {
+    border:0;
 }
 
-/*Only label the C keys*/
-span.note-label[data-note='C'] {
-    opacity:1;
-}
 
 .note-rows {
     padding:0;
@@ -252,166 +157,4 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 .note-rows li.white .grid-state-wrapper {
     top:-3px;
     position:relative;
-}
-
-.modal {
-    background: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    top:70px;
-}
-
-#generationModal input {
-    display:inline-block;
-}
-
-.custom-radio-button, .custom-checkbox {
-    display: block;
-    position: relative;
-    padding-left: 20px;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    font-weight:normal;
-}
-
-/* Hide the browser's default radio button */
-.custom-radio-button input, .custom-checkbox input {
-    position: absolute;
-    opacity: 0;
-}
-
-/* Create a custom radio button */
-.radio {
-    margin:0;
-    position: absolute;
-    top: 2px;
-    left: 0;
-    height: 15px;
-    width: 15px;
-    background-color: #eee;
-    border-radius: 50%;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-    margin:0;
-    position: absolute;
-    top: 2px;
-    left: 0;
-    height: 15px;
-    width: 15px;
-    background-color: #eee;
-}
-
-
-/* On mouse-over, add a grey background color */
-.custom-radio-button:hover input ~ .radio, .custom-checkbox:hover input ~ .checkmark {
-    background-color: #ccc;
-}
-
-/* When the radio button is checked, add a blue background */
-.custom-radio-button input:checked ~ .radio, .custom-checkbox input:checked ~ .checkmark {
-    background-color: #2196F3;
-}
-
-/* Create the indicator (the dot/circle - hidden when not checked) */
-.radio:after, .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
-/* Show the indicator (dot/circle) when checked */
-.custom-radio-button input:checked ~ .radio:after, .custom-checkbox input:checked ~ .checkmark:after {
-    display: block;
-}
-
-/* Style the indicator (dot/circle) */
-.custom-radio-button .radio:after {
-    top: 4px;
-    left: 4px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: white;
-}
-
-/* Style the radio/indicator */
-.custom-checkbox .checkmark:after {
-    left: 5px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
-.piano-metadata {
-    margin:0px 0 10px 0;
-    padding:0 15px 0 5px;
-}
-
-.chord-data {
-    height: 35px;
-    border-radius: 2px;
-    border: solid 1px #c6f7ff;
-    font-size:12px;
-    color:#42dcf4;
-    font-weight:bold;
-}
-
-.chord-name {
-    display:inline-block;
-    height:35px;
-    overflow:hidden;
-}
-
-.region-preview {
-    width: 250px;
-    border:solid 1px #1d626d;
-    border-radius:3px;
-    margin: 10px 0px 0px 0;
-    padding:3px;
-    display:inline-block;
-    cursor:pointer;
-}
-
-.region-preview input, .region-preview label {
-    pointer-events:none;
-    cursor:default !important;
-}
-
-.region-preview .note-rows {
-    border:0;
-}
-
-.region-preview .note-rows li {
-    height:3px;
-    border:0;
-    background:#eafbff;
-
-}
-
-.region-preview .note-rows li .grid-state-wrapper {
-    border:0;
-}
-
-.piano-roll-wrapper {
-/*     display:none; */
-    position:absolute;
-    margin:0;
-    border-top:solid 2px #1d626d;
-    border-radius:0;
-
-}
-
-.piano-roll-wrapper .row {
-    width:100%;
 }
