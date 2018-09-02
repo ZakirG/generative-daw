@@ -359,3 +359,44 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     height:35px;
     overflow:hidden;
 }
+
+.region-preview {
+    width: 250px;
+    border:solid 1px #1d626d;
+    border-radius:3px;
+    margin: 10px 0px 0px 0;
+    padding:5px;
+}
+
+.region-preview input, .region-preview label {
+    pointer-events:none;
+    cursor:default !important;
+}
+
+.region-preview .note-rows {
+    border:0;
+}
+
+.region-preview .note-rows li {
+    height:4px;
+    border:0;
+    background:#eafbff;
+
+}
+
+.region-preview .note-rows li .grid-state-wrapper {
+    border:0;
+}
+
+.piano-roll-wrapper {
+/*     display:none; */
+    position:absolute;
+    margin:0;
+    border-top:solid 2px #1d626d;
+    border-radius:0;
+
+}
+
+.piano-roll-wrapper .row {
+    width:100%;
+}
