@@ -19,6 +19,7 @@ export class AppComponent {
     @ViewChild("pianoRoll", { read: ViewContainerRef }) pianoRollContainer;
     notes: Array<any>;
     tracks: Array<any>;
+    pianoRoll: any;
     audioBuffers: Object;
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
@@ -48,7 +49,8 @@ export class AppComponent {
         });
 
         this.addTrack();
-        this.showPianoRoll();
+        this.showPianoRoll(0);
+        this.updateDawState();
     }
 
     updateConfigState() {
@@ -71,6 +73,10 @@ export class AppComponent {
         if(event['event'] == 'noteDrawn' && event['state']) {
             this.playSound(event['note'], 0);
         }
+
+        var trackNumber = event['track'];
+        var track = this.tracks[trackNumber];
+        track.gridState = this.pianoRoll.gridState;
 
         this.updateDawState();
     }
@@ -155,41 +161,44 @@ export class AppComponent {
         newTrack.instance.key = this.configDataService.key;
         newTrack.instance.scale = this.configDataService.scale.name;
         newTrack.instance.trackNumber = this.tracks.length;
+        newTrack.instance.timeStateLength = this.configDataService.timeStateLength;
         newTrack.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
         });
         newTrack.instance.trackChange.subscribe((event) => {
             this.registerTrackChange(event);
         });
+        newTrack.instance.initializeEmptyGridState();
         this.tracks.push(newTrack.instance);
     }
 
-    showPianoRoll() {
+    showPianoRoll(trackNumber) {
         const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
         var pianoRoll : ComponentRef = this.container.createComponent(factory);
         pianoRoll.instance._ref = pianoRoll;
         pianoRoll.instance.key = this.configDataService.key;
         pianoRoll.instance.scale = this.configDataService.scale.name;
-        pianoRoll.instance.trackNumber = this.tracks.length;
+        pianoRoll.instance.trackNumber = trackNumber;
         pianoRoll.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
         });
         pianoRoll.instance.trackChange.subscribe((event) => {
             this.registerTrackChange(event);
         });
-        // this.tracks.push(pianoRoll.instance);
+        this.pianoRoll = pianoRoll.instance;
     }
 
     updateDawState() {
-        // Daw State: data in the interface that the server needs to know
         var dawState = {};
 
         var minimizedTracks = [];
         for (let track of this.tracks) {
-            var trackGridState = track.gridState;
-            var minTrack = trackGridState.map((x, i, trackGridState) => ({'note' : x.note, 'octave' : x.octave, 'timeStates' : x.timeStates }));
+            var minTrack = track.gridState;
+            // var minTrack = trackGridState.map((x, i, trackGridState) => ({'note' : x.note, 'octave' : x.octave, 'timeStates' : x.timeStates }));
             minimizedTracks.push(minTrack);
         }
+
+        console.log('202: ', minimizedTracks);
 
         dawState['tracks'] = minimizedTracks;
         dawState['scale'] = this.configDataService.scale;

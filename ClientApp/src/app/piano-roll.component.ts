@@ -96,7 +96,10 @@ export class PianoRollComponent {
     }
 
     noteDrawnHandler(noteName, noteOctave, noteState) {
-        this.noteDrawn.emit({ 'event' : 'noteDrawn', 'note' : noteName + noteOctave, 'state' : noteState});
+        this.noteDrawn.emit({
+            'event' : 'noteDrawn', 'note' : noteName + noteOctave,
+            'state' : noteState, 'track' : this.trackNumber
+        });
     }
 
     destroyReference() {

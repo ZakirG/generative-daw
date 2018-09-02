@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
 
 @Component({
@@ -11,19 +10,14 @@ import { ConfigDataService } from './configdata.service';
 })
 
 export class TrackComponent {
-    timeStateLength = 8;
-    gridState = [];
-    conformToKeyScale = true;
-    generationType = 'melody';
-    octaveConstraint = 1;
-    octaveConstraintCheck = true;
-    notes: Array<any>;
-    _ref: any;
-
     @Input() trackNumber: number;
     @Input() key: string;
     @Input() scale: Object;
     @Input() pianoRollOpen: boolean;
+    @Input() gridState: any;
+    @Input() timeStateLength: number;
+    @Input() notes: Array<any>;
+    _ref: any;
 
     @Output()
     noteDrawn = new EventEmitter<any>();
@@ -31,8 +25,8 @@ export class TrackComponent {
     @Output()
     trackChange = new EventEmitter<any>();
 
-    constructor(public generationService: GenerationService, public configDataService: ConfigDataService) {
-        this.initializeEmptyGridState();
+    constructor(public configDataService: ConfigDataService) {
+
     }
 
     initializeEmptyGridState() {
@@ -80,23 +74,18 @@ export class TrackComponent {
         }
     }
 
+    clearPianoRoll() {
+        for (var i = 0; i < this.gridState.length; i++) {
+            this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
+        }
+    }
+
     ngOnInit() {
 
     }
 
     togglePianoRollOpen() {
         console.log('hey');
-    }
-
-    clearPianoRoll() {
-        for (var i = 0; i < this.gridState.length; i++) {
-            this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
-        }
-        this.noteDrawn.emit({'event': 'clear'});
-    }
-
-    noteDrawnHandler(noteName, noteOctave, noteState) {
-        this.noteDrawn.emit({ 'event' : 'noteDrawn', 'note' : noteName + noteOctave, 'state' : noteState});
     }
 
     deleteTrack() {
@@ -121,6 +110,14 @@ export class TrackComponent {
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation'});
         });
+    }
+
+    refresh() {
+        console.log('daw state: ', this.configDataService.dawState);
+        var track = this.configDataService.dawState.tracks[this.trackNumber];
+        this.gridState = track;
+        console.log(this.gridState);
+        //this.renderNotes(track);
     }
 
     renderNotes(notesToRender) {
