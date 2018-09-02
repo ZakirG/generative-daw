@@ -4,13 +4,13 @@ import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
 
 @Component({
-    selector:    'piano-roll',
-    templateUrl: './piano-roll.component.html',
+    selector:    'track',
+    templateUrl: './track.component.html',
     providers:  [ /*NoteService*/ ],
-    styleUrls: ['./piano-roll.component.css']
+    styleUrls: ['./track.component.css']
 })
 
-export class PianoRollComponent {
+export class TrackComponent {
     timeStateLength = 8;
     gridState = [];
     conformToKeyScale = true;
@@ -23,6 +23,7 @@ export class PianoRollComponent {
     @Input() trackNumber: number;
     @Input() key: string;
     @Input() scale: Object;
+    @Input() pianoRollOpen: boolean;
 
     @Output()
     noteDrawn = new EventEmitter<any>();

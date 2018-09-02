@@ -404,7 +404,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .piano-roll-wrapper {
-    display:none;
+/*     display:none; */
     position:absolute;
     margin:0;
     border-top:solid 2px #1d626d;

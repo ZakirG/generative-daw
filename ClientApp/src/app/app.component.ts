@@ -2,7 +2,7 @@
 import {Component, NgModule,Input,ComponentFactory,ComponentRef, AfterViewInit, ComponentFactoryResolver, ViewContainerRef, ChangeDetectorRef, TemplateRef, ViewChild, Output, EventEmitter} from '@angular/core';
 import { Title }     from '@angular/platform-browser';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PianoRollComponent } from './piano-roll.component';
+import { TrackComponent } from './track.component';
 import { ConfigDataService } from './configdata.service';
 import { DawStateService } from './dawstate.service';
 
@@ -14,7 +14,7 @@ import { DawStateService } from './dawstate.service';
 
 export class AppComponent {
     private audioContext: AudioContext;
-    @ViewChild("newPianoRoll", { read: ViewContainerRef }) container;
+    @ViewChild("newTrack", { read: ViewContainerRef }) container;
     notes: Array<any>;
     tracks: Array<any>;
     audioBuffers: Object;
@@ -146,19 +146,19 @@ export class AppComponent {
     }
 
     addTrack() {
-        const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
-        var newPianoRoll : ComponentRef = this.container.createComponent(factory);
-        newPianoRoll.instance._ref = newPianoRoll;
-        newPianoRoll.instance.key = this.configDataService.key;
-        newPianoRoll.instance.scale = this.configDataService.scale.name;
-        newPianoRoll.instance.trackNumber = this.tracks.length;
-        newPianoRoll.instance.noteDrawn.subscribe((event) => {
+        const factory: ComponentFactory = this.resolver.resolveComponentFactory(TrackComponent);
+        var newTrack : ComponentRef = this.container.createComponent(factory);
+        newTrack.instance._ref = newTrack;
+        newTrack.instance.key = this.configDataService.key;
+        newTrack.instance.scale = this.configDataService.scale.name;
+        newTrack.instance.trackNumber = this.tracks.length;
+        newTrack.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
         });
-        newPianoRoll.instance.trackChange.subscribe((event) => {
+        newTrack.instance.trackChange.subscribe((event) => {
             this.registerTrackChange(event);
         });
-        this.tracks.push(newPianoRoll.instance);
+        this.tracks.push(newTrack.instance);
     }
 
     updateDawState() {

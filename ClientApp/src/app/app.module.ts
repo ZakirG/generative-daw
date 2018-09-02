@@ -4,12 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { PianoRollComponent } from './piano-roll.component';
+import { TrackComponent } from './track.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PianoRollComponent
+    TrackComponent
   ],
   imports: [
     BrowserModule,
@@ -19,7 +19,7 @@ import { PianoRollComponent } from './piano-roll.component';
   ],
   providers: [Title],
   bootstrap: [AppComponent],
-  entryComponents: [ PianoRollComponent ],
+  entryComponents: [ TrackComponent ],
 })
 
 export class AppModule { }
