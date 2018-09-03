@@ -1,6 +1,6 @@
 <div class='track' [class.track-selected]="thisTrackIsSelected">
     <div class='row'>
-        <div class='col-1'>
+        <div class='col-1 track-controls'>
             <span class='track-number'>{{ trackNumber + 1 }}</span>
         </div>
 
@@ -37,9 +37,9 @@
                 </div>
         </div>
 
-        <div class='col-1'>
+        <div class='col-1 track-right-pane'>
             <button class="delete-track-button" id="clear-button" (click)="deleteTrack()">
-                <span class='glyphicon glyphicon-remove'></span>
+                <span class='glyphicon glyphicon-trash'></span>
             </button>
         </div>
 

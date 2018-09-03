@@ -1,3 +1,9 @@
+#application-wrapper {
+    /* background: #019bb7; */
+/*     background:black; */
+    background:#c9f5ff;
+}
+
 .primary-color {
   background-image: linear-gradient(#42dcf4, #c6f7ff);
 }
