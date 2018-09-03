@@ -40,53 +40,55 @@
         </div>
     </div>
 
-<nav class="navbar fixed-bottom navbar-light bg-light piano-roll-wrapper">
-    <div class='row'>
-        <div class="col-2 piano-roll-left-pane">
-            <span class='piano-roll-track-msg'>Now editing <b>track {{ trackNumber + 1}}</b></span>
+<div class='resize-container'>
+    <nav class="navbar fixed-bottom navbar-light bg-light piano-roll-wrapper resize-drag">
+        <div class='row' style='height:100%;'>
+            <div class="col-2 piano-roll-left-pane">
+                <span class='piano-roll-track-msg'>Now editing <b>track {{ trackNumber + 1}}</b></span>
 
-            <button class="action-button" type="button" id="generate-button" data-toggle="modal" [attr.data-target]="'#generationModal' + trackNumber ">
-                <span class='glyphicon glyphicon-fire'></span>
-                GENERATE
-            </button>
+                <button class="action-button" type="button" id="generate-button" data-toggle="modal" [attr.data-target]="'#generationModal' + trackNumber ">
+                    <span class='glyphicon glyphicon-fire'></span>
+                    GENERATE
+                </button>
 
-            <button class="action-button" id="clear-button" (click)="clearPianoRoll()">
-                <span class='glyphicon glyphicon-ban-circle'></span>
-                CLEAR
-            </button>
-        </div>
-        <div class='col piano-roll-col'>
-            <div class="row piano-roll">
-                <div class="col-1 piano">
-                    <div class='piano-keys'>
-                        <ul class="piano-key-set">
-                            <li *ngFor="let note of notes"
-                            class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}"><span class='note-label' attr.data-note='{{ note.note.toUpperCase() }}'>{{ note.note.toUpperCase() + note.octave }}</span></li>
-                        </ul>
+                <button class="action-button" id="clear-button" (click)="clearPianoRoll()">
+                    <span class='glyphicon glyphicon-ban-circle'></span>
+                    CLEAR
+                </button>
+            </div>
+            <div class='col piano-roll-col'>
+                <div class="row piano-roll">
+                    <div class="col-1 piano">
+                        <div class='piano-keys'>
+                            <ul class="piano-key-set">
+                                <li *ngFor="let note of notes"
+                                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}"><span class='note-label' attr.data-note='{{ note.note.toUpperCase() }}'>{{ note.note.toUpperCase() + note.octave }}</span></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class='col note-grid'>
-                    <ul class='note-rows'>
-                        <li *ngFor="let note of gridState"
-                            class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
-                            <label class="grid-state-wrapper"
-                                *ngFor="let state of note.timeStates; let index= index;"
-                                [style.width]="configDataService.stateWidth"
-                                attr.data-active="{{ note.timeStates[index] }}"
-                                [attr.id]="note.id"
-                                [attr.data-step]="index"
-                                >
-                                <hr/>
-                                <input class='grid-state' type='checkbox'
-                                    attr.data-active="{{ state }}"
-                                    [(ngModel)]="note.timeStates[index]"
-                                    (change)="noteDrawnHandler(note.note, note.octave, note.timeStates[index])"
+                    <div class='col note-grid'>
+                        <ul class='note-rows'>
+                            <li *ngFor="let note of gridState"
+                                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
+                                <label class="grid-state-wrapper"
+                                    *ngFor="let state of note.timeStates; let index= index;"
+                                    [style.width]="configDataService.stateWidth"
+                                    attr.data-active="{{ note.timeStates[index] }}"
+                                    [attr.id]="note.id"
+                                    [attr.data-step]="index"
                                     >
-                            </label>
-                        </li>
-                    </ul>
-                 </div>
+                                    <hr/>
+                                    <input class='grid-state' type='checkbox'
+                                        attr.data-active="{{ state }}"
+                                        [(ngModel)]="note.timeStates[index]"
+                                        (change)="noteDrawnHandler(note.note, note.octave, note.timeStates[index])"
+                                        >
+                                </label>
+                            </li>
+                        </ul>
+                     </div>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
+</div>

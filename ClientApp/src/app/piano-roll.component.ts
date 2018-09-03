@@ -2,6 +2,8 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
+// import { interact } from '../assets/js/interact.min.js';
+const interact = require('interactjs');
 
 @Component({
     selector:    'piano-roll',
@@ -81,7 +83,47 @@ export class PianoRollComponent {
     }
 
     ngOnInit() {
+        interact('.resize-drag').draggable({
+            onmove: window.dragMoveListener,
+            restrict: {
+                restriction: 'parent',
+                elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+            },
+        }).resizable({
+            // resize from only top edge
+            edges: { left: false, right: false, bottom: false, top: true },
+            // keep the edges inside the parent
+            restrictEdges: {
+                outer: 'parent',
+                endOnly: true,
+            },
 
+        // minimum size
+        // restrictSize: {
+//             min: { width: 500, height: 500 },
+//         },
+        inertia: true,
+        }).on('resizemove', function (event) {
+            var target = event.target,
+            x = (parseFloat(target.getAttribute('data-x')) || 0),
+            y = (parseFloat(target.getAttribute('data-y')) || 0);
+            console.log('x,y = ', x, ' ', y);
+
+            // update the element's style
+            // target.style.width  = event.rect.width + 'px';
+            target.style.height = event.rect.height + 'px';
+
+            // translate when resizing from top or left edges
+            // x += event.deltaRect.left;
+            y += event.deltaRect.top;
+
+            console.log('new y: ', y);
+
+            // target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+
+            // target.setAttribute('data-x', x);
+            // target.setAttribute('data-y', y);
+        });
     }
 
     togglePianoRollOpen() {

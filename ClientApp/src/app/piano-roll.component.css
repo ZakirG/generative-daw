@@ -2,14 +2,21 @@
     position:fixed;
     bottom:0;
     margin:0;
+    border:0;
     border-top:solid 2px #1d626d;
     border-radius:0;
-    padding-left:0;
-    padding-right:0;
+    padding:0;
+    resize:vertical;
+    overflow:hidden;
+    height:240px;
 }
 
 .piano-roll-wrapper .row {
     width:100%;
+}
+
+.resize-drag {
+  box-sizing: border-box;
 }
 
 button:focus, button:active, input:focus, input:active {
@@ -41,6 +48,7 @@ button:focus, button:active, input:focus, input:active {
 
 .piano-roll-col {
     padding:0;
+    height:100%;
 }
 
 
@@ -50,7 +58,7 @@ button:focus, button:active, input:focus, input:active {
     border-left:0;
     border-right:0;
     overflow-y: scroll;
-    height:190px;
+    height:100%;
 }
 
 .piano {
@@ -79,7 +87,7 @@ ul {
     padding:0;
     margin:0;
     border:solid 1px black;
-    border-radius:5px 0 0 5px;
+    border-radius:0;
     overflow:hidden;
 }
 
@@ -317,7 +325,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 .piano-roll-left-pane {
     background:linear-gradient(#008fa8, #019bb7);
-    border-radius:2px;
+    border-radius:0;
     padding:0 5px;
 }
 
