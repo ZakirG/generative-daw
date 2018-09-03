@@ -27,9 +27,9 @@ cd generative-daw
 A tab will then open in your default web browser at localhost:4200. 
 
 #### Current functionalities:
-- Ability to generate & play back a random melody or random chord progression in a scale of your choice
-- Ability to create piano roll components where you can draw & edit notes
-- A control bar with tempo selection and play/pause buttons
+- Ability to generate & play back random melodies or chord progressions in a scale of your choice
+- Ability to create new track components and edit notes in a piano roll
+- A control bar with tempo selection, play/pause buttons, scale & tonic selection
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
