@@ -17,24 +17,6 @@ button:focus, button:active, input:focus, input:active {
     outline:none;
 }
 
-.action-button {
-    background:#c6f7ff;
-    border: solid #1d626d 1px;
-    color:#1d626d;
-    padding:5px 10px;
-    border-radius:2px;
-    font-size:12px;
-    margin:10px 10px 0 5px;
-    transition:color .2s, border-color .2s;
-    -webkit-transition:color .2s, border-color .2s;
-    -moz-transition:color .2s, border-color .2s;
-}
-
-.action-button:hover {
-    border-color: black;
-    color: black;
-}
-
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
@@ -57,10 +39,14 @@ button:focus, button:active, input:focus, input:active {
     background: #555;
 }
 
+.piano-roll-col {
+    padding:0;
+}
+
+
 .piano-roll {
     padding:0 5px;
-    margin: 10px 0px 0px 0;
-    border: solid 1px #e6e6e6;
+    margin: 0;
     border-left:0;
     border-right:0;
     overflow-y: scroll;
@@ -235,7 +221,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .modal-content {
-    top:70px;
+    top:100px;
 }
 
 #generationModal input {
@@ -329,8 +315,34 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     transform: rotate(45deg);
 }
 
+.piano-roll-left-pane {
+    background:linear-gradient(#008fa8, #019bb7);
+    border-radius:2px;
+    padding:0 5px;
+}
+
 .piano-roll-track-msg {
-    position:absolute;
-    bottom:0;
-    left:15px;
+    width:100%;
+    display:inline-block;
+    padding:10px 5px;
+    color:white;
+}
+
+.action-button {
+    background:#006e82;
+    border: solid black 1px;
+    color:white;
+    padding:5px 10px;
+    border-radius:2px;
+    font-size:12px;
+    margin:10px 10px 0 5px;
+    width:99px;
+    transition:color .2s, border-color .2s;
+    -webkit-transition:color .2s, border-color .2s;
+    -moz-transition:color .2s, border-color .2s;
+}
+
+.action-button:hover {
+    border-color: grey;
+    color: grey;
 }

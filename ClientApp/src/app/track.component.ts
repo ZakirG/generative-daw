@@ -95,11 +95,8 @@ export class TrackComponent {
     }
 
     refresh() {
-        console.log('daw state: ', this.configDataService.dawState);
         var track = this.configDataService.dawState.tracks[this.trackNumber];
         this.gridState = track;
-        console.log(this.gridState);
-        //this.renderNotes(track);
     }
 
     renderNotes(notesToRender) {

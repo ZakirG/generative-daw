@@ -208,14 +208,12 @@ export class AppComponent {
             minimizedTracks.push(minTrack);
         }
 
-        console.log('202: ', minimizedTracks);
-
         dawState['tracks'] = minimizedTracks;
         dawState['scale'] = this.configDataService.scale;
         dawState['key'] = this.configDataService.key;
 
         this.dawStateService.updateDawState(dawState).subscribe((data) => {
-            console.log(data);
+            // console.log(data);
             this.configDataService.dawState = data;
         });
     }

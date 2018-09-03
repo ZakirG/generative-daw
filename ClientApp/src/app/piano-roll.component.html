@@ -29,7 +29,7 @@
                             <input [(ngModel)]="octaveConstraintCheck" type="checkbox" name="octaveConstraintCheck">
                             <span class="checkmark"></span>
                         </label>
-                        <input class='form-control' style='width:70px' [(ngModel)]="octaveConstraint" type="number" name="octaveConstraint">
+                        <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveConstraint" type="number" name="octaveConstraint">
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -42,7 +42,9 @@
 
 <nav class="navbar fixed-bottom navbar-light bg-light piano-roll-wrapper">
     <div class='row'>
-        <div class="col-2">
+        <div class="col-2 piano-roll-left-pane">
+            <span class='piano-roll-track-msg'>Now editing <b>track {{ trackNumber + 1}}</b></span>
+
             <button class="action-button" type="button" id="generate-button" data-toggle="modal" [attr.data-target]="'#generationModal' + trackNumber ">
                 <span class='glyphicon glyphicon-fire'></span>
                 GENERATE
@@ -52,10 +54,8 @@
                 <span class='glyphicon glyphicon-ban-circle'></span>
                 CLEAR
             </button>
-
-            <span class='piano-roll-track-msg'>Now editing track <label class='label label-info'>{{ trackNumber + 1}}</label></span>
         </div>
-        <div class='col'>
+        <div class='col piano-roll-col'>
             <div class="row piano-roll">
                 <div class="col-1 piano">
                     <div class='piano-keys'>

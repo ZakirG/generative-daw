@@ -81,6 +81,7 @@
     border-right: solid 1px #a5f2ff;
     border-radius: 0 5px 5px 0;
     overflow:hidden;
+    height:90px;
 }
 
 .note-rows li {
@@ -92,8 +93,7 @@
     height:14px;
 }
 
-.note-rows li.black .grid-state {
-    top:-4px;
+.note-rows li .grid-state-wrapper {
     position:relative;
 }
 
@@ -153,12 +153,6 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     top:5px;
     left:3px;
 }
-
-.note-rows li.white .grid-state-wrapper {
-    top:-3px;
-    position:relative;
-}
-
 
 .piano-metadata {
     margin:0px 0 10px 0;

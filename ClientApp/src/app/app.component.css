@@ -20,6 +20,7 @@ header, .control-bar {
   border-radius:2px;
   font-size:18px;
   margin-right:10px;
+  background:#75ebff;
 }
 
 .no-select {
@@ -132,16 +133,16 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     height: 41px;
     position:relative;
     margin-right:10px;
+    background:#75ebff;
 }
 
 .control-bar {
     padding: 5px 20px;
     color: #1d626d;
     font-size:12px;
-    background:#42dcf4;
+    background:linear-gradient(#008fa8, #019bb7);
     border-top:solid 1px #1d626d;
     border-bottom:solid 1px #1d626d;
-    /* background:linear-gradient(#42dcf4, #35acbf); */
     width:100%;
     top:72px;
 }
@@ -151,10 +152,11 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 }
 
 .control-bar-button {
-    background:#c6f7ff;
-    border: solid #1d626d 1px;
+    background:#006e82;
+    border: solid black 1px;
     border-radius:2px;
     padding:5px 10px;
+    color:white;
 }
 
 .bottom-space {
