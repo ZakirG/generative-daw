@@ -1,5 +1,6 @@
 .piano-roll-wrapper {
-    position:absolute;
+    position:fixed;
+    bottom:0;
     margin:0;
     border-top:solid 2px #1d626d;
     border-radius:0;

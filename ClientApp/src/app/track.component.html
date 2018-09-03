@@ -4,7 +4,7 @@
             <span class='track-number'>{{ trackNumber + 1 }}</span>
         </div>
 
-        <div class="col region-preview" (click)="togglePianoRollOpen()">
+        <div class="col region-preview" (click)="toggleRegionSelected()">
             <div class='col note-grid'>
                 <ul class='note-rows'>
                     <li *ngFor="let note of gridState"

@@ -76,8 +76,6 @@ export class AppComponent {
 
         var trackNumber = event['track'];
         var track = this.tracks[trackNumber];
-        console.log('79: ', event);
-        console.log('80: ', this.pianoRoll);
         track.gridState = this.pianoRoll.gridState;
 
         this.updateDawState();
@@ -85,9 +83,13 @@ export class AppComponent {
 
     registerTrackChange(event) {
         if(event['event'] == 'deleteTrack') {
-            var trackInstance = this.tracks[event['trackNumber']]
+            var trackInstance = this.tracks[event['trackNumber']];
             trackInstance.destroyReference();
             this.tracks.splice(event['trackNumber'], 1);
+        } else if (event['event'] == 'regionSelected') {
+            var trackInstance = this.tracks[event['trackNumber']];
+            this.pianoRoll.gridState = trackInstance.gridState;
+            this.pianoRoll.trackNumber = trackInstance.trackNumber;
         }
 
         this.updateDawState();

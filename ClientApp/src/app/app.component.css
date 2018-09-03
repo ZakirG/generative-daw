@@ -6,6 +6,12 @@ header {
   padding: 15px 5px;
   border-bottom: solid 1px #baf3fc;
   color: #1d626d;
+  width:100%;
+}
+
+header, .control-bar {
+    position:fixed;
+    z-index:3;
 }
 
 .title-box {
@@ -136,6 +142,12 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     border-top:solid 1px #1d626d;
     border-bottom:solid 1px #1d626d;
     /* background:linear-gradient(#42dcf4, #35acbf); */
+    width:100%;
+    top:72px;
+}
+
+.header-space {
+    height:113px;
 }
 
 .control-bar-button {
@@ -143,4 +155,8 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     border: solid #1d626d 1px;
     border-radius:2px;
     padding:5px 10px;
+}
+
+.bottom-space {
+    height:350px;
 }

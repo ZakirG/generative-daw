@@ -84,8 +84,8 @@ export class TrackComponent {
 
     }
 
-    togglePianoRollOpen() {
-        console.log('hey');
+    toggleRegionSelected() {
+        this.trackChange.emit({'event' : 'regionSelected', 'trackNumber' : this.trackNumber});
     }
 
     deleteTrack() {
