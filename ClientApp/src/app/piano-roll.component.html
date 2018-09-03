@@ -44,14 +44,20 @@
     <nav class="navbar fixed-bottom navbar-light bg-light piano-roll-wrapper resize-drag">
         <div class='row' style='height:100%;'>
             <div class="col-2 piano-roll-left-pane">
-                <span class='piano-roll-track-msg'>Now editing <b>track {{ trackNumber + 1}}</b></span>
+                <span class='piano-roll-track-msg'>
+                    Now editing <span *ngIf="trackNumber!=-1"><b>track {{ trackNumber + 1}}</b></span>
+                    <span *ngIf="trackNumber==-1">N/A</span>
+                </span>
 
-                <button class="action-button" type="button" id="generate-button" data-toggle="modal" [attr.data-target]="'#generationModal' + trackNumber ">
+                <button class="action-button" type="button" id="generate-button"
+                    data-toggle="modal" [attr.data-target]="'#generationModal' + trackNumber "
+                    [disabled]="trackNumber==-1">
                     <span class='glyphicon glyphicon-fire'></span>
                     GENERATE
                 </button>
 
-                <button class="action-button" id="clear-button" (click)="clearPianoRoll()">
+                <button class="action-button" id="clear-button"
+                    (click)="clearPianoRoll()" [disabled]="trackNumber==-1">
                     <span class='glyphicon glyphicon-ban-circle'></span>
                     CLEAR
                 </button>

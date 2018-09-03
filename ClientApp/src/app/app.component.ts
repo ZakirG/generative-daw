@@ -89,6 +89,7 @@ export class AppComponent {
             for (var i = event['trackNumber']; i < this.tracks.length; i++) {
                 this.tracks[i].trackNumber = i;
             }
+            this.pianoRoll.trackNumber = -1;
         } else if (event['event'] == 'regionSelected') {
             var trackInstance = this.tracks[event['trackNumber']];
             var oldSelectedTrack = this.pianoRoll.trackNumber;

@@ -1,6 +1,4 @@
 #application-wrapper {
-    /* background: #019bb7; */
-/*     background:black; */
     background:#c9f5ff;
 }
 
@@ -166,5 +164,5 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 }
 
 .bottom-space {
-    height:350px;
+    height:550px;
 }
