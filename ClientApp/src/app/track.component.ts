@@ -17,6 +17,7 @@ export class TrackComponent {
     @Input() gridState: any;
     @Input() timeStateLength: number;
     @Input() notes: Array<any>;
+    @Input() thisTrackIsSelected: boolean;
     _ref: any;
 
     @Output()
@@ -25,9 +26,7 @@ export class TrackComponent {
     @Output()
     trackChange = new EventEmitter<any>();
 
-    constructor(public configDataService: ConfigDataService) {
-
-    }
+    constructor(public configDataService: ConfigDataService) { }
 
     initializeEmptyGridState() {
         var stateWidth = (100 / this.timeStateLength) + "%";
@@ -80,12 +79,11 @@ export class TrackComponent {
         }
     }
 
-    ngOnInit() {
-
-    }
+    ngOnInit() { }
 
     toggleRegionSelected() {
         this.trackChange.emit({'event' : 'regionSelected', 'trackNumber' : this.trackNumber});
+        this.thisTrackIsSelected = true;
     }
 
     deleteTrack() {

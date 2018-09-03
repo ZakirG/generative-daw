@@ -53,3 +53,5 @@ A tab will then open in your default web browser at localhost:4200.
 
 Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
 for their examples on audio manipulation in Angular; code snippets of theirs are used in this application.
+
+Parts of the interface are inspired by Logic Pro X.

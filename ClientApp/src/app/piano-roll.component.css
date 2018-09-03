@@ -4,6 +4,8 @@
     margin:0;
     border-top:solid 2px #1d626d;
     border-radius:0;
+    padding-left:0;
+    padding-right:0;
 }
 
 .piano-roll-wrapper .row {
@@ -325,4 +327,10 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+.piano-roll-track-msg {
+    position:absolute;
+    bottom:0;
+    left:15px;
 }

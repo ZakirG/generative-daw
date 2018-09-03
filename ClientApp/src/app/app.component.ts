@@ -86,10 +86,15 @@ export class AppComponent {
             var trackInstance = this.tracks[event['trackNumber']];
             trackInstance.destroyReference();
             this.tracks.splice(event['trackNumber'], 1);
+            for (var i = event['trackNumber']; i < this.tracks.length; i++) {
+                this.tracks[i].trackNumber = i;
+            }
         } else if (event['event'] == 'regionSelected') {
             var trackInstance = this.tracks[event['trackNumber']];
+            var oldSelectedTrack = this.pianoRoll.trackNumber;
             this.pianoRoll.gridState = trackInstance.gridState;
             this.pianoRoll.trackNumber = trackInstance.trackNumber;
+            this.tracks[oldSelectedTrack].thisTrackIsSelected = false;
         }
 
         this.updateDawState();
@@ -183,6 +188,7 @@ export class AppComponent {
         pianoRoll.instance.key = this.configDataService.key;
         pianoRoll.instance.scale = this.configDataService.scale.name;
         pianoRoll.instance.trackNumber = trackNumber;
+        this.tracks[trackNumber].thisTrackIsSelected = true;
         pianoRoll.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
         });

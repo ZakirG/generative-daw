@@ -57,14 +57,23 @@
 .region-preview .note-rows li {
     height:3px;
     border:0;
-    background:#eafbff;
-
 }
 
 .region-preview .note-rows li .grid-state-wrapper {
     border:0;
 }
 
+.track {
+    opacity:0.6;
+}
+
+.track.track-selected {
+    opacity:1;
+}
+
+.track.track-selected .region-preview {
+    background:#c9f5ff;
+}
 
 .note-rows {
     padding:0;
@@ -79,16 +88,8 @@
     width:100%;
 }
 
-.note-rows li.white {
-    background:#eafbff;
-}
-
 .note-rows li {
     height:14px;
-}
-
-.note-rows li.black {
-    background:#c6f7ff;
 }
 
 .note-rows li.black .grid-state {
