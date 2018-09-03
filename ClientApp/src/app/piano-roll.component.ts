@@ -92,7 +92,7 @@ export class PianoRollComponent {
         for (var i = 0; i < this.gridState.length; i++) {
             this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
         }
-        this.noteDrawn.emit({'event': 'clear'});
+        this.noteDrawn.emit({'event': 'clear', 'track' : this.trackNumber});
     }
 
     noteDrawnHandler(noteName, noteOctave, noteState) {
@@ -118,7 +118,7 @@ export class PianoRollComponent {
         this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {
             generatedNotes = data['generationResult'];
             this.renderNotes(generatedNotes);
-            this.noteDrawn.emit({'event': 'generation'});
+            this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
         });
     }
 

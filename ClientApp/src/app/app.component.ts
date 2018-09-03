@@ -76,6 +76,8 @@ export class AppComponent {
 
         var trackNumber = event['track'];
         var track = this.tracks[trackNumber];
+        console.log('79: ', event);
+        console.log('80: ', this.pianoRoll);
         track.gridState = this.pianoRoll.gridState;
 
         this.updateDawState();

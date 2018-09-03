@@ -24,6 +24,7 @@ cd generative-daw
 ./run-client.sh &
 ./run-server.sh &
 ```
+A tab will then open in your default web browser at localhost:4200. 
 
 #### Current functionalities:
 - Ability to generate & play back a random melody or random chord progression in a scale of your choice

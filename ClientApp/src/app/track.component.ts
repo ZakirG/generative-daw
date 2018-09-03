@@ -96,22 +96,6 @@ export class TrackComponent {
         this._ref.destroy();
     }
 
-    generate(generationOptions) {
-        console.log(generationOptions);
-
-        generationOptions.key = generationOptions.conformToKeyScale ? this.configDataService.key : 'any';
-        generationOptions.scale = generationOptions.conformToKeyScale ? this.configDataService.scale : 'any';
-        generationOptions.octaveConstraint = generationOptions.octaveConstraintCheck ? generationOptions.octaveConstraint : 'any';
-
-
-        var generatedNotes = [];
-        this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {
-            generatedNotes = data['generationResult'];
-            this.renderNotes(generatedNotes);
-            this.noteDrawn.emit({'event': 'generation'});
-        });
-    }
-
     refresh() {
         console.log('daw state: ', this.configDataService.dawState);
         var track = this.configDataService.dawState.tracks[this.trackNumber];
