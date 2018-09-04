@@ -25,7 +25,7 @@ Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular</a>, and
 git clone https://github.com/ZakirG/generative-daw.git
 ```
 
-In one terminal window, run the server application:
+In one terminal window, install dependencies and run the server application:
 ```
 cd generative-daw/ServerApp
 pip install -r requirements.txt
