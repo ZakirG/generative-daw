@@ -33,9 +33,10 @@ export FLASK_ENV=development
 flask run
 ```
 
-In another terminal window, run the client application:
+In another terminal window, install dependencies and run the client application:
 ```
 cd generative-daw/ClientApp
+npm install
 ng serve --open
 ```
 A tab will then open in your default web browser at localhost:4200. 
