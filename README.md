@@ -14,21 +14,35 @@ domain of choice (an instrument, sheet music, or a more high-powered DAW).
 
 Project started 8/21/2018.
 
-<img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
+<img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> 
+
+
+<img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
 
 #### To build and run the application:
 Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
 ```
 git clone https://github.com/ZakirG/generative-daw.git
-cd generative-daw
-./run-client.sh &
-./run-server.sh &
+```
+
+In one terminal window, run the server application:
+```
+cd generative-daw/ServerApp
+export FLASK_APP=main.py
+export FLASK_ENV=development
+flask run
+```
+
+In another terminal window, run the client application:
+```
+cd generative-daw/ClientApp
+ng serve --open
 ```
 A tab will then open in your default web browser at localhost:4200. 
 
 #### Current functionalities:
 - Ability to generate & play back random melodies or chord progressions in a scale of your choice
-- Ability to create new track components and edit notes in a piano roll
+- Ability to create new track components and edit notes in a resizable piano roll pane
 - A control bar with tempo selection, play/pause buttons, scale & tonic selection
 
 #### Overview of technologies used:

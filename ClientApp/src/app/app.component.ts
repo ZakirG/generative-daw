@@ -165,8 +165,8 @@ export class AppComponent {
     }
 
     addTrack() {
-        const factory: ComponentFactory = this.resolver.resolveComponentFactory(TrackComponent);
-        var newTrack : ComponentRef = this.container.createComponent(factory);
+        const factory = this.resolver.resolveComponentFactory(TrackComponent);
+        var newTrack = this.container.createComponent(factory);
         newTrack.instance._ref = newTrack;
         newTrack.instance.key = this.configDataService.key;
         newTrack.instance.scale = this.configDataService.scale.name;
@@ -183,8 +183,8 @@ export class AppComponent {
     }
 
     showPianoRoll(trackNumber) {
-        const factory: ComponentFactory = this.resolver.resolveComponentFactory(PianoRollComponent);
-        var pianoRoll : ComponentRef = this.container.createComponent(factory);
+        const factory = this.resolver.resolveComponentFactory(PianoRollComponent);
+        var pianoRoll = this.container.createComponent(factory);
         pianoRoll.instance._ref = pianoRoll;
         pianoRoll.instance.key = this.configDataService.key;
         pianoRoll.instance.scale = this.configDataService.scale.name;
