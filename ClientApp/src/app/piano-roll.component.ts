@@ -3,6 +3,7 @@ import {FormControl, FormGroup} from '@angular/forms';
 import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
 // import { interact } from '../assets/js/interact.min.js';
+declare var require: any
 const interact = require('interactjs');
 
 @Component({
