@@ -28,6 +28,7 @@ git clone https://github.com/ZakirG/generative-daw.git
 In one terminal window, run the server application:
 ```
 cd generative-daw/ServerApp
+pip install -r requirements.txt
 export FLASK_APP=main.py
 export FLASK_ENV=development
 flask run
