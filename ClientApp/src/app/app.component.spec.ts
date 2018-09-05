@@ -1,4 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
+import {BrowserDynamicTestingModule} from '@angular/platform-browser-dynamic/testing';
+
 import { AppComponent } from './app.component';
 import { NgModule, ViewContainerRef } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
@@ -10,6 +12,7 @@ import { PianoRollComponent } from './piano-roll.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
+
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -22,7 +25,14 @@ describe('AppComponent', () => {
         ReactiveFormsModule,
         HttpClientModule
       ],
+      providers: [Title],
+    }).overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [TrackComponent, PianoRollComponent]
+      }
     }).compileComponents();
+
+
   }));
   it('should create the app', async(() => {
     const fixture = TestBed.createComponent(AppComponent);

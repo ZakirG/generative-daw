@@ -22,6 +22,7 @@ import { PianoRollComponent } from './piano-roll.component';
   providers: [Title],
   bootstrap: [AppComponent],
   entryComponents: [ TrackComponent, PianoRollComponent ],
+  exports: [ TrackComponent ]
 })
 
 export class AppModule { }
