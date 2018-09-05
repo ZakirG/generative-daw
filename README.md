@@ -50,7 +50,8 @@ A tab will then open in your default web browser at localhost:4200.
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
 - The server-side generative-composition tools are Python 3 in a Flask framework
-- The frontend design uses Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
+- The frontend layout makes use of Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
+- The client-side tests use the Jasmine framework and Karma test runner
 
 #### Project goals for version 0.01:
 - Unit tests for the Flask backend, End-to-end tests in Selenium
