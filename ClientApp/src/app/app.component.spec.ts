@@ -12,7 +12,6 @@ import { PianoRollComponent } from './piano-roll.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
-
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -31,23 +30,18 @@ describe('AppComponent', () => {
         entryComponents: [TrackComponent, PianoRollComponent]
       }
     }).compileComponents();
-
-
   }));
+
   it('should create the app', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   }));
-  it(`should have as title 'ClientApp'`, async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('ClientApp');
-  }));
-  it('should render title in a h1 tag', async(() => {
+
+  it('should render a default tempo of 100 in the tempo input', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to ClientApp!');
+    expect(compiled.querySelector('input#tempo').value).toEqual('100');
   }));
 });
