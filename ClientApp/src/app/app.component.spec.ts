@@ -38,10 +38,12 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('should render a default tempo of 100 in the tempo input', async(() => {
+  it('should render default values in the control bar', async(() => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('input#tempo').value).toEqual('100');
+    expect(compiled.querySelector("select[name='key'] option:checked").textContent.trim()).toEqual('C');
+    expect(compiled.querySelector("select[name='scale'] option:checked").textContent.trim()).toEqual('major');
   }));
 });

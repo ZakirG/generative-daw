@@ -21,8 +21,8 @@ export class ConfigDataService {
     keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
     constructor() {
-        this.scale = this.scales[2];
-        this.key = this.keys[2];
+        this.scale = this.scales[0];
+        this.key = this.keys[0];
         this.tempo = 100;
         this.inPlayState = false;
         this.timeStateLength = 8;
