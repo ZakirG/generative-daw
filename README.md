@@ -54,13 +54,13 @@ A tab will then open in your default web browser at localhost:4200.
 - The client-side tests use the Jasmine framework and Karma test runner
 
 #### Project goals for version 0.01:
-- Unit tests for the Flask backend, End-to-end tests in Selenium
 - A responsive, mobile-friendly interface
-- Ability to download the state of all tracks in the application as a single multi-instrument MIDI file
 - Chord generation informed by chord leading charts, diatonic chord groups, and voice leading principles
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
-
+- Ability to download the state of all tracks in the application as a single multi-instrument MIDI file
+- Unit tests for the Flask/Python backend
+- Frontend tests with Jasmine & Karma
 
 #### Project goals for a possible version 0.02:
 - Draggable and resizable piano roll notes with http://interactjs.io/
