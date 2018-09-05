@@ -1,7 +1,7 @@
 //import { Component, ViewChild, AfterViewInit, ViewContainerRef } from '@angular/core';
 import {Component, NgModule,Input,ComponentFactory,ComponentRef, AfterViewInit, ComponentFactoryResolver, ViewContainerRef, ChangeDetectorRef, TemplateRef, ViewChild, Output, EventEmitter} from '@angular/core';
 import { Title }     from '@angular/platform-browser';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrackComponent } from './track.component';
 import { PianoRollComponent } from './piano-roll.component';
 import { ConfigDataService } from './configdata.service';

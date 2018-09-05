@@ -1,10 +1,26 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { NgModule, ViewContainerRef } from '@angular/core';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
+import { TrackComponent } from './track.component';
+import { PianoRollComponent } from './piano-roll.component';
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent
+        AppComponent,
+        TrackComponent,
+        PianoRollComponent
+      ],
+      imports: [
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule
       ],
     }).compileComponents();
   }));
