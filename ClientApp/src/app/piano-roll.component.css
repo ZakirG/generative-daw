@@ -3,8 +3,8 @@
     bottom:0;
     margin:0;
     border:0;
-    border-top:solid 6px #1d626d;
-    outline:solid 6px black;
+    border-top:solid 4px #1d626d;
+    outline:solid 4px black;
     border-radius:0;
     padding:0;
     resize:vertical;
@@ -44,7 +44,7 @@ button[disabled] {
 /* Handle */
 ::-webkit-scrollbar-thumb {
     background: #888;
-    border-radius: 10px;
+    border-radius: 1px;
 }
 
 /* Handle on hover */
@@ -144,6 +144,7 @@ span.note-label[data-note='C'] {
     border-right: solid 1px #a5f2ff;
     border-radius: 0 5px 5px 0;
     overflow:hidden;
+    margin:0;
 }
 
 .note-rows li {

@@ -6,7 +6,7 @@
 .track-controls, .track-right-pane {
     background: linear-gradient(#009ab5, #019bb7);
     color:white;
-    border-bottom:solid 1px black;
+    border-bottom:solid 1px #1d626d;
 }
 
 .track-number {
@@ -38,8 +38,8 @@
     padding:0;
     display:inline-block;
     cursor:pointer;
-    background:#a8efff;
-    border-bottom:solid 1px black;
+    background:linear-gradient(#a8efff, #98e8f9);
+    border-bottom:solid 1px #1d626d;
 }
 
 .region-preview input, .region-preview label {
