@@ -108,7 +108,6 @@ export class PianoRollComponent {
             var target = event.target,
             x = (parseFloat(target.getAttribute('data-x')) || 0),
             y = (parseFloat(target.getAttribute('data-y')) || 0);
-            console.log('x,y = ', x, ' ', y);
 
             // update the element's style
             // target.style.width  = event.rect.width + 'px';
@@ -117,8 +116,6 @@ export class PianoRollComponent {
             // translate when resizing from top or left edges
             // x += event.deltaRect.left;
             y += event.deltaRect.top;
-
-            console.log('new y: ', y);
 
             // target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
 

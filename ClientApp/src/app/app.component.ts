@@ -214,7 +214,6 @@ export class AppComponent {
         dawState['key'] = this.configDataService.key;
 
         this.dawStateService.updateDawState(dawState).subscribe((data) => {
-            // console.log(data);
             this.configDataService.dawState = data;
         });
     }

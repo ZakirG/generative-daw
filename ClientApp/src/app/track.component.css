@@ -4,7 +4,6 @@
 }
 
 .track-controls, .track-right-pane {
-/*     background: linear-gradient(#008fa8, #019bb7); */
     background: linear-gradient(#009ab5, #019bb7);
     color:white;
     border-bottom:solid 1px black;
@@ -12,16 +11,8 @@
 
 .track-number {
     display:inline-block;
-/*
-    background:#42dcf4;
-    border-radius:50%;
- */
     color:white;
     font-weight:bold;
-   /*
- width:35px;
-    height:35px;
- */
     font-size:16px;
     padding:6px 5px 10px 13px;
 }
@@ -44,7 +35,7 @@
     border-right:solid 1px #1d626d;
     border-radius:0;
     margin: 0;
-    padding:3px;
+    padding:0;
     display:inline-block;
     cursor:pointer;
     background:#a8efff;
@@ -162,7 +153,6 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .chord-data {
-    height: 35px;
     border-radius: 2px;
     font-size:10px;
     color:#1d626d;
@@ -170,8 +160,8 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 .chord-name {
     display:inline-block;
-    height:35px;
     overflow:hidden;
+    height:15px;
 }
 
 

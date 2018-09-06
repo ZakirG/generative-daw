@@ -26,8 +26,9 @@
               "src/styles.css"
             ],
             "scripts": [ "node_modules/jquery/dist/jquery.min.js",
-            "node_modules/popper/index.js",
-              "node_modules/bootstrap/dist/js/bootstrap.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "node_modules/popper/index.js",
               "src/assets/js/interact.min.js"
               ]
           },
