@@ -3,13 +3,15 @@
 <link data-require="bootstrap-css@3.3.6" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
 <div class="container-fluid" id="application-wrapper">
     <header class="row primary-color">
-        <div class="col text-left">
+        <div class="col-4 text-left">
             <span class='title-box no-select'>
                 <a id='github-link' href="https://github.com/ZakirG/generative-daw" target="_blank">
                   <img src="/assets/GitHub-Mark.png">
                 </a>
                 Generative<b>DAW</b>
             </span>
+        </div>
+        <div class="col-4 text-justify">
             <form [formGroup]='controlPanelForm' (change)='updateConfigState()' style='display:inline-block'>
                 <div class='control-panel'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
@@ -41,10 +43,7 @@
                 </div>
             </form>
         </div>
-        <div class="row secondary-color" id="control-bar">
-            <div class="col-sm-6"></div>
-            <div class="col-sm-6"></div>
-        </div>
+        <div class="col-4 text-right"></div>
     </header>
     <div class='row control-bar'>
         <button id='add-track-button' class='control-bar-button' (click)="addTrack()">

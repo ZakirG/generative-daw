@@ -4,12 +4,13 @@
 }
 
 .primary-color {
-  background-image: linear-gradient(#42dcf4, #c6f7ff);
+/*   background-image: linear-gradient(#42dcf4, #c6f7ff); */
+    background: linear-gradient(#42dcf4, #56e1f7);
 }
 
 header {
   padding: 15px 5px;
-  border-bottom: solid 1px #baf3fc;
+/*   border-bottom: solid 1px #baf3fc; */
   color: #1d626d;
   width:100%;
 }
@@ -21,11 +22,13 @@ header, .control-bar {
 
 .title-box {
   border: solid #1d626d 1px;
-  padding:10px 10px;
+  padding:7px 15px;
+  height:41px;
   border-radius:2px;
   font-size:18px;
   margin-right:10px;
   background:#75ebff;
+  display:inline-block;
 }
 
 .no-select {
@@ -79,6 +82,7 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     top:-3px;
     text-align:center;
     padding-right:0;
+    font-weight:500;
 }
 
 .top-bar-input, .top-bar-button {
@@ -87,7 +91,8 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 }
 
 .divider {
-    border-right:solid 1px #1d626d;
+/*     border-right:solid 1px #1d626d; */
+    border-right:solid 1px #008fa8;
     height:40px;
     display:inline-block;
     top:0px;
@@ -115,18 +120,20 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     position:absolute;
     font-size:8px;
     top:15px;
+/*     font-weight:bold; */
+    letter-spacing: 1px;
 }
 
 #tempo-label {
-    left:15px;
+    left:14px;
 }
 
 #scale-label {
-    left:30px;
+    left:27px;
 }
 
 #key-label {
-    left:17px;
+    left:14px;
 }
 
 .control-panel {
@@ -149,11 +156,11 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     border-top:solid 1px #1d626d;
     border-bottom:solid 1px #1d626d;
     width:100%;
-    top:72px;
+    top:71px;
 }
 
 .header-space {
-    height:113px;
+    height:112px;
 }
 
 .control-bar-button {
