@@ -344,7 +344,6 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .action-button {
-    background:#006e82;
     border: solid black 1px;
     color:white;
     padding:5px 10px;
@@ -352,6 +351,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     font-size:12px;
     margin:10px 10px 0 5px;
     width:99px;
+    background:#006e82;
     transition:color .2s, border-color .2s;
     -webkit-transition:color .2s, border-color .2s;
     -moz-transition:color .2s, border-color .2s;

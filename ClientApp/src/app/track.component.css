@@ -4,7 +4,8 @@
 }
 
 .track-controls, .track-right-pane {
-    background: linear-gradient(#008fa8, #019bb7);
+/*     background: linear-gradient(#008fa8, #019bb7); */
+    background: linear-gradient(#009ab5, #019bb7);
     color:white;
     border-bottom:solid 1px black;
 }

@@ -72,9 +72,6 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 
 .top-bar-button {
     width:40px;
-    -webkit-transition: color .2s, border-color .2s;
-    -moz-transition: color .2s, border-color .2s;
-    transition: color .2s, border-color .2s;
 }
 
 .top-bar-input {
@@ -105,11 +102,6 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 
 .top-bar-button:last-child {
     border:0;
-}
-
-.top-bar-button:hover {
-    border-color: black;
-    color: black;
 }
 
 .top-bar-input-group {
@@ -149,10 +141,11 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 }
 
 .control-bar {
-    padding: 5px 20px;
+    padding: 7px 20px;
     color: #1d626d;
     font-size:12px;
-    background:linear-gradient(#008fa8, #019bb7);
+/*     background:linear-gradient(#008fa8, #019bb7); */
+    background: linear-gradient(#009ab5, #019bb7);
     border-top:solid 1px #1d626d;
     border-bottom:solid 1px #1d626d;
     width:100%;
@@ -160,15 +153,22 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 }
 
 .header-space {
-    height:112px;
+    height:116px;
 }
 
 .control-bar-button {
-    background:#006e82;
     border: solid black 1px;
     border-radius:2px;
     padding:5px 10px;
     color:white;
+    background:#006e82;
+    transition:color .2s, border-color .2s;
+    -webkit-transition:color .2s, border-color .2s;
+    -moz-transition:color .2s, border-color .2s;
+}
+
+.control-bar-button:hover {
+    border-color:white;
 }
 
 .bottom-space {
