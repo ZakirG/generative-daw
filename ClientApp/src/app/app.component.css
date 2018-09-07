@@ -1,5 +1,4 @@
 #application-wrapper {
-
     background:#a5f2ff;
 }
 
@@ -80,6 +79,28 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     text-align:center;
     padding-right:0;
     font-weight:500;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 10px;
+}
+
+.top-bar-input:not([type=number]) {
+    background: url(../assets/dropdown.png) right / 20px no-repeat;
+    background-position: 100% 11px;
+    padding-right:15px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
 }
 
 .top-bar-input, .top-bar-button {
@@ -121,11 +142,11 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 }
 
 #scale-label {
-    left:27px;
+    left:35px;
 }
 
 #key-label {
-    left:14px;
+    left:16px;
 }
 
 .control-panel {
@@ -172,5 +193,5 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
 }
 
 .bottom-space {
-    height:350px;
+    height:400px;
 }

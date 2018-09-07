@@ -11,7 +11,7 @@
                 Generative<b>DAW</b>
             </span>
         </div>
-        <div class="col-4 text-justify">
+        <div class="col text-left">
             <form [formGroup]='controlPanelForm' (change)='updateConfigState()' style='display:inline-block'>
                 <div class='control-panel'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
@@ -43,7 +43,6 @@
                 </div>
             </form>
         </div>
-        <div class="col-4 text-right"></div>
     </header>
     <div class='row control-bar'>
         <button id='add-track-button' class='control-bar-button' (click)="addTrack()">
