@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { TrackComponent } from './track.component';
 import { PianoRollComponent } from './piano-roll.component';
+import { ConfigDataService } from './configdata.service';
+import { DawStateService } from './dawstate.service';
 
 describe('AppComponent', () => {
     beforeEach(async(() => {
@@ -44,6 +46,21 @@ describe('AppComponent', () => {
         const compiled = fixture.debugElement.nativeElement;
         expect(compiled.querySelector('input#tempo').value).toEqual('100');
         expect(compiled.querySelector("select[name='key'] option:checked").textContent.trim()).toEqual('C');
-    expect(compiled.querySelector("select[name='scale'] option:checked").textContent.trim()).toEqual('major');
+        expect(compiled.querySelector("select[name='scale'] option:checked").textContent.trim()).toEqual('major');
+    }));
+
+    it('should initialize the app state correctly', async(() => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const app = fixture.debugElement.componentInstance;
+        app.ngOnInit();
+        expect(app.tracks.length).toEqual(1);
+        expect(app.tracks[0] instanceof TrackComponent).toBeTruthy();
+
+        expect(app.queuedSounds.length).toEqual(0);
+
+        expect(app.pianoRoll instanceof PianoRollComponent).toBeTruthy();
+
+        expect(app.configDataService instanceof ConfigDataService).toBeTruthy();
+        expect(app.configDataService.scale).toEqual({'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' });
     }));
 });
