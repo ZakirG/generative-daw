@@ -12,6 +12,8 @@ import { PianoRollComponent } from './piano-roll.component';
 import { ConfigDataService } from './configdata.service';
 import { DawStateService } from './dawstate.service';
 
+import {By} from "@angular/platform-browser";
+
 describe('AppComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -63,4 +65,22 @@ describe('AppComponent', () => {
         expect(app.configDataService instanceof ConfigDataService).toBeTruthy();
         expect(app.configDataService.scale).toEqual({'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' });
     }));
+
+    it('should update configDataService on user input events', async(() => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        fixture.whenStable().then(() => {
+            const app = fixture.debugElement.componentInstance;
+            app.ngOnInit();
+            const controlPanelForm = app.controlPanelForm;
+            controlPanelForm.controls['tempo'].setValue('150');
+            const controlPanelFormElement = fixture.debugElement.query(By.css('#control-panel-form')).nativeElement;
+            controlPanelFormElement.dispatchEvent(new Event('change'));
+            fixture.detectChanges();
+            fixture.whenStable().then(() => {
+                expect(fixture.debugElement.componentInstance.configDataService.tempo).toEqual('150');
+            });
+        });
+    });
+
 });
