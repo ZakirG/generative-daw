@@ -73,14 +73,21 @@ describe('AppComponent', () => {
             const app = fixture.debugElement.componentInstance;
             app.ngOnInit();
             const controlPanelForm = app.controlPanelForm;
-            controlPanelForm.controls['tempo'].setValue('150');
+
+            expect(fixture.debugElement.componentInstance.configDataService.tempo).toEqual(100);
+            expect(fixture.debugElement.componentInstance.configDataService.key).toEqual('C');
+
+            controlPanelForm.controls['tempo'].setValue(150);
+            controlPanelForm.controls['key'].setValue('D');
+
             const controlPanelFormElement = fixture.debugElement.query(By.css('#control-panel-form')).nativeElement;
             controlPanelFormElement.dispatchEvent(new Event('change'));
             fixture.detectChanges();
             fixture.whenStable().then(() => {
-                expect(fixture.debugElement.componentInstance.configDataService.tempo).toEqual('150');
+                expect(fixture.debugElement.componentInstance.configDataService.tempo).toEqual(150);
+                expect(fixture.debugElement.componentInstance.configDataService.key).toEqual('D');
             });
         });
-    });
-
+    }));
 });
+
