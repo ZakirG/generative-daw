@@ -171,6 +171,8 @@ export class AppComponent {
         newTrack.instance.key = this.configDataService.key;
         newTrack.instance.scale = this.configDataService.scale.name;
         newTrack.instance.trackNumber = this.tracks.length;
+        console.log(this.tracks.length);
+        console.log(this.tracks);
         newTrack.instance.timeStateLength = this.configDataService.timeStateLength;
         newTrack.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
