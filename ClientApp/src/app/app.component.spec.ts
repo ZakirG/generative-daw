@@ -1,4 +1,4 @@
-import { TestBed, async, ComponentFixtureAutoDetect } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture, ComponentFixtureAutoDetect } from '@angular/core/testing';
 import {BrowserDynamicTestingModule} from '@angular/platform-browser-dynamic/testing';
 
 import { AppComponent } from './app.component';
@@ -44,7 +44,6 @@ describe('AppComponent', () => {
             fixture = TestBed.createComponent(AppComponent);
             app = fixture.componentInstance;
             fixture.detectChanges();
-            app.ngOnInit();
         }));
 
     it('should create the app', async(() => {
@@ -70,8 +69,6 @@ describe('AppComponent', () => {
     }));
 
     it('should update configDataService on user input events', async(() => {
-        const app = fixture.debugElement.componentInstance;
-        app.ngOnInit();
         const controlPanelForm = app.controlPanelForm;
 
         expect(fixture.debugElement.componentInstance.configDataService.tempo).toEqual(100);
@@ -89,21 +86,24 @@ describe('AppComponent', () => {
         });
     }));
 
-    it('should create a TrackComponent on add-track-button click', async(() => {
+    it('should create a TrackComponent on add-track-button click', () => {
+        fixture.detectChanges();
+
         expect(app.tracks.length).toEqual(1);
         expect(app.tracks[0] instanceof TrackComponent).toBeTruthy();
 
-        spyOn(app, 'addTrack');
-        const addTrackButton = fixture.debugElement.nativeElement.querySelector('#add-track-button');
+        const el = fixture.debugElement.nativeElement;
 
-        addTrackButton.click();
+        el.querySelector('#add-track-button').click();
+        el.querySelector('#add-track-button').click();
 
         fixture.detectChanges();
-        fixture.whenStable().then(() => {
-            expect(app.addTrack).toHaveBeenCalled();
-            expect(app.tracks.length).toEqual(2);
-            expect(app.tracks[1] instanceof TrackComponent).toBeTruthy();
-        });
-    }));
+
+        expect(app.tracks.length).toEqual(3);
+        for (var trackNumber in app.tracks) {
+            expect(app.tracks[trackNumber] instanceof TrackComponent).toBeTruthy();
+        }
+      });
+
 });
 

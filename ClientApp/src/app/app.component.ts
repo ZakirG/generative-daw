@@ -25,10 +25,10 @@ export class AppComponent {
     controlPanelForm: FormGroup;
 
     public constructor(
-        private titleService: Title,
-        private configDataService: ConfigDataService,
-        private dawStateService: DawStateService,
-        private resolver: ComponentFactoryResolver) { }
+        public titleService: Title,
+        public configDataService: ConfigDataService,
+        public dawStateService: DawStateService,
+        public resolver: ComponentFactoryResolver) { }
 
     public setTitle( newTitle: string) {
         this.titleService.setTitle( newTitle );
@@ -171,8 +171,6 @@ export class AppComponent {
         newTrack.instance.key = this.configDataService.key;
         newTrack.instance.scale = this.configDataService.scale.name;
         newTrack.instance.trackNumber = this.tracks.length;
-        console.log(this.tracks.length);
-        console.log(this.tracks);
         newTrack.instance.timeStateLength = this.configDataService.timeStateLength;
         newTrack.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
