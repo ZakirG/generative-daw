@@ -44,7 +44,7 @@ A tab will then open in your default web browser at localhost:4200.
 
 #### Current functionalities:
 - Ability to generate & play back random melodies or chord progressions in a scale of your choice
-- Ability to create/delete and edit their notes in a resizable piano roll pane
+- Ability to create/delete tracks and edit their notes in a resizable piano roll pane
 - A control bar with tempo selection, play/pause buttons, scale & tonic selection
 
 #### Overview of technologies used:
