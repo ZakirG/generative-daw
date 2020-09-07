@@ -10,6 +10,8 @@ In contrast with similar generative tools out there, this application does not a
 
 The user specifies the generative settings they are interested in and generates a composition. After editing the result to their taste, they can download the MIDI file and continue work on the composition in their usual program of choice, like Logic Pro X or FL.
 
+This project is still in pre-release. Core features are still under development.
+
 <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> 
 
 
