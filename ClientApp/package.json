@@ -22,6 +22,7 @@
     "core-js": "^2.6.11",
     "glyphicons": "^0.2.0",
     "octicons": "^8.5.0",
+    "popper.js": "^1.16.1",
     "rxjs": "^6.6.3",
     "rxjs-tslint": "^0.1.8",
     "tslib": "^1.13.0",

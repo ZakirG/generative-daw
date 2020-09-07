@@ -5,6 +5,7 @@ import os
 import json
 from crossdomain import crossdomain
 import generation_tools
+import constants
 
 app = Flask(__name__)
 CORS(app)
@@ -13,6 +14,11 @@ BASE_URL = os.path.abspath(os.path.dirname(__file__))
 CLIENT_APP_FOLDER = os.path.join(BASE_URL, "ClientApp")
 
 DawState = {}
+
+def set_default(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    raise TypeError
 
 @app.route('/generate/melody/<string:key>/<string:scale>/<string:octave_constraint>/<string:generation_type>/<int:length>', methods=['GET'])
 @crossdomain(origin='*')
@@ -47,6 +53,11 @@ def update_daw_state():
     print(DawState)
     response = DawState
     return json.dumps(response)
+
+@app.route('/constants', methods=['GET'])
+@crossdomain(origin='*')
+def get_constants():
+    return json.dumps(constants.constants, default=set_default)
 
 @app.errorhandler(404)
 def page_not_found(error):

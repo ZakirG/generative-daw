@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { ConfigDataService } from './configdata.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class GenerationService {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, public configDataService: ConfigDataService) { }
 
-    serverURL = 'http://localhost:5000/'
+    //serverURL = 'http://localhost:5000/'
+    serverURL = this.configDataService.serverURL;
 
     melodyGenerationURL = this.serverURL + 'generate/melody/random';
     chordsGenerationURL = this.serverURL + 'generate/chords/random';

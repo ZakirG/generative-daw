@@ -1,16 +1,9 @@
 import random
 from music21 import chord as music21_chords
 import re
-
-chromatic_scale = [{'note': 'c'}, {'note': 'cs'}, {'note': 'd'}, {'note': 'ds'}, {'note': 'e'}, {'note': 'f'}, {'note': 'fs'}, {'note': 'g'}, {'note': 'gs'}, {'note': 'a'}, {'note': 'as'}, {'note': 'b'}]
+from constants import constants
 
 allowed_chord_sizes = range(3, 7)
-
-scales = {
-            'maj' : {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ] },
-            'min' : {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ] },
-            'dhmaj' : {'name' : 'maj (b2 b6)', 'intervals' : [1,3,1,2,1,3,1 ] },
-        }
 
 def get_allowed_notes(key, scale, octave): 
     possible_octaves = []
@@ -22,7 +15,7 @@ def get_allowed_notes(key, scale, octave):
         
     allowed_chromatic_notes = []
     for octave in possible_octaves:
-        for note in chromatic_scale:
+        for note in constants['chromatic_scale']:
             allowed_chromatic_notes.append({'note' : note['note'], 'octave' : octave})
     
     return get_key_scale_notes(key, scale, octave, allowed_chromatic_notes)
@@ -32,7 +25,7 @@ def get_key_scale_notes(key, scale_code, octave, allowed_chromatic_notes):
     notes_sorted_starting_at_root = allowed_chromatic_notes[index_of_key:] + allowed_chromatic_notes[:index_of_key]
     notes_sorted_starting_at_root = notes_sorted_starting_at_root * 2 # double list to make note selection circular
     print(notes_sorted_starting_at_root)
-    intervals = scales[scale_code]['intervals']
+    intervals = constants['scales'][scale_code]['intervals']
     print(intervals)
     key_scale_notes = []
     i = 0
@@ -113,5 +106,3 @@ def name_chords_in_tracks(tracks):
     for grid in grid_by_tracks:
         chord_names_by_tracks.append(list(map(lambda x: determine_chord_name(x), grid)))
     return chord_names_by_tracks
-        
-        
