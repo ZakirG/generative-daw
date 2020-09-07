@@ -1,0 +1,14 @@
+chardet==3.0.4
+click==7.1.2
+Flask==1.1.2
+Flask-Cors==3.0.9
+future==0.18.2
+itsdangerous==1.1.0
+Jinja2==2.11.2
+joblib==0.16.0
+MarkupSafe==1.1.1
+more-itertools==8.5.0
+music21==6.1.0
+six==1.15.0
+webcolors==1.11.1
+Werkzeug==1.0.1
