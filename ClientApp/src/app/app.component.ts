@@ -6,6 +6,7 @@ import { TrackComponent } from './track.component';
 import { PianoRollComponent } from './piano-roll.component';
 import { ConfigDataService } from './configdata.service';
 import { DawStateService } from './dawstate.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-root',
@@ -23,12 +24,17 @@ export class AppComponent {
     audioBuffers: Object;
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
+    constants: any;
+    
+    serverURL = 'http://localhost:5000/'
+    constantsURL = this.serverURL + 'constants';
 
     public constructor(
         public titleService: Title,
         public configDataService: ConfigDataService,
         public dawStateService: DawStateService,
-        public resolver: ComponentFactoryResolver) { }
+        public resolver: ComponentFactoryResolver,
+        private http: HttpClient) { }
 
     public setTitle( newTitle: string) {
         this.titleService.setTitle( newTitle );
@@ -46,6 +52,15 @@ export class AppComponent {
             scale: new FormControl(this.configDataService.scale),
             key: new FormControl(this.configDataService.key),
             tempo: new FormControl(this.configDataService.tempo)
+        });
+        
+        this.http.get(this.constantsURL).subscribe((data) => {
+            let constants = data;
+            let scales = Object.values(constants['scales']);
+            this.configDataService.scales = scales;
+            this.configDataService.scale = scales[0];
+            let scale = scales[0];
+            this.controlPanelForm.controls.scale.setValue(scale);
         });
 
         this.addTrack();

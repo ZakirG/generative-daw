@@ -3,9 +3,10 @@ from music21 import chord as music21_chords
 import re
 from constants import constants
 
-allowed_chord_sizes = range(3, 7)
+ALLOWED_CHORD_SIZES_UPPER_BD = 6
+ALLOWED_CHORD_SIZES_LOWER_BD = 3
 
-def get_allowed_notes(key, scale, octave): 
+def get_allowed_notes(key, scale, octave):
     possible_octaves = []
     if octave == 'any':
         possible_octaves = range(1,3)
@@ -47,6 +48,11 @@ def generate_random_melody(length, key, scale, octave):
     
 def generate_random_chords(length, key, scale, octave):
     allowed_notes = get_allowed_notes(key, scale, octave)
+
+    # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
+    upper_bd = min(ALLOWED_CHORD_SIZES_UPPER_BD, len(allowed_notes))
+        
+    allowed_chord_sizes = range(ALLOWED_CHORD_SIZES_LOWER_BD, upper_bd)
     
     result = []
     for i in range(length):
