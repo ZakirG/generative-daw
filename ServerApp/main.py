@@ -1,11 +1,12 @@
 from flask import Flask, render_template, send_from_directory
-from flask import request
+from flask import request, send_file
 from flask_cors import CORS
 import os
 import json
 from crossdomain import crossdomain
-import generation_tools
 import constants
+import generation_tools
+import midi_tools
 
 app = Flask(__name__)
 CORS(app)
@@ -43,11 +44,11 @@ def generate_chords(key, scale, octave_constraint, generation_type, length):
 @app.route('/daw-state', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def update_daw_state():
-    print('inside update daw state')
     content = request.get_json()
     
     DawState['scale'] =  content['scale']
     DawState['key'] =  content['key']
+    DawState['tempo'] =  content['tempo']
     DawState['tracks'] =  content['tracks']
     DawState['chord_names'] = generation_tools.name_chords_in_tracks(content['tracks'])
     print(DawState)
@@ -58,6 +59,20 @@ def update_daw_state():
 @crossdomain(origin='*')
 def get_constants():
     return json.dumps(constants.constants, default=set_default)
+
+@app.route('/midi', methods=['POST', 'OPTIONS'])
+@crossdomain(origin='*')
+def create_midi_file():
+    print('HAIIII')
+    content = request.get_json()
+    print('got content:', content)
+    filename, fp = midi_tools.create_midi_file(content)
+    print(filename)
+    print(fp)
+    return send_file(filename,
+        mimetype='audio/midi audio/x-midi',
+        as_attachment=True,
+        attachment_filename=filename)
 
 @app.errorhandler(404)
 def page_not_found(error):

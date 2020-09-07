@@ -6,6 +6,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { TrackComponent } from './track.component';
 import { PianoRollComponent } from './piano-roll.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { PianoRollComponent } from './piano-roll.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    NoopAnimationsModule,
+    MatMenuModule,
+    MatIconModule,
   ],
   providers: [Title],
   bootstrap: [AppComponent],

@@ -10,11 +10,11 @@ export class GenerationService {
 
     constructor(private http: HttpClient, public configDataService: ConfigDataService) { }
 
-    //serverURL = 'http://localhost:5000/'
     serverURL = this.configDataService.serverURL;
 
     melodyGenerationURL = this.serverURL + 'generate/melody/random';
     chordsGenerationURL = this.serverURL + 'generate/chords/random';
+    midiFileGenerationURL = this.serverURL + 'midi';
 
     generate(generationOptions, length) {
         var scale_code = (generationOptions.scale == 'any') ? 'any' : generationOptions.scale.code;
@@ -27,8 +27,10 @@ export class GenerationService {
             + 'random/'
             + length;
 
-        console.log(URL_endpoint);
-
         return this.http.get(URL_endpoint);
+    }
+
+    exportToMidi(dawState) {
+        return this.http.post(this.midiFileGenerationURL, dawState, {responseType: 'blob'});
     }
 }

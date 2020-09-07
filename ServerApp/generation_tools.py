@@ -71,20 +71,16 @@ def generate_random_chords(length, key, scale, octave):
 def determine_chord_name(chord):
     if len(chord) <= 2:
         return ''
-    print('chord:', chord)
     notes = map(lambda x: x.upper(), chord)
     notes = list(map(lambda x: x.replace('S', '#'), notes))
     notes.reverse()
-    print(notes)
     c = music21_chords.Chord(list(notes))
     full_name = c.pitchedCommonName
-    print(c)
-    print(full_name)
     abbreviation = full_name.replace('minor', 'min'
         ).replace('major', 'maj').replace('seventh', '7'
         ).replace('augmented', 'aug').replace('diminished', 'dim'
         ).replace('incomplete', '').replace('dominant', '').replace('-', ' ')
-
+        
     if abbreviation.startswith('enharmonic equivalent'):
         try:
             enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")

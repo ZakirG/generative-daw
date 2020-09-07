@@ -1,10 +1,10 @@
-//import { Component, ViewChild, AfterViewInit, ViewContainerRef } from '@angular/core';
 import {Component, NgModule,Input,ComponentFactory,ComponentRef, AfterViewInit, ComponentFactoryResolver, ViewContainerRef, ChangeDetectorRef, TemplateRef, ViewChild, Output, EventEmitter} from '@angular/core';
 import { Title }     from '@angular/platform-browser';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrackComponent } from './track.component';
 import { PianoRollComponent } from './piano-roll.component';
 import { ConfigDataService } from './configdata.service';
+import { GenerationService } from './generation.service';
 import { DawStateService } from './dawstate.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -32,6 +32,7 @@ export class AppComponent {
     public constructor(
         public titleService: Title,
         public configDataService: ConfigDataService,
+        public generationService: GenerationService,
         public dawStateService: DawStateService,
         public resolver: ComponentFactoryResolver,
         private http: HttpClient) { }
@@ -227,9 +228,38 @@ export class AppComponent {
         dawState['tracks'] = minimizedTracks;
         dawState['scale'] = this.configDataService.scale;
         dawState['key'] = this.configDataService.key;
+        dawState['tempo'] = this.configDataService.tempo;
 
         this.dawStateService.updateDawState(dawState).subscribe((data) => {
             this.configDataService.dawState = data;
         });
     }
+
+    downloadFile(data) {
+        const blob = new Blob([data], { type: 'audio/midi' });
+        const url= window.URL.createObjectURL(blob);
+        let anchor = document.createElement("a");
+        anchor.download = "autocomposer-export.midi";
+        anchor.href = url;
+        anchor.click();
+    }
+
+    exportToMidi() {
+        let timeStates = [];
+        for (let track of this.tracks) {
+            for (let noteIndex = 0; noteIndex < track.gridState.length; noteIndex += 1) {
+                console.log('timestate: ', track.gridState[noteIndex].timeStates);
+            }
+        }
+        this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
+            console.log('246');
+            // console.log(data);
+            this.downloadFile(data)
+            
+            // generatedNotes = data['generationResult'];
+            // this.renderNotes(generatedNotes);
+            // this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
+        });
+    }
+
 }

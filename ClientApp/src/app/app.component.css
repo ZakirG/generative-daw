@@ -8,13 +8,13 @@
 }
 
 header {
-  padding: 15px 5px;
-/*   border-bottom: solid 1px #baf3fc; */
+  padding: 10px 5px;
   color: #1d626d;
   width:100%;
+  top:30px;
 }
 
-header, .control-bar {
+header, .control-bar, #top-toolbar {
     position:fixed;
     z-index:3;
 }
@@ -54,12 +54,45 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     opacity:1;
 }
 
-
 #github-link img {
     height:25px;
     position:relative;
     top:-2px;
 }
+
+#top-toolbar {
+    height:30px;
+    background:#009ab5;
+    z-index:4;
+    top:0;
+    font-size:12px;
+    width:100%;
+    padding:0px 20px;
+}
+
+#top-toolbar button {
+    background:none;
+    border:none;
+    letter-spacing: 1px;
+    font-weight:500;
+    color:white;
+}
+
+#top-toolbar button:hover {
+    cursor: default;
+}
+
+#top-toolbar button:focus {
+    background:#006e82;
+}
+
+/* ::ng-deep .toolbar-menu {
+    padding:5px;
+}
+
+::ng-deep .toolbar-menu button {
+    font-size:12px !important;
+} */
 
 .top-bar-input, .top-bar-button {
     position:relative;
@@ -170,11 +203,11 @@ input[type=number] {
     border-top:solid 1px #1d626d;
     border-bottom:solid 1px #1d626d;
     width:100%;
-    top:71px;
+    top:91px;
 }
 
 .header-space {
-    height:116px;
+    height:136px;
 }
 
 .control-bar-button {
