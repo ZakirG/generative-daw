@@ -38,7 +38,7 @@ cd generative-daw/ClientApp
 npm install
 ng serve --open
 ```
-A tab will then open in your default web browser at localhost:4200. 
+A tab will automatically open in your default web browser at localhost:4200. 
 
 #### Current features:
 - Generate & play back random melodies or chord progressions in a scale of your choice
