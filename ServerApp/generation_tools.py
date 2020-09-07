@@ -1,5 +1,6 @@
 import random
 from music21 import chord as music21_chords
+import re
 
 chromatic_scale = [{'note': 'c'}, {'note': 'cs'}, {'note': 'd'}, {'note': 'ds'}, {'note': 'e'}, {'note': 'f'}, {'note': 'fs'}, {'note': 'g'}, {'note': 'gs'}, {'note': 'a'}, {'note': 'as'}, {'note': 'b'}]
 
@@ -71,15 +72,28 @@ def generate_random_chords(length, key, scale, octave):
 def determine_chord_name(chord):
     if len(chord) <= 2:
         return ''
-    
+    print('chord:', chord)
     notes = map(lambda x: x.upper(), chord)
-    notes = map(lambda x: x.replace('S', '#'), notes)
+    notes = list(map(lambda x: x.replace('S', '#'), notes))
+    notes.reverse()
+    print(notes)
     c = music21_chords.Chord(list(notes))
     full_name = c.pitchedCommonName
+    print(c)
+    print(full_name)
     abbreviation = full_name.replace('minor', 'min'
         ).replace('major', 'maj').replace('seventh', '7'
         ).replace('augmented', 'aug').replace('diminished', 'dim'
         ).replace('incomplete', '').replace('dominant', '').replace('-', ' ')
+
+    if abbreviation.startswith('enharmonic equivalent'):
+        try:
+            enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
+            matches = re.search(enharmonicRegex, abbreviation)
+            abbreviation = matches.group(2) + ' ' + matches.group(1)
+        except Exception as e:
+            print(e)
+
     return abbreviation
     
 def transpose_notes_to_grid(notes):
