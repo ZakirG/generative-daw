@@ -15,8 +15,8 @@ import { DawStateService } from './dawstate.service';
 
 export class AppComponent {
     private audioContext: AudioContext;
-    @ViewChild("newTrack", { read: ViewContainerRef }) container;
-    @ViewChild("pianoRoll", { read: ViewContainerRef }) pianoRollContainer;
+    @ViewChild("newTrack", { read: ViewContainerRef, static: true }) container;
+    @ViewChild("pianoRoll", { read: ViewContainerRef, static: true }) pianoRollContainer;
     notes: Array<any>;
     tracks: Array<any>;
     pianoRoll: any;

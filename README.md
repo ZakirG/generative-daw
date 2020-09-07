@@ -1,18 +1,16 @@
 # GenerativeDAW
 
-### A Digital Audio Workstation webapp focused on generative music composition. 
+### A digital audio workstation webapp focused on providing generative composition tools informed by music theory.
 
-#### Built with Flask, Angular 6, and Python 3. Tested with Jasmine.
+#### Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 
-This project is a <a href='https://en.wikipedia.org/wiki/Digital_audio_workstation'>digital audio workstation (DAW)</a> webapp that provides a suite of tools
-for <a href='https://en.wikipedia.org/wiki/Generative_music' target='_blank'>generative music composition</a>, in which the software system itself will compose the music.
+This project is a <a href='https://en.wikipedia.org/wiki/Digital_audio_workstation'>digital audio workstation</a> webapp that provides a suite of tools for randomized music composition. The app is meant to be used as an assistive tool by producers and vocalists for the rapid generation and evaluation of compositions that match user-applied stylistic constraints.
 
-The primary use case of the application (still in progress): The user specifies the generative settings they are interested in, 
-which the software system responds to by composing a piece of music. The user then
-edits the result to their taste, downloads the MIDI files, and continues work on the composition in their usual music creation
-domain of choice (an instrument, sheet music, or a more high-powered DAW).
+In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are used to create random compositions that are musically sensible.
 
-Project started 8/21/2018.
+The user specifies the generative settings they are interested in and generates a composition. After editing the result to their taste, they can download the MIDI file and continue work on the composition in their usual program of choice, like Logic Pro X or FL.
+
+This project is still in pre-release. Core features are still under development.
 
 <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> 
 
@@ -20,7 +18,7 @@ Project started 8/21/2018.
 <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
 
 #### To build and run the application:
-Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a> and then run
+Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a>. Clone the repo:
 ```
 git clone https://github.com/ZakirG/generative-daw.git
 ```
@@ -40,35 +38,32 @@ cd generative-daw/ClientApp
 npm install
 ng serve --open
 ```
-A tab will then open in your default web browser at localhost:4200. 
+A tab will automatically open in your default web browser at localhost:4200. 
 
-#### Current functionalities:
-- Ability to generate & play back random melodies or chord progressions in a scale of your choice
-- Ability to create/delete tracks and edit their notes in a resizable piano roll pane
-- A control bar with tempo selection, play/pause buttons, scale & tonic selection
+#### Current features:
+- Generate & play back random melodies or chord progressions in a scale of your choice
+- Create/delete tracks and edit notes in a resizable piano roll pane
+- Modify project tempo, scale, & tonic
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
 - The server-side generative-composition tools are Python 3 in a Flask framework
 - The frontend layout makes use of Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
-- The client-side tests use the Jasmine framework and Karma test runner
+- Client-side tests use the Jasmine framework and Karma test runner
 
-#### Project goals for version 0.01:
-- A responsive, mobile-friendly interface
+#### Possible future features:
+- Ability to download the state of all tracks in the application as a single multi-instrument MIDI file
 - Chord generation informed by chord leading charts, diatonic chord groups, and voice leading principles
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
-- Ability to download the state of all tracks in the application as a single multi-instrument MIDI file
 - Unit tests for the Flask/Python backend
-- Frontend tests with Jasmine & Karma
-
-#### Project goals for a possible version 0.02:
 - Draggable and resizable piano roll notes with http://interactjs.io/
 - A lyric generator that responds to drawn melodies using an Hidden Markov Model
 - Machine learning algorithms applied to a dataset of MIDI files from pop music
 
 
-Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
-for their examples on audio manipulation in Angular; code snippets of theirs are used in this application.
+#### Resources:
+- Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
+for their examples on audio manipulation in Angular. Code snippets of theirs are used in this application.
 
-Parts of the interface are inspired by Logic Pro X.
+This project's interface is based on Logic Pro X.
