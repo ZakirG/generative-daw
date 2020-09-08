@@ -24,7 +24,7 @@ export class ConfigDataService {
         this.constantsURL = this.serverURL + 'constants';
         
         this.key = this.keys[0];
-        this.scale = []; // {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' };
+        this.scale = [];
         this.tempo = 100;
         this.inPlayState = false;
         this.timeStateLength = 8;

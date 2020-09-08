@@ -51,7 +51,7 @@ def update_daw_state():
     DawState['tempo'] =  content['tempo']
     DawState['tracks'] =  content['tracks']
     DawState['chord_names'] = generation_tools.name_chords_in_tracks(content['tracks'])
-    # print(DawState)
+    
     response = DawState
     return json.dumps(response)
 

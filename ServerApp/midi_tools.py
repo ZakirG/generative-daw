@@ -10,9 +10,7 @@ def note_name_to_numeral(note_name):
 
 # Creates a MIDI File following the example from MIDIUtil: https://pypi.org/project/MIDIUtil/
 def create_midi_file(daw_state):
-    print(daw_state['tracks'])
     num_tracks = len(daw_state['tracks'])
-    print('num tracks:', num_tracks)
 
     channel  = 0
     time     = 0    # In beats
