@@ -23,6 +23,7 @@ export class PianoRollComponent {
     octaveConstraintCheck = true;
     chordSizeLowerBound = 3;
     chordSizeUpperBound = 7;
+    disallowRepeats = true;
     notes: Array<any>;
     _ref: any;
 

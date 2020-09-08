@@ -21,12 +21,18 @@ def set_default(obj):
         return list(obj)
     raise TypeError
 
-@app.route('/generate/melody/<string:key>/<string:scale>/<string:octave_constraint>/<string:generation_type>/<int:length>', methods=['GET'])
+@app.route('/generate/melody', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
-def generate_melody(key, scale, octave_constraint, generation_type, length):
-    result = None
-    if generation_type == 'random':
-        result = generation_tools.generate_random_melody(length, key, scale, octave_constraint)
+def generate_melody():
+    content = request.get_json()
+    
+    length = content['length']
+    key = content['key'].replace('#', 's').lower()
+    scale = content['scale']
+    octave = content['octaveConstraint']
+    disallow_repeats = content['disallowRepeats']
+
+    result = generation_tools.generate_melody(length, key, scale, octave, disallow_repeats)
     
     response = {'generationResult' : result}
     return json.dumps(response);
@@ -42,8 +48,9 @@ def generate_chords():
     octave = content['octaveConstraint']
     chord_size_lower_bound = content['chordSizeLowerBound']
     chord_size_upper_bound = content['chordSizeUpperBound']
+    disallow_repeats = content['disallowRepeats']
     
-    result = generation_tools.generate_random_chords(length, key, scale, octave, chord_size_lower_bound, chord_size_upper_bound)
+    result = generation_tools.generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_size_upper_bound, disallow_repeats)
     
     response = {'generationResult' : result}
     return json.dumps(response);
