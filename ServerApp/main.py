@@ -51,7 +51,7 @@ def update_daw_state():
     DawState['tempo'] =  content['tempo']
     DawState['tracks'] =  content['tracks']
     DawState['chord_names'] = generation_tools.name_chords_in_tracks(content['tracks'])
-    print(DawState)
+    # print(DawState)
     response = DawState
     return json.dumps(response)
 
@@ -63,12 +63,8 @@ def get_constants():
 @app.route('/midi', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def create_midi_file():
-    print('HAIIII')
     content = request.get_json()
-    print('got content:', content)
     filename, fp = midi_tools.create_midi_file(content)
-    print(filename)
-    print(fp)
     return send_file(filename,
         mimetype='audio/midi audio/x-midi',
         as_attachment=True,

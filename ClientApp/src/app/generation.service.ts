@@ -18,14 +18,14 @@ export class GenerationService {
 
     generate(generationOptions, length) {
         var scale_code = (generationOptions.scale == 'any') ? 'any' : generationOptions.scale.code;
-        var URL_endpoint = this.serverURL
+        var URL_endpoint = encodeURI(this.serverURL
             + 'generate/'
             + generationOptions.generationType + '/'
             + generationOptions.key + '/'
             + scale_code + '/'
             + generationOptions.octaveConstraint + '/'
             + 'random/'
-            + length;
+            + length);
 
         return this.http.get(URL_endpoint);
     }

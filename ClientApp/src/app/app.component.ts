@@ -175,7 +175,8 @@ export class AppComponent {
             var filename = 'assets/sounds/' + note.note + (note.octave + 1) + '.wav';
 
             this.fetchNoteSample(filename).then(audioBuffer => {
-                this.audioBuffers[note.note + note.octave] = audioBuffer;
+                let bufferName = note.note + (parseInt(note.octave) + 2);
+                this.audioBuffers[bufferName] = audioBuffer;
             }).catch(error => { throw error; });
         }
     }
@@ -245,20 +246,8 @@ export class AppComponent {
     }
 
     exportToMidi() {
-        let timeStates = [];
-        for (let track of this.tracks) {
-            for (let noteIndex = 0; noteIndex < track.gridState.length; noteIndex += 1) {
-                console.log('timestate: ', track.gridState[noteIndex].timeStates);
-            }
-        }
         this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
-            console.log('246');
-            // console.log(data);
             this.downloadFile(data)
-            
-            // generatedNotes = data['generationResult'];
-            // this.renderNotes(generatedNotes);
-            // this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
         });
     }
 
