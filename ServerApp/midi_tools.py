@@ -20,7 +20,6 @@ def create_midi_file(daw_state):
 
     midi_object = MIDIFile(numTracks=num_tracks)  # One track, defaults to format 1 (tempo track is created automatically)
     
-
     # The daw_state representation gives note a time state array. To write a MIDI file,
     # we'll need to transpose the mapping so that each time step maps to a set of active note numerals.
     
