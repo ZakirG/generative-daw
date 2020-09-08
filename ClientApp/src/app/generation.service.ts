@@ -12,22 +12,15 @@ export class GenerationService {
 
     serverURL = this.configDataService.serverURL;
 
-    melodyGenerationURL = this.serverURL + 'generate/melody/random';
-    chordsGenerationURL = this.serverURL + 'generate/chords/random';
+    melodyGenerationURL = this.serverURL + 'generate/melody';
+    chordsGenerationURL = this.serverURL + 'generate/chords';
     midiFileGenerationURL = this.serverURL + 'midi';
 
-    generate(generationOptions, length) {
-        var scale_code = (generationOptions.scale == 'any') ? 'any' : generationOptions.scale.code;
-        var URL_endpoint = encodeURI(this.serverURL
-            + 'generate/'
-            + generationOptions.generationType + '/'
-            + generationOptions.key + '/'
-            + scale_code + '/'
-            + generationOptions.octaveConstraint + '/'
-            + 'random/'
-            + length);
-
-        return this.http.get(URL_endpoint);
+    generate(generationOptions) {
+        if (typeof generationOptions.scale != 'string') generationOptions.scale = generationOptions.scale.code;
+        console.log('generationOptions: ', generationOptions);
+        var URL_endpoint = (generationOptions.generationType == 'chords') ? this.chordsGenerationURL : this.melodyGenerationURL;
+        return this.http.post(URL_endpoint, generationOptions);
     }
 
     exportToMidi(dawState) {

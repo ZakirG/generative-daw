@@ -238,22 +238,35 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 .modal-content {
     top:100px;
+    width:650px;
 }
 
-#generationModal input {
+.generation-modal input, .generation-modal select {
     display:inline-block;
+    margin:0 5px 5px 5px;
+    height: 34px !important;
+    border-radius:3px;
+}
+
+.form-label {
+    margin-bottom:5px;
+    height:34px;
+    padding-top:5px;
+}
+
+.custom-radio-button, .custom-checkbox, .form-label {
+    display: block;
+    position: relative;
+    font-weight:normal;
 }
 
 .custom-radio-button, .custom-checkbox {
-    display: block;
-    position: relative;
-    padding-left: 20px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    font-weight:normal;
+    padding-left: 20px;
 }
 
 /* Hide the browser's default radio button */
@@ -266,7 +279,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 .radio {
     margin:0;
     position: absolute;
-    top: 2px;
+    top: 6px;
     left: 0;
     height: 15px;
     width: 15px;
@@ -276,7 +289,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 /* Create a custom checkbox */
 .checkmark {
-    margin:0;
+    margin:0 5px 5px 5px;
     position: absolute;
     top: 2px;
     left: 0;
@@ -284,7 +297,6 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     width: 15px;
     background-color: #eee;
 }
-
 
 /* On mouse-over, add a grey background color */
 .custom-radio-button:hover input ~ .radio, .custom-checkbox:hover input ~ .checkmark {
@@ -361,4 +373,8 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 .action-button:hover {
     border-color: white;
+}
+
+label.disabled {
+    opacity: 0.8;
 }

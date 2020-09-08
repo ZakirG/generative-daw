@@ -1,35 +1,73 @@
-<div class="modal fade" [id]="'generationModal' + trackNumber" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade generation-modal" [id]="'generationModal' + trackNumber" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Configure generation</h5>
+                    <h4 class="modal-title">Configure generation</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                      <form #generationForm="ngForm">
-                        What would you like to generate?
-                        <label class="custom-radio-button">
-                            <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">A melody
-                            <span class="radio"></span>
-                        </label>
-
-                        <label class="custom-radio-button">A chord progression
+                        <span class='form-label'>What would you like to generate?</span>
+                        <label class="custom-radio-button form-label">A chord progression
                             <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
                             <span class="radio"></span>
                         </label>
+
+                        <label class="custom-radio-button form-label">
+                            <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">A melody
+                            <span class="radio"></span>
+                        </label>
                         <hr/>
-                        <label class='custom-checkbox'>Only generate notes within {{ configDataService.key }} {{ configDataService.scale.name }}
-                            <input [(ngModel)]="conformToKeyScale" type="checkbox" name="conformToKeyScale">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class='custom-checkbox' style='display:inline-block;margin-right:15px;'>
-                            Only generate notes in octave
-                            <input [(ngModel)]="octaveConstraintCheck" type="checkbox" name="octaveConstraintCheck">
-                            <span class="checkmark"></span>
-                        </label>
-                        <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveConstraint" type="number" name="octaveConstraint">
+                        
+                        <div class='row'>
+                            <div class='col-6'>
+                                <label class="form-label">
+                                    Only generate notes in 
+                                    
+                                </label>
+                                
+                                <label class='form-label' style='display:inline-block;margin-right:15px;'>
+                                    Only generate notes in octave
+                                </label>
+                                
+                                <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                    Chords may contain between    
+                                </label>
+
+                                <label class='form-label' style='display:inline-block;margin-right:15px;'>
+                                    Disallow consecutive <span *ngIf="generationType == 'melody'">note</span> <span *ngIf="generationType == 'chords'">chord</span> repeats
+                                </label>
+
+                            </div>
+                            <div class='col-6'>
+                                <select name="key" style="text-align-last:center;width:70px;display:inline-block"  class='form-control' [ngModel]="configDataService.key" >
+                                    <option *ngFor="let key of configDataService.keys" [ngValue]="key">
+                                        {{ key }}
+                                    </option>
+                                </select>
+                                <select name="scale" style="text-align-last:center;width:190px; display:inline-block" class='form-control' [ngModel]="configDataService.scale">
+                                    <option *ngFor="let scale of configDataService.scales" [ngValue]="scale">
+                                        {{ scale.name }}
+                                    </option>
+                                </select>
+
+                                <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveConstraint" type="number" name="octaveConstraint">    
+
+                                <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chordSizeLowerBound" type="number" name="chordSizeLowerBound" style='width:70px; display:inline-block' >
+                                    and 
+                                    <input class='form-control' [(ngModel)]="chordSizeUpperBound" type="number" name="chordSizeUpperBound" style='width:70px; display:inline-block' >
+                                    notes
+                                </label>
+                                <br/>
+                                <label class='custom-checkbox' style='display:inline-block;margin-right:15px;'>
+                                    <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="disallowRepeats" type="checkbox" name="disallowRepeats">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
