@@ -2,6 +2,8 @@ import random
 from music21 import chord as music21_chords
 import re
 from constants import constants
+import sys
+import traceback
 
 ALLOWED_CHORD_SIZES_UPPER_BD = 6
 ALLOWED_CHORD_SIZES_LOWER_BD = 3
@@ -43,13 +45,14 @@ def generate_random_melody(length, key, scale, octave):
     
     return result
     
-def generate_random_chords(length, key, scale, octave):
+def generate_random_chords(length, key, scale, octave, chord_size_lower_bound, chord_size_upper_bound):
     allowed_notes = get_allowed_notes(key, scale, octave)
 
     # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
-    upper_bd = min(ALLOWED_CHORD_SIZES_UPPER_BD, len(allowed_notes))
-        
-    allowed_chord_sizes = range(ALLOWED_CHORD_SIZES_LOWER_BD, upper_bd)
+    upper_bd = min(chord_size_upper_bound, len(allowed_notes))
+    allowed_chord_sizes = range(chord_size_lower_bound, upper_bd + 1)
+    if upper_bd == chord_size_lower_bound:
+        allowed_chord_sizes = [upper_bd]
     
     result = []
     for i in range(length):
@@ -63,7 +66,7 @@ def generate_random_chords(length, key, scale, octave):
         result.append(chord)
             
     return result
-    
+
 def determine_chord_name(chord, key, scale):
     if len(chord) <= 2:
         return ('', '')
@@ -78,13 +81,10 @@ def determine_chord_name(chord, key, scale):
         ).replace('incomplete', '').replace('dominant', '').replace('-', ' ')
         
     if abbreviation.startswith('enharmonic equivalent'):
-        try:
-            enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
-            matches = re.search(enharmonicRegex, abbreviation)
-            abbreviation = matches.group(2) + ' ' + matches.group(1)
-        except Exception as e:
-            print(e)
-
+        enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
+        matches = re.search(enharmonicRegex, abbreviation)
+        abbreviation = matches.group(2) + ' ' + matches.group(1)
+        
     return (abbreviation, determine_chord_degree(abbreviation, key, scale, c))
 
 def get_degree_for_root(chord_root, sorted_allowed_notes):
@@ -97,43 +97,49 @@ def get_degree_for_root(chord_root, sorted_allowed_notes):
 
 
 def determine_chord_degree(chord_name, key, scale, chord_object):
-    if len(chord_name.strip()) == 0:
+    try:
+        if len(chord_name.strip()) == 0:
+            return ''
+
+        pieces = chord_name.split()
+        chord_root = pieces[0].lower().replace('#', 's')
+        sorted_allowed_notes = get_allowed_notes(key, scale['code'], 0)
+        
+        degree = get_degree_for_root(chord_root, sorted_allowed_notes)
+        modifier = '' # sharp or flat
+
+        if degree == 8:
+            upper_neighbor = ''
+            lower_neighbor = ''
+            if len(chord_root) == 1:
+                upper_neighbor = chord_root + 's'
+            else:
+                lower_neighbor = chord_root[0]
+            if len(upper_neighbor) > 0:
+                degree = get_degree_for_root(upper_neighbor, sorted_allowed_notes)
+                modifier = 'b'
+            if len(lower_neighbor) > 0:
+                degree = get_degree_for_root(lower_neighbor, sorted_allowed_notes)
+                modifier = '#'
+
+        quality = chord_object.quality
+        roman_numeral = constants['roman_numerals_upper'][degree - 1] + modifier
+
+        if quality == 'major' or 'maj' in pieces:
+            return roman_numeral + ' ' + ' '.join(pieces[1:])
+        if quality == 'augmented':
+            return roman_numeral + '+ ' +  ' '.join(pieces[1:])
+        if quality == 'minor':
+            return roman_numeral.lower() + ' ' + ' '.join(pieces[1:])
+        if quality == 'diminished':
+            return roman_numeral.lower() + '\xB0 ' +  ' '.join(pieces[1:])
+        
+        return roman_numeral.lower() + ' ' + ' '.join(pieces[1:])
+    except Exception as e:
+        exc_info = sys.exc_info()
+        print('Exception: ', e)
+        traceback.print_exception(*exc_info)
         return ''
-
-    pieces = chord_name.split()
-    chord_root = pieces[0].lower().replace('#', 's')
-    sorted_allowed_notes = get_allowed_notes(key, scale['code'], 0)
-    
-    degree = get_degree_for_root(chord_root, sorted_allowed_notes)
-    modifier = '' # sharp or flat
-
-    if degree == 8:
-        upper_neighbor = ''
-        lower_neighbor = ''
-        if len(chord_root) == 1:
-            upper_neighbor = chord_root + 's'
-        else:
-            lower_neighbor = chord_root[0]
-        if len(upper_neighbor) > 0:
-            degree = get_degree_for_root(upper_neighbor, sorted_allowed_notes)
-            modifier = 'b'
-        if len(lower_neighbor) > 0:
-            degree = get_degree_for_root(lower_neighbor, sorted_allowed_notes)
-            modifier = '#'
-
-    quality = chord_object.quality
-    roman_numeral = constants['roman_numerals_upper'][degree - 1]
-
-    if quality == 'major':
-        return roman_numeral + modifier + ' ' + ' '.join(pieces[1:])
-    if quality == 'augmented':
-        return roman_numeral + modifier + '+ ' +  ' '.join(pieces[1:])
-    if quality == 'minor':
-        return roman_numeral.lower() + modifier + ' ' + ' '.join(pieces[1:])
-    if quality == 'diminished':
-        return roman_numeral.lower() + modifier + '\xB0 ' +  ' '.join(pieces[1:])
-    
-    return roman_numeral.lower() + modifier + ' ' + ' '.join(pieces[1:])
 
 
 def transpose_notes_to_grid(notes):

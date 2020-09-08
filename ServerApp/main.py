@@ -31,12 +31,19 @@ def generate_melody(key, scale, octave_constraint, generation_type, length):
     response = {'generationResult' : result}
     return json.dumps(response);
 
-@app.route('/generate/chords/<string:key>/<string:scale>/<string:octave_constraint>/<string:generation_type>/<int:length>', methods=['GET'])
+@app.route('/generate/chords', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
-def generate_chords(key, scale, octave_constraint, generation_type, length):
-    result = None
-    if generation_type == 'random':    
-        result = generation_tools.generate_random_chords(length, key, scale, octave_constraint)
+def generate_chords():
+    content = request.get_json()
+    
+    length = content['length']
+    key = content['key'].replace('#', 's').lower()
+    scale = content['scale']
+    octave = content['octaveConstraint']
+    chord_size_lower_bound = content['chordSizeLowerBound']
+    chord_size_upper_bound = content['chordSizeUpperBound']
+    
+    result = generation_tools.generate_random_chords(length, key, scale, octave, chord_size_lower_bound, chord_size_upper_bound)
     
     response = {'generationResult' : result}
     return json.dumps(response);
@@ -45,12 +52,16 @@ def generate_chords(key, scale, octave_constraint, generation_type, length):
 @crossdomain(origin='*')
 def update_daw_state():
     content = request.get_json()
+    key = content['key'].replace('#', 's')
+    scale = content['scale']
+    tempo = content['tempo']
+    tracks = content['tracks']
     
-    DawState['scale'] =  content['scale']
-    DawState['key'] =  content['key']
-    DawState['tempo'] =  content['tempo']
-    DawState['tracks'] =  content['tracks']
-    chord_names, chord_degrees = generation_tools.name_chords_in_tracks(content['tracks'], content['key'], content['scale'])
+    DawState['scale'] = scale
+    DawState['key'] =  key
+    DawState['tempo'] =  tempo
+    DawState['tracks'] =  tracks
+    chord_names, chord_degrees = generation_tools.name_chords_in_tracks(tracks, key, scale)
     DawState['chord_names'] = chord_names
     DawState['chord_degrees'] = chord_degrees
     

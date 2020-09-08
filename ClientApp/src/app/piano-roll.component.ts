@@ -3,13 +3,14 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
 import { interact } from '../assets/js/interact.min.js';
+import { config } from 'process';
 declare var require: any
 const interact = require('interactjs');
 
 @Component({
     selector:    'piano-roll',
     templateUrl: './piano-roll.component.html',
-    providers:  [ /*NoteService*/ ],
+    providers:  [ ],
     styleUrls: ['./piano-roll.component.css']
 })
 
@@ -17,9 +18,11 @@ export class PianoRollComponent {
     timeStateLength = 8;
     gridState = [];
     conformToKeyScale = true;
-    generationType = 'melody';
+    generationType = 'chords';
     octaveConstraint = 3;
     octaveConstraintCheck = true;
+    chordSizeLowerBound = 3;
+    chordSizeUpperBound = 7;
     notes: Array<any>;
     _ref: any;
 
@@ -36,6 +39,8 @@ export class PianoRollComponent {
 
     constructor(public generationService: GenerationService, public configDataService: ConfigDataService) {
         this.initializeEmptyGridState();
+        this.scale = this.configDataService.scale;
+        this.key = this.configDataService.key;
     }
 
     initializeEmptyGridState() {
@@ -99,28 +104,12 @@ export class PianoRollComponent {
                 endOnly: true,
             },
 
-        // minimum size
-        // restrictSize: {
-//             min: { width: 500, height: 500 },
-//         },
         inertia: true,
         }).on('resizemove', function (event) {
             var target = event.target,
-            x = (parseFloat(target.getAttribute('data-x')) || 0),
             y = (parseFloat(target.getAttribute('data-y')) || 0);
-
-            // update the element's style
-            // target.style.width  = event.rect.width + 'px';
             target.style.height = event.rect.height + 'px';
-
-            // translate when resizing from top or left edges
-            // x += event.deltaRect.left;
             y += event.deltaRect.top;
-
-            // target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
-
-            // target.setAttribute('data-x', x);
-            // target.setAttribute('data-y', y);
         });
     }
 
@@ -143,15 +132,9 @@ export class PianoRollComponent {
     }
 
     generate(generationOptions) {
-        console.log(generationOptions);
-
-        generationOptions.key = generationOptions.conformToKeyScale ? this.configDataService.key : 'any';
-        generationOptions.scale = generationOptions.conformToKeyScale ? this.configDataService.scale : 'any';
-        generationOptions.octaveConstraint = generationOptions.octaveConstraintCheck ? generationOptions.octaveConstraint : 'any';
-
-
         var generatedNotes = [];
-        this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {
+        generationOptions.length = this.timeStateLength;
+        this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
