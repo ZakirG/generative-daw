@@ -1,3 +1,4 @@
+audiolazy==0.6
 chardet==3.0.4
 click==7.1.2
 Flask==1.1.2
@@ -7,6 +8,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 joblib==0.16.0
 MarkupSafe==1.1.1
+MIDIUtil==1.2.1
 more-itertools==8.5.0
 music21==6.1.0
 six==1.15.0

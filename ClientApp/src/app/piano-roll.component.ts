@@ -18,7 +18,7 @@ export class PianoRollComponent {
     gridState = [];
     conformToKeyScale = true;
     generationType = 'melody';
-    octaveConstraint = 1;
+    octaveConstraint = 3;
     octaveConstraintCheck = true;
     notes: Array<any>;
     _ref: any;
@@ -42,31 +42,31 @@ export class PianoRollComponent {
         var stateWidth = (100 / this.timeStateLength) + "%";
 
         this.notes = [
-            {'color' : 'white', 'note' : 'b', 'octave' : 2},
-            {'color' : 'black', 'note' : 'as', 'octave' : 2},
-            {'color' : 'white', 'note' : 'a', 'octave' : 2},
-            {'color' : 'black', 'note' : 'gs', 'octave' : 2},
-            {'color' : 'white', 'note' : 'g', 'octave' : 2},
-            {'color' : 'black', 'note' : 'fs', 'octave' : 2},
-            {'color' : 'white', 'note' : 'f', 'octave' : 2},
-            {'color' : 'white', 'note' : 'e', 'octave' : 2},
-            {'color' : 'black', 'note' : 'ds', 'octave' : 2},
-            {'color' : 'white', 'note' : 'd', 'octave' : 2},
-            {'color' : 'black', 'note' : 'cs', 'octave' : 2},
-            {'color' : 'white', 'note' : 'c', 'octave' : 2},
+            {'color' : 'white', 'note' : 'b', 'octave' : 4},
+            {'color' : 'black', 'note' : 'as', 'octave' : 4},
+            {'color' : 'white', 'note' : 'a', 'octave' : 4},
+            {'color' : 'black', 'note' : 'gs', 'octave' : 4},
+            {'color' : 'white', 'note' : 'g', 'octave' : 4},
+            {'color' : 'black', 'note' : 'fs', 'octave' : 4},
+            {'color' : 'white', 'note' : 'f', 'octave' : 4},
+            {'color' : 'white', 'note' : 'e', 'octave' : 4},
+            {'color' : 'black', 'note' : 'ds', 'octave' : 4},
+            {'color' : 'white', 'note' : 'd', 'octave' : 4},
+            {'color' : 'black', 'note' : 'cs', 'octave' : 4},
+            {'color' : 'white', 'note' : 'c', 'octave' : 4},
 
-            {'color' : 'white', 'note' : 'b', 'octave' : 1},
-            {'color' : 'black', 'note' : 'as', 'octave' : 1},
-            {'color' : 'white', 'note' : 'a', 'octave' : 1},
-            {'color' : 'black', 'note' : 'gs', 'octave' : 1},
-            {'color' : 'white', 'note' : 'g', 'octave' : 1},
-            {'color' : 'black', 'note' : 'fs', 'octave' : 1},
-            {'color' : 'white', 'note' : 'f', 'octave' : 1},
-            {'color' : 'white', 'note' : 'e', 'octave' : 1},
-            {'color' : 'black', 'note' : 'ds', 'octave' : 1},
-            {'color' : 'white', 'note' : 'd', 'octave' : 1},
-            {'color' : 'black', 'note' : 'cs', 'octave' : 1},
-            {'color' : 'white', 'note' : 'c', 'octave' : 1}
+            {'color' : 'white', 'note' : 'b', 'octave' : 3},
+            {'color' : 'black', 'note' : 'as', 'octave' : 3},
+            {'color' : 'white', 'note' : 'a', 'octave' : 3},
+            {'color' : 'black', 'note' : 'gs', 'octave' : 3},
+            {'color' : 'white', 'note' : 'g', 'octave' : 3},
+            {'color' : 'black', 'note' : 'fs', 'octave' : 3},
+            {'color' : 'white', 'note' : 'f', 'octave' : 3},
+            {'color' : 'white', 'note' : 'e', 'octave' : 3},
+            {'color' : 'black', 'note' : 'ds', 'octave' : 3},
+            {'color' : 'white', 'note' : 'd', 'octave' : 3},
+            {'color' : 'black', 'note' : 'cs', 'octave' : 3},
+            {'color' : 'white', 'note' : 'c', 'octave' : 3}
         ]
 
         this.gridState = [];
@@ -122,10 +122,6 @@ export class PianoRollComponent {
             // target.setAttribute('data-x', x);
             // target.setAttribute('data-y', y);
         });
-    }
-
-    togglePianoRollOpen() {
-        console.log('hey');
     }
 
     clearPianoRoll() {

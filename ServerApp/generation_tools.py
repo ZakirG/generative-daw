@@ -1,17 +1,12 @@
 import random
 from music21 import chord as music21_chords
+import re
+from constants import constants
 
-chromatic_scale = [{'note': 'c'}, {'note': 'cs'}, {'note': 'd'}, {'note': 'ds'}, {'note': 'e'}, {'note': 'f'}, {'note': 'fs'}, {'note': 'g'}, {'note': 'gs'}, {'note': 'a'}, {'note': 'as'}, {'note': 'b'}]
+ALLOWED_CHORD_SIZES_UPPER_BD = 6
+ALLOWED_CHORD_SIZES_LOWER_BD = 3
 
-allowed_chord_sizes = range(3, 7)
-
-scales = {
-            'maj' : {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ] },
-            'min' : {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ] },
-            'dhmaj' : {'name' : 'maj (b2 b6)', 'intervals' : [1,3,1,2,1,3,1 ] },
-        }
-
-def get_allowed_notes(key, scale, octave): 
+def get_allowed_notes(key, scale, octave):
     possible_octaves = []
     if octave == 'any':
         possible_octaves = range(1,3)
@@ -21,7 +16,7 @@ def get_allowed_notes(key, scale, octave):
         
     allowed_chromatic_notes = []
     for octave in possible_octaves:
-        for note in chromatic_scale:
+        for note in constants['chromatic_scale']:
             allowed_chromatic_notes.append({'note' : note['note'], 'octave' : octave})
     
     return get_key_scale_notes(key, scale, octave, allowed_chromatic_notes)
@@ -31,7 +26,7 @@ def get_key_scale_notes(key, scale_code, octave, allowed_chromatic_notes):
     notes_sorted_starting_at_root = allowed_chromatic_notes[index_of_key:] + allowed_chromatic_notes[:index_of_key]
     notes_sorted_starting_at_root = notes_sorted_starting_at_root * 2 # double list to make note selection circular
     print(notes_sorted_starting_at_root)
-    intervals = scales[scale_code]['intervals']
+    intervals = constants['scales'][scale_code]['intervals']
     print(intervals)
     key_scale_notes = []
     i = 0
@@ -53,6 +48,11 @@ def generate_random_melody(length, key, scale, octave):
     
 def generate_random_chords(length, key, scale, octave):
     allowed_notes = get_allowed_notes(key, scale, octave)
+
+    # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
+    upper_bd = min(ALLOWED_CHORD_SIZES_UPPER_BD, len(allowed_notes))
+        
+    allowed_chord_sizes = range(ALLOWED_CHORD_SIZES_LOWER_BD, upper_bd)
     
     result = []
     for i in range(length):
@@ -71,15 +71,24 @@ def generate_random_chords(length, key, scale, octave):
 def determine_chord_name(chord):
     if len(chord) <= 2:
         return ''
-    
     notes = map(lambda x: x.upper(), chord)
-    notes = map(lambda x: x.replace('S', '#'), notes)
+    notes = list(map(lambda x: x.replace('S', '#'), notes))
+    notes.reverse()
     c = music21_chords.Chord(list(notes))
     full_name = c.pitchedCommonName
     abbreviation = full_name.replace('minor', 'min'
         ).replace('major', 'maj').replace('seventh', '7'
         ).replace('augmented', 'aug').replace('diminished', 'dim'
         ).replace('incomplete', '').replace('dominant', '').replace('-', ' ')
+        
+    if abbreviation.startswith('enharmonic equivalent'):
+        try:
+            enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
+            matches = re.search(enharmonicRegex, abbreviation)
+            abbreviation = matches.group(2) + ' ' + matches.group(1)
+        except Exception as e:
+            print(e)
+
     return abbreviation
     
 def transpose_notes_to_grid(notes):
@@ -99,5 +108,3 @@ def name_chords_in_tracks(tracks):
     for grid in grid_by_tracks:
         chord_names_by_tracks.append(list(map(lambda x: determine_chord_name(x), grid)))
     return chord_names_by_tracks
-        
-        

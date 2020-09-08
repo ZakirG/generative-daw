@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -6,23 +7,24 @@ import { Injectable } from '@angular/core';
 export class ConfigDataService {
     inPlayState : boolean;
     timeStateLength : number;
+    constants: any;
     tempo : number;
     key : string;
+    scales: any;
     scale : any;
     dawState : any;
     stateWidth: string;
-
-    scales = [
-            {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' },
-            {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ], 'code' : 'min' },
-            {'name' : 'maj (b2 b6)', 'intervals' : [1,3,1,2,1,3,1 ], 'code' : 'dhmaj' },
-        ];
-
+    serverURL: string;
+    constantsURL: string;
+    
     keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-    constructor() {
-        this.scale = this.scales[0];
+    constructor(private http: HttpClient) {
+        this.serverURL = 'http://localhost:5000/'
+        this.constantsURL = this.serverURL + 'constants';
+        
         this.key = this.keys[0];
+        this.scale = [];
         this.tempo = 100;
         this.inPlayState = false;
         this.timeStateLength = 8;
@@ -30,6 +32,5 @@ export class ConfigDataService {
         this.stateWidth = (100 / this.timeStateLength)  + '%';
         this.dawState.chord_names = [[]];
     }
-
 }
 

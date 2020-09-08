@@ -55,6 +55,7 @@ button[disabled] {
 .piano-roll-col {
     padding:0;
     height:100%;
+    background:#eafbff;
 }
 
 
@@ -118,7 +119,7 @@ ul {
     width:50%;
     z-index:1;
     position:relative;
-    border-radius:0px 5px 5px 0px;
+    border-radius:0px 3px 3px 0px;
     height:16px;
 }
 
@@ -142,7 +143,7 @@ span.note-label[data-note='C'] {
     padding:0;
     border-bottom: solid 1px #a5f2ff;
     border-right: solid 1px #a5f2ff;
-    border-radius: 0 5px 5px 0;
+    border-radius: 0;
     overflow:hidden;
     margin:0;
 }

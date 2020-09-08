@@ -1,6 +1,6 @@
 # GenerativeDAW
 
-### A digital audio workstation webapp focused on providing generative composition tools informed by music theory.
+### A digital audio workstation webapp that provides generative composition tools informed by music theory.
 
 #### Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 

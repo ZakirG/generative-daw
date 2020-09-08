@@ -1,11 +1,12 @@
-//import { Component, ViewChild, AfterViewInit, ViewContainerRef } from '@angular/core';
 import {Component, NgModule,Input,ComponentFactory,ComponentRef, AfterViewInit, ComponentFactoryResolver, ViewContainerRef, ChangeDetectorRef, TemplateRef, ViewChild, Output, EventEmitter} from '@angular/core';
 import { Title }     from '@angular/platform-browser';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TrackComponent } from './track.component';
 import { PianoRollComponent } from './piano-roll.component';
 import { ConfigDataService } from './configdata.service';
+import { GenerationService } from './generation.service';
 import { DawStateService } from './dawstate.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-root',
@@ -23,12 +24,18 @@ export class AppComponent {
     audioBuffers: Object;
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
+    constants: any;
+    
+    serverURL = 'http://localhost:5000/'
+    constantsURL = this.serverURL + 'constants';
 
     public constructor(
         public titleService: Title,
         public configDataService: ConfigDataService,
+        public generationService: GenerationService,
         public dawStateService: DawStateService,
-        public resolver: ComponentFactoryResolver) { }
+        public resolver: ComponentFactoryResolver,
+        private http: HttpClient) { }
 
     public setTitle( newTitle: string) {
         this.titleService.setTitle( newTitle );
@@ -47,6 +54,15 @@ export class AppComponent {
             key: new FormControl(this.configDataService.key),
             tempo: new FormControl(this.configDataService.tempo)
         });
+        
+        this.http.get(this.constantsURL).subscribe((data) => {
+            let constants = data;
+            let scales = Object.values(constants['scales']);
+            this.configDataService.scales = scales;
+            this.configDataService.scale = scales[0];
+            let scale = scales[0];
+            this.controlPanelForm.controls.scale.setValue(scale);
+        });
 
         this.addTrack();
         this.showPianoRoll(0);
@@ -63,7 +79,8 @@ export class AppComponent {
         this.notes = this.tracks[0].notes;
 
         for (let note of this.notes) {
-            this.audioBuffers[note.note + note.octave] = 0;
+            let bufferName = note.note + note.octave;
+            this.audioBuffers[bufferName] = 0;
         }
 
         this.fetchNoteSamples();
@@ -156,7 +173,7 @@ export class AppComponent {
 
     fetchNoteSamples() {
         for (let note of this.notes) {
-            var filename = 'assets/sounds/' + note.note + (note.octave + 1) + '.wav';
+            var filename = 'assets/sounds/' + note.note + (note.octave) + '.wav';
 
             this.fetchNoteSample(filename).then(audioBuffer => {
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
@@ -212,9 +229,26 @@ export class AppComponent {
         dawState['tracks'] = minimizedTracks;
         dawState['scale'] = this.configDataService.scale;
         dawState['key'] = this.configDataService.key;
+        dawState['tempo'] = this.configDataService.tempo;
 
         this.dawStateService.updateDawState(dawState).subscribe((data) => {
             this.configDataService.dawState = data;
         });
     }
+
+    downloadFile(data) {
+        const blob = new Blob([data], { type: 'audio/midi' });
+        const url= window.URL.createObjectURL(blob);
+        let anchor = document.createElement("a");
+        anchor.download = "autocomposer-export.midi";
+        anchor.href = url;
+        anchor.click();
+    }
+
+    exportToMidi() {
+        this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
+            this.downloadFile(data)
+        });
+    }
+
 }
