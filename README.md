@@ -8,9 +8,7 @@ Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 
 This project is a <a href='https://en.wikipedia.org/wiki/Digital_audio_workstation'>digital audio workstation</a> webapp that provides a suite of tools for randomized music composition. The app is meant to be used as an assistive tool by producers and vocalists for the rapid generation and evaluation of compositions that match user-applied stylistic constraints.
 
-In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are used to create random compositions that are musically sensible.
-
-The user specifies the generative settings they are interested in and generates a composition. After editing the result to their taste, they can download the MIDI file and continue work on the composition in their usual program of choice, like Logic Pro X or FL.
+In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are used to create random compositions that are musically sensible. After editing the result to taste, the MIDI file can be downloaded and loaded into a conventional DAW like Logic Pro X or FL.
 
 This project is still in pre-release. Core features are still under development.
 
@@ -18,6 +16,8 @@ This project is still in pre-release. Core features are still under development.
 
 
 <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
+
+## Installation
 
 #### To build and run the application:
 Install Python 3, <a href='https://angular.io/guide/quickstart'>Angular</a>, and <a href="http://flask.pocoo.org/docs/1.0/installation/" target="_blank">Flask</a>. Clone the repo:
