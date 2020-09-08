@@ -47,7 +47,8 @@ A tab will automatically open in your default web browser at localhost:4200.
 - Modify project tempo, scale, & tonic
 - Add tracks and edit notes in a resizable piano roll window
 - Export application state to a MIDI file
-- The UI automatically labels note groups of size >= 3 with chord names and scale degrees
+- The UI automatically labels note groups of size >= 3 with chord names and roman numerals
+- Apply constraints to generation: allowed chord sizes, option to disallow consecutively repeated identical notesets
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
