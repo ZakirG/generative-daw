@@ -7,4 +7,5 @@ constants = {
         'majpent' : {'name' : 'major pentatonic', 'intervals' : [2,2,3,2,3], 'code' : 'majpent' },
         'minpent' : {'name' : 'minor pentatonic', 'intervals' : [3,2,2,3,2], 'code' : 'minpent' },
     },
+    'roman_numerals_upper': ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'],
 }

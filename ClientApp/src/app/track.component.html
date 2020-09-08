@@ -33,6 +33,8 @@
                     <div class='col chord-data' >
                         <span *ngFor="let chord of configDataService.dawState.chord_names[trackNumber]"
                                 class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
+                        <span *ngFor="let chord of configDataService.dawState.chord_degrees[trackNumber]"
+                            class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
                     </div>
                 </div>
         </div>
