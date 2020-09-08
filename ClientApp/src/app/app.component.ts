@@ -154,8 +154,6 @@ export class AppComponent {
     }
 
     playSound(soundName, time) {
-        console.log(soundName);
-        console.log(this.audioBuffers);
         let bufferSource = this.audioContext.createBufferSource();
         this.queuedSounds.push(bufferSource);
         bufferSource.buffer = this.audioBuffers[soundName];
