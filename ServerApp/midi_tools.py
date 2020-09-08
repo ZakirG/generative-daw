@@ -39,7 +39,7 @@ def create_midi_file(daw_state):
         for note in notes_active_at_this_timestep:
             midi_object.addNote(track_index, channel, note, current_time_step, duration, volume)
 
-    with open("major-scale.mid", "wb") as output_file:
+    with open("midi-export.mid", "wb") as output_file:
         midi_object.writeFile(output_file)
 
-    return ("major-scale.mid", output_file)
+    return ("midi-export.mid", output_file)
