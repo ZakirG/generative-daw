@@ -18,7 +18,7 @@ export class PianoRollComponent {
     gridState = [];
     conformToKeyScale = true;
     generationType = 'melody';
-    octaveConstraint = 1;
+    octaveConstraint = 3;
     octaveConstraintCheck = true;
     notes: Array<any>;
     _ref: any;
@@ -153,6 +153,7 @@ export class PianoRollComponent {
         var generatedNotes = [];
         this.generationService.generate(generationOptions, this.timeStateLength).subscribe((data) => {
             generatedNotes = data['generationResult'];
+            console.log('generatedNotes: ', generatedNotes);
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
         });

@@ -79,7 +79,8 @@ export class AppComponent {
         this.notes = this.tracks[0].notes;
 
         for (let note of this.notes) {
-            this.audioBuffers[note.note + note.octave] = 0;
+            let bufferName = note.note + note.octave;
+            this.audioBuffers[bufferName] = 0;
         }
 
         this.fetchNoteSamples();
@@ -153,6 +154,8 @@ export class AppComponent {
     }
 
     playSound(soundName, time) {
+        console.log(soundName);
+        console.log(this.audioBuffers);
         let bufferSource = this.audioContext.createBufferSource();
         this.queuedSounds.push(bufferSource);
         bufferSource.buffer = this.audioBuffers[soundName];
@@ -172,11 +175,10 @@ export class AppComponent {
 
     fetchNoteSamples() {
         for (let note of this.notes) {
-            var filename = 'assets/sounds/' + note.note + (note.octave + 1) + '.wav';
+            var filename = 'assets/sounds/' + note.note + (note.octave) + '.wav';
 
             this.fetchNoteSample(filename).then(audioBuffer => {
-                let bufferName = note.note + (parseInt(note.octave) + 2);
-                this.audioBuffers[bufferName] = audioBuffer;
+                this.audioBuffers[note.note + note.octave] = audioBuffer;
             }).catch(error => { throw error; });
         }
     }
