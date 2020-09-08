@@ -43,7 +43,7 @@ ng serve --open
 A tab will automatically open in your default web browser at localhost:4200. 
 
 #### Current features:
-- Generate & play back randomized melodies and chord progressions in a scale of your choice
+- Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
 - Modify project tempo, scale, & tonic
 - Add tracks and edit notes in a resizable piano roll window
 - Export application state to a MIDI file
