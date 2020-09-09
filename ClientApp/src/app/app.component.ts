@@ -114,7 +114,6 @@ export class AppComponent {
     }
 
     registerNewLogs(event) {
-        console.log('registered new logs ', event);
         this.appLogs.push(...event['logs']);
         this.appLogs.push(this.logSeparator)
     }
