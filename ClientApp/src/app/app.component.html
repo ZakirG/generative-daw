@@ -64,12 +64,20 @@
         </button>
     </div>
     <div class='logs-wrapper' *ngIf='showLogs'>
-        <button class='glyphicon-button' id='logs-close-button' (click)="showLogs = false">
-            <span class="glyphicon glyphicon-remove"></span>
-        </button>
-        <span class='app-log-line' *ngFor="let line of appLogs">
-            {{ line }}
-        </span>
+        <div class='panel-header'>
+            <span class='panel-title'>Logging Outputs</span>
+            <button class='glyphicon-button' id='logs-clear-button' (click)="appLogs = []">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+            <button class='glyphicon-button' id='logs-close-button' (click)="showLogs = false">
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+        <div class='panel-body'>
+            <span class='app-log-line' *ngFor="let line of appLogs">
+                {{ line }}
+            </span>
+        </div>
     </div>
     <div class='header-space'></div>
     <template #newTrack></template>

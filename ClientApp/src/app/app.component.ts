@@ -27,7 +27,7 @@ export class AppComponent {
     constants: any;
 
     showLogs = false;
-    appLogs = ['-- Begin logging --'];
+    appLogs = ['Welcome to GenerativeDAW ~'];
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
