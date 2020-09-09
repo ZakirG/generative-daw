@@ -303,3 +303,27 @@ input[type=number] {
     margin-bottom:2px;
     letter-spacing:0.7px;
 }
+
+.load-spinner {
+    position:fixed;
+    z-index:2000;
+    background:#c6f7ff;
+    height:100%;
+    width:100%;
+    transition: opacity .3s;
+    -webkit-transition: opacity .3s;
+    -moz-transition: opacity .3s;
+}
+
+.load-spinner.spinner-hidden {
+    opacity: 0;
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+.load-spinner.spinner-gone {
+    display:none;
+}

@@ -25,7 +25,9 @@ export class AppComponent {
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
     constants: any;
-
+    
+    pageLoaded = false;
+    pageReady = false;
     showLogs = false;
     appLogs = ['Welcome to GenerativeDAW ~'];
     serverURL = 'http://localhost:5000/'
@@ -86,6 +88,16 @@ export class AppComponent {
         }
 
         this.fetchNoteSamples();
+        
+        var _this = this;
+        window.setTimeout(function(){
+            _this.pageLoaded = true;
+        }, 1500);
+
+        window.setTimeout(function(){
+            _this.pageReady = true;
+        }, 1700);
+        
     }
 
     registerNoteDrawn(event) {
