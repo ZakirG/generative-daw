@@ -17,7 +17,7 @@ In contrast with similar generative tools out there, this application does not a
 - Logging panel in UI provides step-by-step explanations of the result generation method
 
 #### Music generation features so far:
-- Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
+- Can generate purely random melodies and progressions in a given key, scale, and octave
 - Chord progressions can be constrained to follow classical chord leading
 - Specify allowed chord sizes in generated output
 - Option to disallow consecutive identical notesets
