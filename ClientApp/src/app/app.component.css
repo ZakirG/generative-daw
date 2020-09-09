@@ -253,10 +253,10 @@ input[type=number] {
 }
 
 .logs-wrapper {
-    height:250px;
-    width:50%;
+    height:350px;
+    width:60%;
     background: white;
-    font-size:12px;
+    font-size:8px;
     color:white;
     position:fixed;
     right:58px;
@@ -300,8 +300,8 @@ input[type=number] {
     color:black;
     font-size:12px;
     display:block;
-    margin-bottom:2px;
-    letter-spacing:0.7px;
+    margin-bottom:4px;
+    /* letter-spacing:0.7px; */
 }
 
 .load-spinner {

@@ -7,7 +7,7 @@ from crossdomain import crossdomain
 import constants
 import generation_tools
 import midi_tools
-
+from client_logging import ClientLogger
 app = Flask(__name__)
 CORS(app)
 
@@ -15,15 +15,23 @@ BASE_URL = os.path.abspath(os.path.dirname(__file__))
 CLIENT_APP_FOLDER = os.path.join(BASE_URL, "ClientApp")
 
 DawState = {}
+ClientLogger = ClientLogger()
 
 def set_default(obj):
     if isinstance(obj, set):
         return list(obj)
     raise TypeError
 
+def add_logs_to_response(response):
+    response['logs'] = ClientLogger.get_logs()
+    ClientLogger.clear_logs()
+    return response
+
 @app.route('/generate/melody', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def generate_melody():
+    ClientLogger.log('Generating new melody...')
+
     content = request.get_json()
     
     length = content['length']
@@ -35,13 +43,14 @@ def generate_melody():
     result = generation_tools.generate_melody(length, key, scale, octave, disallow_repeats)
     
     response = {'generationResult' : result}
-    return json.dumps(response);
+    return json.dumps(add_logs_to_response(response))
 
 @app.route('/generate/chords', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def generate_chords():
+    ClientLogger.log('Generating new chord progression...')
+
     content = request.get_json()
-    print('content: ', content)
     
     length = content['length']
     key = content['key'].replace('#', 's').lower()
@@ -57,7 +66,7 @@ def generate_chords():
         chord_size_upper_bound, disallow_repeats, use_chord_leading)
     
     response = {'generationResult' : result}
-    return json.dumps(response);
+    return json.dumps(add_logs_to_response(response))
 
 @app.route('/daw-state', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
@@ -77,7 +86,7 @@ def update_daw_state():
     DawState['chord_degrees'] = chord_degrees
     
     response = DawState
-    return json.dumps(response)
+    return json.dumps(add_logs_to_response(response))
 
 @app.route('/constants', methods=['GET'])
 @crossdomain(origin='*')

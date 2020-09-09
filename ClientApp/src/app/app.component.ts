@@ -29,7 +29,8 @@ export class AppComponent {
     pageLoaded = false;
     pageReady = false;
     showLogs = false;
-    appLogs = ['Welcome to GenerativeDAW ~'];
+    logSeparator = '----------';
+    appLogs = ['Welcome to GenerativeDAW =]', this.logSeparator];
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
@@ -110,6 +111,12 @@ export class AppComponent {
         track.gridState = this.pianoRoll.gridState;
 
         this.updateDawState();
+    }
+
+    registerNewLogs(event) {
+        console.log('registered new logs ', event);
+        this.appLogs.push(...event['logs']);
+        this.appLogs.push(this.logSeparator)
     }
 
     registerTrackChange(event) {
@@ -223,6 +230,9 @@ export class AppComponent {
         this.tracks[trackNumber].thisTrackIsSelected = true;
         pianoRoll.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
+        });
+        pianoRoll.instance.newLogs.subscribe((event) => {
+            this.registerNewLogs(event);
         });
         pianoRoll.instance.trackChange.subscribe((event) => {
             this.registerTrackChange(event);

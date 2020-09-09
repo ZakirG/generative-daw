@@ -33,8 +33,8 @@ export class PianoRollComponent {
     @Input() scale: Object;
     @Input() pianoRollOpen: boolean;
 
-    @Output()
-    noteDrawn = new EventEmitter<any>();
+    @Output() noteDrawn = new EventEmitter<any>();
+    @Output() newLogs = new EventEmitter<any>();
 
     @Output()
     trackChange = new EventEmitter<any>();
@@ -138,8 +138,10 @@ export class PianoRollComponent {
         generationOptions.length = this.timeStateLength;
         this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
+            let logs = data['logs']
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
+            this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
         });
     }
 
