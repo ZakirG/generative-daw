@@ -22,8 +22,6 @@ In contrast with similar generative tools out there, this application does not a
 - Specify allowed chord sizes in generated output
 - Option to disallow consecutive identical notesets
 
-## Screenshots
-
 <!-- <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/>  -->
 
 <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
