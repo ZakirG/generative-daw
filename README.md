@@ -11,14 +11,14 @@ GenerativeDAW is a suite of tools for automated music composition.
 In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
 
 #### General features:
+- Automatic chord labeling with common names and scale degrees
+- Logging panel in UI provides step-by-step explanations of the result generation method
 - Add tracks and edit notes in a resizable piano roll window
 - Export application state to a MIDI file
-- Automatic chord labeling with common names and scale degrees
-- Modify project tempo, scale, & tonic
 
-#### Supported music generation features:
-- Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
+#### Music generation features so far:
 - Chord progressions can be constrained to follow classical chord leading
+- Can generate purely random melodies and progressions in a given key, scale, and octave
 - Specify allowed chord sizes in generated output
 - Option to disallow consecutive identical notesets
 
@@ -57,14 +57,12 @@ A tab will automatically open in your default web browser at localhost:4200.
 - The frontend layout makes use of Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
 - Client-side tests use the Jasmine framework and Karma test runner
 
-#### Possible future features:
+#### Possible future development:
 - Chord generation informed by voice leading principles
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
 - Unit tests for the Flask/Python backend
 - Draggable and resizable piano roll notes with http://interactjs.io/
-- A lyric generator that responds to drawn melodies using an Hidden Markov Model
-- Machine learning algorithms applied to a dataset of MIDI files from pop music
 
 
 #### Resources:

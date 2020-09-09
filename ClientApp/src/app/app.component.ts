@@ -26,6 +26,11 @@ export class AppComponent {
     controlPanelForm: FormGroup;
     constants: any;
     
+    pageLoaded = false;
+    pageReady = false;
+    showLogs = false;
+    logSeparator = '----------';
+    appLogs = ['Welcome to GenerativeDAW =]', this.logSeparator];
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
@@ -84,6 +89,16 @@ export class AppComponent {
         }
 
         this.fetchNoteSamples();
+        
+        var _this = this;
+        window.setTimeout(function(){
+            _this.pageLoaded = true;
+        }, 1500);
+
+        window.setTimeout(function(){
+            _this.pageReady = true;
+        }, 1700);
+        
     }
 
     registerNoteDrawn(event) {
@@ -96,6 +111,11 @@ export class AppComponent {
         track.gridState = this.pianoRoll.gridState;
 
         this.updateDawState();
+    }
+
+    registerNewLogs(event) {
+        this.appLogs.push(...event['logs']);
+        this.appLogs.push(this.logSeparator)
     }
 
     registerTrackChange(event) {
@@ -210,6 +230,9 @@ export class AppComponent {
         pianoRoll.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
         });
+        pianoRoll.instance.newLogs.subscribe((event) => {
+            this.registerNewLogs(event);
+        });
         pianoRoll.instance.trackChange.subscribe((event) => {
             this.registerTrackChange(event);
         });
@@ -250,5 +273,4 @@ export class AppComponent {
             this.downloadFile(data)
         });
     }
-
 }

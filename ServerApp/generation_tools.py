@@ -5,6 +5,8 @@ from constants import constants, chord_leading_chart
 import sys
 import traceback
 from utils import roman_to_int
+from client_logging import ClientLogger
+ClientLogger = ClientLogger()
 
 def get_allowed_notes(key, scale_code, octave):
     possible_octaves = []
@@ -174,15 +176,14 @@ def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_si
     
     result = []
     previous_chord = []
+    previous_chord_name = ''
     for i in range(length):
         num_notes_in_chord = random.choice(allowed_chord_sizes)
 
-        candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
+        candidate_chord = None
+        generation_method = 'random'
 
         if use_chord_leading and len(previous_chord) > 0:
-            flat_prev = flatten_note_set(previous_chord)
-            # TODO: use global_key here instead of key
-            previous_chord_name = determine_chord_name(flat_prev, key, constants['scales'][scale])
             if previous_chord_name[1] == '':
                 # A roman numeral name was not returned in position 1
                 break
@@ -196,7 +197,7 @@ def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_si
 
             if previous_chord_degree in chord_leading_chart[quality]:
                 leading_targets = chord_leading_chart[quality][previous_chord_degree].copy()
-                print('Leading targets for {} are {}'.format(previous_chord_degree, leading_targets))
+                # ClientLogger.log('Allowed leading targets for {} are {}'.format(previous_chord_degree, leading_targets))
                 
                 # Now we attempt to build a chord with one of the leading targets.
                 # This may take multiple tries, as certain scales lack certain leading targets.
@@ -210,25 +211,32 @@ def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_si
                 
                     if leading_chord != -1:
                         candidate_chord = leading_chord
-                        print('Applying chord leading rules to lead ({}) -> ({})'.format(previous_chord_name[1], chosen_target_degree))
-                        print('Built chord {} on {}.'.format(determine_chord_name(flatten_note_set(leading_chord), key, constants['scales'][scale])[0], chosen_target_degree))
+                        # ClientLogger.log('Applying chord leading rules to lead ({}) -> ({})'.format(previous_chord_name[1], chosen_target_degree))
+                        # ClientLogger.log('Built chord {} on {}.'.format(determine_chord_name(flatten_note_set(leading_chord), key, constants['scales'][scale])[0], chosen_target_degree))
+                        generation_method = 'applied chord leading to lead {} -> {}'.format(previous_chord_name[1].split()[0], chosen_target_degree)
                     
                     leading_targets.remove(chosen_target_degree)
-                if leading_chord == -1:
-                    print('Failed to apply chord-leading chart to {} in {} {}.'.format(previous_chord_degree, key, scale))
-
+                # if leading_chord == -1:
+                #     ClientLogger.log('Failed to apply chord-leading chart to {} in {} {}.'.format(previous_chord_degree, key, scale))
+                
+        if candidate_chord is None:
+            candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
+        
         # If repeats are disallowed, allow up to 6 retries to find a different noteset.
         if disallow_repeats:
             max_retries = 6
             retries = 0
             while set(flatten_note_set(previous_chord)) == set(flatten_note_set(candidate_chord)) and retries < max_retries:
-                print('Accidentally repeated a chord twice in a row. Regenerating randomly...')
+                ClientLogger.log('Accidentally repeated a chord twice in a row. Regenerating randomly...')
                 retries += 1
                 num_notes_in_chord = random.choice(allowed_chord_sizes)
                 candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
+                generation_method = 'random'
 
         result.append(candidate_chord)
         previous_chord = candidate_chord
+        previous_chord_name = determine_chord_name(flatten_note_set(previous_chord), key, constants['scales'][scale])
+        ClientLogger.log('Added {} ({}). Generation method: {}'.format(previous_chord_name[0], previous_chord_name[1].split()[0], generation_method))
             
     return result
 
