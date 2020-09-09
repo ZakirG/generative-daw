@@ -30,7 +30,7 @@ export class AppComponent {
     pageReady = false;
     showLogs = false;
     logSeparator = '----------';
-    appLogs = ['Welcome to GenerativeDAW =]', this.logSeparator];
+    appLogs = ['Welcome to GenerativeDAW =)', this.logSeparator];
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
