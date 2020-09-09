@@ -42,13 +42,17 @@ ng serve --open
 ```
 A tab will automatically open in your default web browser at localhost:4200. 
 
-#### Current features:
+#### General features:
 - Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
 - Modify project tempo, scale, & tonic
 - Add tracks and edit notes in a resizable piano roll window
 - Export application state to a MIDI file
 - The UI automatically labels note groups of size >= 3 with chord names and roman numerals
-- Apply constraints to generation: allowed chord sizes, option to disallow consecutively repeated identical notesets
+
+#### Supported music generation features:
+- Chord progressions can be constrained to follow classical chord leading
+- Specify allowed chord sizes in generated output
+- Option to disallow consecutively repeated identical notesets
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
@@ -57,7 +61,7 @@ A tab will automatically open in your default web browser at localhost:4200.
 - Client-side tests use the Jasmine framework and Karma test runner
 
 #### Possible future features:
-- Chord generation informed by chord leading charts, diatonic chord groups, and voice leading principles
+- Chord generation informed by voice leading principles
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
 - Unit tests for the Flask/Python backend
