@@ -2,7 +2,7 @@
 
 GenerativeDAW is a digital audio workstation webapp that provides generative composition tools informed by music theory.
 
-Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
+Built with Flask, Angular 8, and Python 3. Tested with Jasmine. This project is in pre-release.
 
 ## Overview
 
@@ -10,10 +10,19 @@ GenerativeDAW is a suite of tools for automated music composition.
 
 In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
 
-This project is in pre-release. Core features are still under development.
+#### General features:
+- Add tracks and edit notes in a resizable piano roll window
+- Export application state to a MIDI file
+- Automatic chord labeling with common names and scale degrees
+- Modify project tempo, scale, & tonic
 
-<img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> 
+#### Supported music generation features:
+- Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
+- Chord progressions can be constrained to follow classical chord leading
+- Specify allowed chord sizes in generated output
+- Option to disallow consecutive identical notesets
 
+<!-- <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/>  -->
 
 <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
 
@@ -41,18 +50,6 @@ npm install
 ng serve --open
 ```
 A tab will automatically open in your default web browser at localhost:4200. 
-
-#### General features:
-- Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
-- Modify project tempo, scale, & tonic
-- Add tracks and edit notes in a resizable piano roll window
-- Export application state to a MIDI file
-- The UI automatically labels note groups of size >= 3 with chord names and roman numerals
-
-#### Supported music generation features:
-- Chord progressions can be constrained to follow classical chord leading
-- Specify allowed chord sizes in generated output
-- Option to disallow consecutively repeated identical notesets
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
