@@ -25,7 +25,7 @@ export class ConfigDataService {
         
         this.key = this.keys[0];
         this.scale = [];
-        this.tempo = 100;
+        this.tempo = 80;
         this.inPlayState = false;
         this.timeStateLength = 8;
         this.dawState = {};

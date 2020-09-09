@@ -6,11 +6,11 @@ Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 
 ## Overview
 
-This webapp provides a suite of tools for randomized music composition. It is meant to be used for the rapid generation and evaluation of compositions that conform to user-applied stylistic constraints.
+GenerativeDAW is a suite of tools for automated music composition.
 
-In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are used to create random compositions that are musically sensible. After editing the result to taste, the MIDI file can be downloaded and loaded into a conventional DAW like Logic Pro X or FL.
+In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
 
-This project is still in pre-release. Core features are still under development.
+This project is in pre-release. Core features are still under development.
 
 <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> 
 
@@ -42,12 +42,17 @@ ng serve --open
 ```
 A tab will automatically open in your default web browser at localhost:4200. 
 
-#### Current features:
+#### General features:
 - Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
 - Modify project tempo, scale, & tonic
 - Add tracks and edit notes in a resizable piano roll window
 - Export application state to a MIDI file
-- The UI automatically labels note groups of size >= 3 with chord names and scale degrees
+- The UI automatically labels note groups of size >= 3 with chord names and roman numerals
+
+#### Supported music generation features:
+- Chord progressions can be constrained to follow classical chord leading
+- Specify allowed chord sizes in generated output
+- Option to disallow consecutively repeated identical notesets
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
@@ -56,7 +61,7 @@ A tab will automatically open in your default web browser at localhost:4200.
 - Client-side tests use the Jasmine framework and Karma test runner
 
 #### Possible future features:
-- Chord generation informed by chord leading charts, diatonic chord groups, and voice leading principles
+- Chord generation informed by voice leading principles
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
 - Unit tests for the Flask/Python backend

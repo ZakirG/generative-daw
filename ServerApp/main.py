@@ -41,6 +41,7 @@ def generate_melody():
 @crossdomain(origin='*')
 def generate_chords():
     content = request.get_json()
+    print('content: ', content)
     
     length = content['length']
     key = content['key'].replace('#', 's').lower()
@@ -49,8 +50,11 @@ def generate_chords():
     chord_size_lower_bound = content['chordSizeLowerBound']
     chord_size_upper_bound = content['chordSizeUpperBound']
     disallow_repeats = content['disallowRepeats']
+    use_chord_leading = content['useChordLeadingChart']
     
-    result = generation_tools.generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_size_upper_bound, disallow_repeats)
+    result = generation_tools.generate_chords(
+        length, key, scale, octave, chord_size_lower_bound, 
+        chord_size_upper_bound, disallow_repeats, use_chord_leading)
     
     response = {'generationResult' : result}
     return json.dumps(response);

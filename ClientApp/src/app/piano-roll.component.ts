@@ -19,11 +19,12 @@ export class PianoRollComponent {
     gridState = [];
     conformToKeyScale = true;
     generationType = 'chords';
-    octaveConstraint = 3;
+    octaveConstraint = 4;
     octaveConstraintCheck = true;
     chordSizeLowerBound = 3;
-    chordSizeUpperBound = 7;
+    chordSizeUpperBound = 5;
     disallowRepeats = true;
+    useChordLeadingChart = true;
     notes: Array<any>;
     _ref: any;
 
