@@ -289,13 +289,15 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 /* Create a custom checkbox */
 .checkmark {
-    margin:0 5px 5px 5px;
+    margin:0 5px 5px 7px;
     position: absolute;
     top: 2px;
     left: 0;
     height: 15px;
     width: 15px;
     background-color: #eee;
+    margin-bottom:19px;
+    margin-top:7px;
 }
 
 /* On mouse-over, add a grey background color */
@@ -377,4 +379,9 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 label.disabled {
     opacity: 0.8;
+}
+
+.help-icon {
+    color: #2196F3;
+    cursor: pointer;
 }
