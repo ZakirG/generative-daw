@@ -17,6 +17,18 @@ This project is in pre-release. Core features are still under development.
 
 <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
 
+#### General features:
+- Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
+- Modify project tempo, scale, & tonic
+- Add tracks and edit notes in a resizable piano roll window
+- Export application state to a MIDI file
+- The UI automatically labels note groups of size >= 3 with chord names and roman numerals
+
+#### Supported music generation features:
+- Chord progressions can be constrained to follow classical chord leading
+- Specify allowed chord sizes in generated output
+- Option to disallow consecutively repeated identical notesets
+
 ## Installation
 
 #### To build and run the application:
@@ -41,18 +53,6 @@ npm install
 ng serve --open
 ```
 A tab will automatically open in your default web browser at localhost:4200. 
-
-#### General features:
-- Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
-- Modify project tempo, scale, & tonic
-- Add tracks and edit notes in a resizable piano roll window
-- Export application state to a MIDI file
-- The UI automatically labels note groups of size >= 3 with chord names and roman numerals
-
-#### Supported music generation features:
-- Chord progressions can be constrained to follow classical chord leading
-- Specify allowed chord sizes in generated output
-- Option to disallow consecutively repeated identical notesets
 
 #### Overview of technologies used:
 - The client-side audio-manipulation application is an Angular app that uses the WebAudio API
