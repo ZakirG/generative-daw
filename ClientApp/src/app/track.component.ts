@@ -6,7 +6,7 @@ import { ConfigDataService } from './configdata.service';
     selector:    'track',
     templateUrl: './track.component.html',
     providers:  [ /*NoteService*/ ],
-    styleUrls: ['./track.component.css']
+    styleUrls: ['./track.component.css', './app.component.css']
 })
 
 export class TrackComponent {

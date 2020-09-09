@@ -52,11 +52,24 @@
                 </div>
             </form>
         </div>
+        <div class="col tex-left">
+            <button class="glyphicon-button" id="logs-button" (click)="showLogs = !showLogs">
+                <span class='glyphicon glyphicon-inbox'></span>
+            </button>
+        </div>
     </header>
     <div class='row control-bar'>
         <button id='add-track-button' class='control-bar-button' (click)="addTrack()">
             <span class='glyphicon glyphicon-plus'></span> ADD TRACK
         </button>
+    </div>
+    <div class='logs-wrapper' *ngIf='showLogs'>
+        <button class='glyphicon-button' id='logs-close-button' (click)="showLogs = false">
+            <span class="glyphicon glyphicon-remove"></span>
+        </button>
+        <span class='app-log-line' *ngFor="let line of appLogs">
+            {{ line }}
+        </span>
     </div>
     <div class='header-space'></div>
     <template #newTrack></template>

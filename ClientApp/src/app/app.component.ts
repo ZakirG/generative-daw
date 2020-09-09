@@ -25,7 +25,9 @@ export class AppComponent {
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
     constants: any;
-    
+
+    showLogs = false;
+    appLogs = ['-- Begin logging --'];
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
@@ -250,5 +252,4 @@ export class AppComponent {
             this.downloadFile(data)
         });
     }
-
 }

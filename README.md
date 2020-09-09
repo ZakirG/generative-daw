@@ -16,7 +16,7 @@ In contrast with similar generative tools out there, this application does not a
 - Automatic chord labeling with common names and scale degrees
 - Modify project tempo, scale, & tonic
 
-#### Supported music generation features:
+#### Music generation features so far:
 - Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
 - Chord progressions can be constrained to follow classical chord leading
 - Specify allowed chord sizes in generated output
@@ -57,14 +57,12 @@ A tab will automatically open in your default web browser at localhost:4200.
 - The frontend layout makes use of Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
 - Client-side tests use the Jasmine framework and Karma test runner
 
-#### Possible future features:
+#### Possible future development:
 - Chord generation informed by voice leading principles
 - Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
 - Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
 - Unit tests for the Flask/Python backend
 - Draggable and resizable piano roll notes with http://interactjs.io/
-- A lyric generator that responds to drawn melodies using an Hidden Markov Model
-- Machine learning algorithms applied to a dataset of MIDI files from pop music
 
 
 #### Resources:
