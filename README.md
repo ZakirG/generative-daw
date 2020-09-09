@@ -14,6 +14,7 @@ In contrast with similar generative tools out there, this application does not a
 - Add tracks and edit notes in a resizable piano roll window
 - Export application state to a MIDI file
 - Automatic chord labeling with common names and scale degrees
+- Modify project tempo, scale, & tonic
 
 #### Supported music generation features:
 - Generate & play back random melodies and chord progressions in a key, scale, and octave of choice
