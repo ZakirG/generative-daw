@@ -304,9 +304,9 @@ def determine_chord_roman_name(chord_name, key, scale, chord_object):
         quality = chord_object.quality
         roman_numeral = constants['roman_numerals_upper'][degree - 1] + modifier
 
-        is_major = 'major' or 'maj' in pieces
+        is_major = 'major' in pieces or 'maj' in pieces
         is_incomplete_dominant_in_major = 'maj' in scale_code and ('min' not in pieces and ('dominant-seventh' in pieces or '7' in pieces))
-
+        
         if is_major or is_incomplete_dominant_in_major:
             return roman_numeral + ' ' + ' '.join(pieces[1:])
         if quality == 'augmented':
