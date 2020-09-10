@@ -10,17 +10,17 @@ GenerativeDAW is a digital audio workstation webapp that provides generative com
 
 In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
 
+#### Music generation features:
+- Chord progressions can be constrained to follow classical chord leading
+- Can generate purely random melodies and progressions in a given key, scale, and octave
+- Specify allowed chord sizes in generated output
+- Option to disallow consecutive identical notesets
+
 #### General features:
 - Automatic chord labeling with common names and scale degrees
 - Logging panel in UI provides step-by-step explanations of the result generation method
 - Add tracks and edit notes in a resizable piano roll window
 - Export application state to a MIDI file
-
-#### Music generation features so far:
-- Chord progressions can be constrained to follow classical chord leading
-- Can generate purely random melodies and progressions in a given key, scale, and octave
-- Specify allowed chord sizes in generated output
-- Option to disallow consecutive identical notesets
 
 <!-- <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/>  -->
 
