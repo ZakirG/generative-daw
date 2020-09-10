@@ -1,12 +1,12 @@
 # GenerativeDAW
 
-GenerativeDAW is a digital audio workstation webapp that provides generative composition tools informed by music theory.
+GenerativeDAW is an automated music composition tool.
 
 Built with Flask, Angular 8, and Python 3. Tested with Jasmine. This project is in pre-release.
 
 ## Overview
 
-GenerativeDAW is an automated music composition tool.
+GenerativeDAW is a digital audio workstation webapp that provides generative composition tools informed by music theory.
 
 In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
 
