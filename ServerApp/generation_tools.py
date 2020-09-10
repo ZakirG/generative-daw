@@ -190,7 +190,7 @@ def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_si
         num_notes_in_chord = random.choice(allowed_chord_sizes)
 
         candidate_chord = None
-        generation_method = 'random'
+        generation_method = '?'
         if use_chord_leading and len(previous_chord) > 0 and previous_chord_name[1] != '':
             previous_chord_degree = previous_chord_name[1].split()[0]
 
@@ -224,6 +224,7 @@ def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_si
                 #     ClientLogger.log('Failed to apply chord-leading chart to {} in {} {}.'.format(previous_chord_degree, key, scale))
            
         if candidate_chord is None:
+            generation_method = 'picked {} scale notes at random'.format(num_notes_in_chord)
             candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
         
         # If repeats are disallowed, allow up to 6 retries to find a different noteset.
@@ -235,7 +236,7 @@ def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_si
                 retries += 1
                 num_notes_in_chord = random.choice(allowed_chord_sizes)
                 candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
-                generation_method = 'random'
+                generation_method = 'picked {} scale notes at random'.format(num_notes_in_chord)
 
         result.append(candidate_chord)
         previous_chord = candidate_chord

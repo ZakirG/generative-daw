@@ -265,6 +265,7 @@ input[type=number] {
     z-index:1040;
     border:solid 1px #00869e;
     overflow-y:auto;
+    white-space: pre-wrap;
 }
 
 #logs-close-button, #logs-clear-button {
