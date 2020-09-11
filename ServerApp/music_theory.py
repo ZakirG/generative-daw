@@ -11,20 +11,15 @@ def transpose_note_up_n_semitones(note, n):
     index_of_transpose = (index_of_input + n) % 12
     return chromatic_scale[index_of_transpose]
 
-def get_allowed_notes(key, scale_code, octave):
-    possible_octaves = []
-    if octave == 'any':
-        possible_octaves = range(1,3)
-        octave = 1
-    else:
-        possible_octaves = [octave]
-        
-    allowed_chromatic_notes = []
-    for octave in possible_octaves:
+def get_allowed_notes(key, scale_code, octaveRange):    
+    result = []
+    for octave in octaveRange:
+        allowed_chromatic_notes_in_octave = []
         for note in constants['chromatic_scale']:
-            allowed_chromatic_notes.append({'note' : note['note'], 'octave' : octave})
-    
-    return get_key_scale_notes(key, scale_code, octave, allowed_chromatic_notes)
+            allowed_chromatic_notes_in_octave.append({'note' : note['note'], 'octave' : octave})
+        result.extend(get_key_scale_notes(key, scale_code, octave, allowed_chromatic_notes_in_octave))
+        
+    return result
     
 def get_key_scale_notes(key, scale_code, octave, allowed_chromatic_notes):
     index_of_key = allowed_chromatic_notes.index({'note' : key.lower(), 'octave' : octave})
@@ -119,7 +114,7 @@ def determine_chord_roman_name(chord_name, key, scale, chord_object):
         
         pieces = chord_name.split()
         chord_root = pieces[0].lower().replace('#', 's')
-        sorted_allowed_notes = get_allowed_notes(key, scale['code'], 0)
+        sorted_allowed_notes = get_allowed_notes(key, scale['code'], [0])
         
         full_allowed_notes = sorted_allowed_notes
         scale_code = scale['code']

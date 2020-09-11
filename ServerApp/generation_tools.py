@@ -5,8 +5,8 @@ from client_logging import ClientLogger
 from music_theory import determine_chord_name, get_allowed_notes, transpose_note_up_n_semitones
 ClientLogger = ClientLogger()
 
-def generate_melody(length, key, scale, octave, disallow_repeats):
-    allowed_notes = get_allowed_notes(key, scale, octave)
+def generate_melody(length, key, scale, octaveRange, disallow_repeats):
+    allowed_notes = get_allowed_notes(key, scale, octaveRange)
     
     result = []
     previous_note = None
@@ -40,7 +40,7 @@ def flatten_note_set(note_set):
     return [x['note'] + str(x['octave']) for x in note_set]
 
 def build_chord_with_root(chosen_target_degree, key, scale, 
-    allowed_notes, chord_size_lower_bound, chord_size_upper_bound, octave):
+    allowed_notes, chord_size_lower_bound, chord_size_upper_bound, octaveRange):
 
     roman_numeral_upper = chosen_target_degree.replace('b',''
         ).replace('#','').replace('+','').replace('\xB0', ''
@@ -134,11 +134,11 @@ def build_chord_with_root(chosen_target_degree, key, scale,
     
     # For now, let's naively place these notes in the same octave. This will limit the voicings
     # we can create. TODO: Handle this better to produce more interesting voicings.
-    result_chord_notes = [ {'note': x, 'octave': octave} for x in result_chord ]
+    result_chord_notes = [ {'note': x, 'octave': random.choice(octaveRange)} for x in result_chord ]
     return result_chord_notes
 
-def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_size_upper_bound, disallow_repeats, use_chord_leading):
-    allowed_notes = get_allowed_notes(key, scale, octave)
+def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, chord_size_upper_bound, disallow_repeats, use_chord_leading):
+    allowed_notes = get_allowed_notes(key, scale, octaveRange)
 
     # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
     upper_bd = min(chord_size_upper_bound, len(allowed_notes))
@@ -174,13 +174,13 @@ def generate_chords(length, key, scale, octave, chord_size_lower_bound, chord_si
                     chosen_target_degree = random.choice(leading_targets)
                     # TODO: use global_key here instead of key
                     leading_chord = build_chord_with_root(chosen_target_degree, key, scale, allowed_notes, \
-                        chord_size_lower_bound, chord_size_upper_bound, octave)
+                        chord_size_lower_bound, chord_size_upper_bound, octaveRange)
                 
                     if leading_chord != -1:
                         candidate_chord = leading_chord
                         # ClientLogger.log('Applying chord leading rules to lead ({}) -> ({})'.format(previous_chord_name[1], chosen_target_degree))
                         # ClientLogger.log('Built chord {} on {}.'.format(determine_chord_name(flatten_note_set(leading_chord), key, constants['scales'][scale])[0], chosen_target_degree))
-                        generation_method = 'applied chord leading to lead {} -> {}'.format(previous_chord_name[1].split()[0], chosen_target_degree)
+                        generation_method = 'used chord leading chart suggestion {} -> {}'.format(previous_chord_name[1].split()[0], chosen_target_degree)
                     
                     leading_targets.remove(chosen_target_degree)
                 # if leading_chord == -1:

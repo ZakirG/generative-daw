@@ -24,16 +24,15 @@
                         <div class='row'>
                             <div class='col-6'>
                                 <label class="form-label">
-                                    Only generate notes in 
-                                    
+                                    Generate notes in
                                 </label>
                                 
                                 <label class='form-label' style='display:inline-block;margin-right:15px;'>
-                                    Only generate notes in octave
+                                    Allowed octaves
                                 </label>
                                 
                                 <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chords may contain between    
+                                    Chords may contain between
                                 </label>
 
                                 <label class='form-label' style='display:inline-block;margin-right:15px;'>
@@ -58,7 +57,12 @@
                                     </option>
                                 </select>
 
-                                <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveConstraint" type="number" name="octaveConstraint">    
+                                <label class='form-label' style='display:inline-block;margin-right:15px;'>
+                                    <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveLowerBound" type="number" name="octaveLowerBound">
+                                    and
+                                    <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveUpperBound" type="number" name="octaveUpperBound">
+                                </label>
+
 
                                 <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
                                     <input class='form-control' [(ngModel)]="chordSizeLowerBound" type="number" name="chordSizeLowerBound" style='width:70px; display:inline-block' >

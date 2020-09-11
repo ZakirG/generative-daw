@@ -45,7 +45,7 @@
 }
 
 .region-preview .note-rows li {
-    height:3px;
+    height:2px;
     border:0;
 }
 
@@ -67,7 +67,7 @@
     border-right: solid 1px #a5f2ff;
     border-radius: 0 5px 5px 0;
     overflow:hidden;
-    height:90px;
+    height:110px;
 }
 
 .note-rows li {
