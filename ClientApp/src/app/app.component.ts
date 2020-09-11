@@ -194,7 +194,6 @@ export class AppComponent {
     fetchNoteSamples() {
         for (let note of this.notes) {
             var filename = 'assets/sounds/' + note.note + (note.octave) + '.wav';
-
             this.fetchNoteSample(filename).then(audioBuffer => {
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
             }).catch(error => { throw error; });

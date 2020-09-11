@@ -16,6 +16,7 @@ export class ConfigDataService {
     stateWidth: string;
     serverURL: string;
     constantsURL: string;
+    notes: any;
     
     keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -32,6 +33,28 @@ export class ConfigDataService {
         this.stateWidth = (100 / this.timeStateLength)  + '%';
         this.dawState.chord_names = [[]];
         this.dawState.chord_degrees = [[]];
+
+        var noteColors = [
+          {'color' : 'white', 'note' : 'b' },
+          {'color' : 'black', 'note' : 'as' },
+          {'color' : 'white', 'note' : 'a' },
+          {'color' : 'black', 'note' : 'gs' },
+          {'color' : 'white', 'note' : 'g' },
+          {'color' : 'black', 'note' : 'fs' },
+          {'color' : 'white', 'note' : 'f' },
+          {'color' : 'white', 'note' : 'e' },
+          {'color' : 'black', 'note' : 'ds'},
+          {'color' : 'white', 'note' : 'd' },
+          {'color' : 'black', 'note' : 'cs' },
+          {'color' : 'white', 'note' : 'c' },
+      ]
+
+      this.notes = [];
+      for(let octaveIndex = 5; octaveIndex > 1; octaveIndex -= 1) {
+          let octaveArray = noteColors.map(x => Object.assign({}, x));
+          octaveArray = octaveArray.map(x => ({ ...x, 'octave': octaveIndex}));
+          this.notes = this.notes.concat(octaveArray);
+      }
     }
 }
 

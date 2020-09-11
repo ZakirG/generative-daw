@@ -48,33 +48,7 @@ export class PianoRollComponent {
     initializeEmptyGridState() {
         var stateWidth = (100 / this.timeStateLength) + "%";
 
-        this.notes = [
-            {'color' : 'white', 'note' : 'b', 'octave' : 4},
-            {'color' : 'black', 'note' : 'as', 'octave' : 4},
-            {'color' : 'white', 'note' : 'a', 'octave' : 4},
-            {'color' : 'black', 'note' : 'gs', 'octave' : 4},
-            {'color' : 'white', 'note' : 'g', 'octave' : 4},
-            {'color' : 'black', 'note' : 'fs', 'octave' : 4},
-            {'color' : 'white', 'note' : 'f', 'octave' : 4},
-            {'color' : 'white', 'note' : 'e', 'octave' : 4},
-            {'color' : 'black', 'note' : 'ds', 'octave' : 4},
-            {'color' : 'white', 'note' : 'd', 'octave' : 4},
-            {'color' : 'black', 'note' : 'cs', 'octave' : 4},
-            {'color' : 'white', 'note' : 'c', 'octave' : 4},
-
-            {'color' : 'white', 'note' : 'b', 'octave' : 3},
-            {'color' : 'black', 'note' : 'as', 'octave' : 3},
-            {'color' : 'white', 'note' : 'a', 'octave' : 3},
-            {'color' : 'black', 'note' : 'gs', 'octave' : 3},
-            {'color' : 'white', 'note' : 'g', 'octave' : 3},
-            {'color' : 'black', 'note' : 'fs', 'octave' : 3},
-            {'color' : 'white', 'note' : 'f', 'octave' : 3},
-            {'color' : 'white', 'note' : 'e', 'octave' : 3},
-            {'color' : 'black', 'note' : 'ds', 'octave' : 3},
-            {'color' : 'white', 'note' : 'd', 'octave' : 3},
-            {'color' : 'black', 'note' : 'cs', 'octave' : 3},
-            {'color' : 'white', 'note' : 'c', 'octave' : 3}
-        ]
+        this.notes = this.configDataService.notes;
 
         this.gridState = [];
         for (let note of this.notes) {
@@ -138,7 +112,6 @@ export class PianoRollComponent {
         generationOptions.length = this.timeStateLength;
         this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
-            console.log('generatedNotes: ', generatedNotes)
             let logs = data['logs']
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});

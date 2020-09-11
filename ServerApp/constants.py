@@ -38,3 +38,63 @@ chord_leading_chart = {
         'VII': ['III']
     }
 }
+
+
+"""
+Fill this dictionary with voicings that you find to be tasteful.
+The goal is to increase the probability that a tasteful voicing will be used over a boring or bad one. 
+
+By my personal standards, a 1-3-5 triad is boring and I will never use it.
+So I wouldn't include that triad in this dictionary. As a result, the program will generate a 1-3-5
+triad less often than the voicings that I do like, more often resulting in compositions
+with voicings I enjoy.
+"""
+good_voicings = {
+    # Quality of chord in question
+    'major': {
+        # Number of notes in chord
+        '3': [
+            {
+                # Starting scale degree relative to the root of the chord's scale.
+                'starting_scale_degree': 1,
+                
+                # Note that len(intervals) will be one less than num_notes_in_chord
+                'intervals': [],
+
+                # Details: Metadata strings that may be useful to the program in the future.
+                # Example values: neosoul, gospel, herbie_hancock, miles_davis_fourth_chord
+                'details': []
+            }
+        ],
+        '4': [
+            {'starting_scale_degree': 1, 'intervals': []},
+            {'starting_scale_degree': 1, 'intervals': []},
+        ],
+        '5': [
+            {'starting_scale_degree': 1, 'intervals': []},
+            {'starting_scale_degree': 1, 'intervals': []},
+        ],
+        '6': [
+            {'starting_scale_degree': 1, 'intervals': []},
+            {'starting_scale_degree': 1, 'intervals': []},
+        ],
+    },
+    'minor': {
+        '3': [
+            {'starting_scale_degree': 1, 'intervals': []},
+            {'starting_scale_degree': 1, 'intervals': []},
+        ],
+        '4': [
+            {'starting_scale_degree': 1, 'intervals': []},
+            {'starting_scale_degree': 1, 'intervals': []},
+        ],
+        '5': [
+            {'starting_scale_degree': 1, 'intervals': []},
+            {'starting_scale_degree': 1, 'intervals': []},
+        ],
+        '6': [
+            {'starting_scale_degree': 1, 'intervals': []},
+            {'starting_scale_degree': 1, 'intervals': []},
+        ],
+    }
+}
