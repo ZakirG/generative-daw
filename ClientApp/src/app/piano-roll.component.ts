@@ -138,6 +138,7 @@ export class PianoRollComponent {
         generationOptions.length = this.timeStateLength;
         this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
+            console.log('generatedNotes: ', generatedNotes)
             let logs = data['logs']
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});

@@ -1,5 +1,12 @@
 constants = {
     'chromatic_scale' : [{'note': 'c'}, {'note': 'cs'}, {'note': 'd'}, {'note': 'ds'}, {'note': 'e'}, {'note': 'f'}, {'note': 'fs'}, {'note': 'g'}, {'note': 'gs'}, {'note': 'a'}, {'note': 'as'}, {'note': 'b'}],
+    'enharmonic_equivalents': {
+        'as' : 'bb',
+        'cs' : 'db',
+        'ds': 'eb',
+        'fs' : 'gb', 
+        'gs': 'ab'
+    },
     'scales' : {
         'maj' : {'name' : 'major', 'intervals' : [2,2,1,2,2,2,1 ], 'code' : 'maj' },
         'min' : {'name' : 'minor', 'intervals' : [2,1,1,2,2,1,2 ], 'code' : 'min' },
