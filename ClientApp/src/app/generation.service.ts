@@ -18,7 +18,6 @@ export class GenerationService {
 
     generate(generationOptions) {
         if (typeof generationOptions.scale != 'string') generationOptions.scale = generationOptions.scale.code;
-        console.log('generationOptions: ', generationOptions);
         var URL_endpoint = (generationOptions.generationType == 'chords') ? this.chordsGenerationURL : this.melodyGenerationURL;
         return this.http.post(URL_endpoint, generationOptions);
     }

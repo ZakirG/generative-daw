@@ -30,7 +30,7 @@ export class AppComponent {
     pageReady = false;
     showLogs = false;
     logSeparator = '----------';
-    appLogs = ['Welcome to GenerativeDAW =]', this.logSeparator];
+    appLogs = ['Welcome to GenerativeDAW =)', this.logSeparator];
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
@@ -194,7 +194,6 @@ export class AppComponent {
     fetchNoteSamples() {
         for (let note of this.notes) {
             var filename = 'assets/sounds/' + note.note + (note.octave) + '.wav';
-
             this.fetchNoteSample(filename).then(audioBuffer => {
                 this.audioBuffers[note.note + note.octave] = audioBuffer;
             }).catch(error => { throw error; });
