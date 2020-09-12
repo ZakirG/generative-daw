@@ -11,6 +11,10 @@
           <mat-icon>music_note</mat-icon>
           <span>Export to MIDI</span>
         </button>
+        <button mat-menu-item (click)="exportToMidiWithLog()">
+            <mat-icon>assignment_returned</mat-icon>
+            <span>Download MIDI & last generation log</span>
+          </button>
     </mat-menu>
     <header class="row primary-color">
         <div class="col-4 text-left">
@@ -21,7 +25,7 @@
                 Generative<b>DAW</b>
             </span>
         </div>
-        <div class="col text-left">
+        <div class="col-7 text-left">
             <form [formGroup]='controlPanelForm' id='control-panel-form' (change)='updateConfigState()' style='display:inline-block'>
                 <div class='control-panel'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
@@ -53,7 +57,7 @@
                 </div>
             </form>
         </div>
-        <div class="col tex-left">
+        <div class="col-1 tex-left">
             <button class="glyphicon-button" id="logs-button" (click)="showLogs = !showLogs">
                 <span class='glyphicon glyphicon-inbox'></span>
             </button>
@@ -74,6 +78,7 @@
                 <span class="glyphicon glyphicon-eye-close"></span>
             </button>
         </div>
+        <div class='panel-header-spacer'></div>
         <div class='panel-body'>
             <span class='app-log-line' *ngFor="let line of appLogs">
                 {{ line }}

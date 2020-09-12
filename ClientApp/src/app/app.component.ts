@@ -258,18 +258,45 @@ export class AppComponent {
         });
     }
 
-    downloadFile(data) {
-        const blob = new Blob([data], { type: 'audio/midi' });
+    downloadFile(data, type, filename) {
+        const blob = new Blob([data], { type: type });
         const url= window.URL.createObjectURL(blob);
         let anchor = document.createElement("a");
-        anchor.download = "autocomposer-export.midi";
+        anchor.download = filename;
         anchor.href = url;
         anchor.click();
     }
 
     exportToMidi() {
         this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
-            this.downloadFile(data)
+            this.downloadFile(data, 'audio/midi', 'autocomposer-export.midi');
+        });
+    }
+
+    niceDateTimeStamp() {
+        var currentDate = new Date();
+        var dateDay = currentDate.getDate();
+        var month = currentDate.getMonth();
+        var year = currentDate.getFullYear();
+        var dateString = (month + 1) + "-" + dateDay + '-' + year;
+        let time = currentDate.toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        time = time.replace(/\s/g, '-').replace(/:/g, "-").replace(/_/g, "-");
+        return dateString + '-' + time;
+    }
+
+    exportToMidiWithLog() {
+        var logs = this.appLogs.slice();
+        logs.pop();
+        let finalSeparator = logs.lastIndexOf(this.logSeparator);
+        let lastGenerationLog = logs.slice(finalSeparator + 1).join("\n");
+
+        var timestamp = this.niceDateTimeStamp();
+        this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
+            this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
+            this.downloadFile(lastGenerationLog, 'text/plain;charset=utf-8', 'composition-' + timestamp + '.txt');
         });
     }
 }

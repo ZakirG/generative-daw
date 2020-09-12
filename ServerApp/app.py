@@ -37,10 +37,10 @@ def generate_melody():
     length = content['length']
     key = content['key'].replace('#', 's').lower()
     scale = content['scale']
-    octave = content['octaveConstraint']
+    octaveRange = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
     disallow_repeats = content['disallowRepeats']
 
-    result = generation_tools.generate_melody(length, key, scale, octave, disallow_repeats)
+    result = generation_tools.generate_melody(length, key, scale, octaveRange, disallow_repeats)
     
     response = {'generationResult' : result}
     return json.dumps(add_logs_to_response(response))
@@ -55,15 +55,16 @@ def generate_chords():
     length = content['length']
     key = content['key'].replace('#', 's').lower()
     scale = content['scale']
-    octave = content['octaveConstraint']
+    octaveRange = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
     chord_size_lower_bound = content['chordSizeLowerBound']
     chord_size_upper_bound = content['chordSizeUpperBound']
     disallow_repeats = content['disallowRepeats']
-    use_chord_leading = content['useChordLeadingChart']
+    chance_to_use_chord_leading = content['chanceToUseChordLeadingChart']
+    chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
     
     result = generation_tools.generate_chords(
-        length, key, scale, octave, chord_size_lower_bound, 
-        chord_size_upper_bound, disallow_repeats, use_chord_leading)
+        length, key, scale, octaveRange, chord_size_lower_bound, 
+        chord_size_upper_bound, disallow_repeats, chance_to_use_chord_leading, chance_to_use_voicing_from_library)
     
     response = {'generationResult' : result}
     return json.dumps(add_logs_to_response(response))

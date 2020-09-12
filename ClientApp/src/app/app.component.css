@@ -86,13 +86,9 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     background:#006e82;
 }
 
-/* ::ng-deep .toolbar-menu {
-    padding:5px;
+::ng-deep .toolbar-menu {
+    max-width:980px !important;
 }
-
-::ng-deep .toolbar-menu button {
-    font-size:12px !important;
-} */
 
 .top-bar-input, .top-bar-button {
     position:relative;
@@ -253,7 +249,7 @@ input[type=number] {
 }
 
 .logs-wrapper {
-    height:350px;
+    height:440px;
     width:60%;
     background: white;
     font-size:8px;
@@ -288,9 +284,22 @@ input[type=number] {
     font-weight:500;
 }
 
+.logs-wrapper .panel-header {
+    background:white;
+    position:fixed;
+    width:59.7%;
+}
+
 .panel-header {
     border-bottom: solid 1px #e5e5e5;
     height:40px;
+    border-radius:2px 2px 0 0;
+    /* box-shadow: 0px 1px 10px -1px #b5b3b3 */
+}
+
+.panel-header-spacer {
+    height:40px;
+    width:100%;
 }
 
 .panel-header, .panel-body {
