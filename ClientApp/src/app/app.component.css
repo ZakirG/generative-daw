@@ -86,13 +86,9 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     background:#006e82;
 }
 
-/* ::ng-deep .toolbar-menu {
-    padding:5px;
+::ng-deep .toolbar-menu {
+    max-width:980px !important;
 }
-
-::ng-deep .toolbar-menu button {
-    font-size:12px !important;
-} */
 
 .top-bar-input, .top-bar-button {
     position:relative;

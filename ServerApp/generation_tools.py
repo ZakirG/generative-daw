@@ -225,7 +225,7 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
                 
                     if leading_chord != -1:
                         candidate_chord = leading_chord
-                        generation_method = '\t- Used chord leading chart suggestion {} -> {}. '.format(previous_chord_name[1].split()[0], chosen_target_degree)
+                        generation_method = '\t- Used {} chord leading chart suggestion {} -> {}. '.format(quality, previous_chord_name[1].split()[0], chosen_target_degree)
                         generation_method += ('\n\t' + __generation_method)
 
                     leading_targets.remove(chosen_target_degree)
