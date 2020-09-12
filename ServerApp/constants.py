@@ -64,8 +64,6 @@ roman_numerals:
     need a I voicing in a major scale, or a IV voicing in a minor scale, so those numerals will be present in the array.
     A minor power chord voicing, for example, applies to the iii situation for a major tonic, but also the i situation for a minor tonic.
 """
-# TODO: refactor this dictionary to be organized by chord quality (major / minor / dominant 7 / half-diminished / augmented ) rather than roman numeral
-# Because in any key, the minor chord will be on a different roman numeral anyway
 good_voicings = {
     'major': [
         {'roman_numerals': ['I', 'IV', 'V'], 'name': 'major first inversion', 'starting_scale_degree': 3, 'intervals': [3, 5]},
@@ -91,18 +89,6 @@ good_voicings = {
     'diminished': [],
     'augmented': []
 }
-
-# good_voicings_by_chord_size = {}
-# for voicing in good_voicings:
-#     chord_size = len(voicing['intervals']) + 1
-#     if chord_size in good_voicings_by_chord_size:
-#         good_voicings_by_chord_size[chord_size].append(voicing)
-#     else:
-#         good_voicings_by_chord_size[chord_size] = [voicing]
-
-# import json
-# print(json.dumps(good_voicings_by_chord_size, sort_keys=True, indent=4))
-
 
 # Some sources:
 # >> https://mixedinkey.com/captain-plugins/wiki/best-chord-progressions/
