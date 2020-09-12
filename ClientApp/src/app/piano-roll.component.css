@@ -232,26 +232,36 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     position:relative;
 }
 
-.modal {
+.generation-modal.modal {
     background: rgba(0,0,0,0.4);
 }
 
-.modal-content {
-    top:100px;
+.generation-modal .modal-content {
+    top:30px;
+    position:absolute;
     width:650px;
+}
+
+.generation-modal .modal-body {
+    font-size:12px;
 }
 
 .generation-modal input, .generation-modal select {
     display:inline-block;
-    margin:0 5px 5px 5px;
-    height: 34px !important;
+    margin:0 5px 3px 5px;
+    height: 28px !important;
     border-radius:3px;
+    font-size:12px;
 }
 
 .form-label {
-    margin-bottom:5px;
-    height:34px;
+    margin-bottom:3px;
+    height:30px;
     padding-top:5px;
+}
+
+.form-label-text {
+    padding-top:7px;
 }
 
 .custom-radio-button, .custom-checkbox, .form-label {

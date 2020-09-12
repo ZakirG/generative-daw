@@ -24,7 +24,8 @@ export class PianoRollComponent {
     chordSizeLowerBound = 3;
     chordSizeUpperBound = 4;
     disallowRepeats = true;
-    useChordLeadingChart = true;
+    chanceToUseChordLeadingChart = 0.7;
+    chanceToUseCommonVoicing = 0.9;
     notes: Array<any>;
     _ref: any;
 

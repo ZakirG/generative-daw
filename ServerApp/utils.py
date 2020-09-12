@@ -1,3 +1,5 @@
+import random
+
 def roman_to_int(s):
     """
     :type s: str
@@ -14,3 +16,11 @@ def roman_to_int(s):
             num+=roman[s[i]]
             i+=1
     return num
+
+def decide_will_event_occur(probability_of_event_happening):
+    # Weighted coin toss
+    # Returns True or False 
+    outcomes = [True, False]
+    weights = [probability_of_event_happening, 1 - probability_of_event_happening]
+    result = random.choices(outcomes, weights, k=1000)
+    return result[0]

@@ -5,13 +5,44 @@ from music21 import chord as music21_chords
 import sys, traceback
 import re
 
-def transpose_note_up_n_semitones(note, n):
+def build_big_chromatic_scale_with_octaves(start_octave, num_octaves):
+    chromatic_scale = [ { 'note': x['note'], 'octave': start_octave } for x in constants['chromatic_scale'] ]
+    chromatic_scale_big = []
+    for i in range(num_octaves):
+        clone = [x.copy() for x in chromatic_scale]
+        chromatic_scale_big += clone
+    octaveAdder = 0
+    for i in range(len(chromatic_scale_big)):
+        octaveAdder =  i // 12
+        chromatic_scale_big[i]['octave'] = int(chromatic_scale_big[i]['octave']) + octaveAdder
+    return chromatic_scale_big
+
+chromatic_scale_spanning_7_octaves = build_big_chromatic_scale_with_octaves(1, 7)
+
+def transpose_note_n_semitones(note, n):
     chromatic_scale = [x['note'] for x in constants['chromatic_scale']]
-    index_of_input = chromatic_scale.index(note.lower())
+    index_of_input = 0
+    for i in range(len(chromatic_scale)):
+        note_candidate = chromatic_scale[i]
+        if are_notes_enharmonically_equivalent(note.lower(), note_candidate):
+            index_of_input = i
+            break
+
     index_of_transpose = (index_of_input + n) % 12
     return chromatic_scale[index_of_transpose]
 
-def get_allowed_notes(key, scale_code, octaveRange):    
+def transpose_note_n_semitones_with_octaves(note, n):
+    index = 0
+    note_position_in_chromatic_scale = 0
+    for note_candidate in chromatic_scale_spanning_7_octaves:
+        if note_candidate['note'] == note['note'] and note_candidate['octave'] == note['octave']:
+            note_position_in_chromatic_scale = index
+            break
+        index += 1
+    
+    return chromatic_scale_spanning_7_octaves[note_position_in_chromatic_scale + n]
+
+def get_allowed_notes(key, scale_code, octaveRange):
     result = []
     for octave in octaveRange:
         allowed_chromatic_notes_in_octave = []
@@ -33,6 +64,19 @@ def get_key_scale_notes(key, scale_code, octave, allowed_chromatic_notes):
         i = i + interval
     # Rotate the result so that the tonic is first in the list
     return key_scale_notes[-1:] + key_scale_notes[:-1]
+
+def get_key_scale_letters(key_letter, scale_code, octave):
+    index_of_key = constants['chromatic_scale_letters'].index( key_letter.lower() )
+    notes_sorted_starting_at_root = constants['chromatic_scale_letters'][index_of_key:] + constants['chromatic_scale_letters'][:index_of_key]
+    notes_sorted_starting_at_root = notes_sorted_starting_at_root * 2 # big list to keep note selection circular
+    intervals = constants['scales'][scale_code]['intervals']
+    key_scale_letters = []
+    i = 0
+    for interval in intervals:
+        key_scale_letters.append( notes_sorted_starting_at_root[i + interval] )
+        i = i + interval
+    # Rotate the result so that the tonic is first in the list
+    return key_scale_letters[-1:] + key_scale_letters[:-1]
 
 def are_notes_enharmonically_equivalent(note_a, note_b):
     note_a_compare = note_a.lower().replace('#', 's')
@@ -90,8 +134,11 @@ def determine_chord_name(chord, key, scale):
     abbreviation = full_name.replace('minor', 'min'
         ).replace('major', 'maj').replace('seventh', '7'
         ).replace('augmented', 'aug').replace('diminished', 'dim'
-        ).replace('incomplete', '').replace('dominant', '').replace('-', ' ')
-        
+        ).replace('incomplete', '').replace('dominant', '').replace('-', ' '
+        ).replace('E#', 'F')
+    
+    
+
     if abbreviation.startswith('enharmonic equivalent'):
         enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
         matches = re.search(enharmonicRegex, abbreviation)
@@ -130,15 +177,13 @@ def determine_chord_roman_name(chord_name, key, scale, chord_object):
         if degree == 8:
             # Case where we couldn't find the note in the scale.
             # We'll mark it as a sharpened or flattened scale degree.
-            upper_neighbor = transpose_note_up_n_semitones(chord_root, 1)
-            lower_neighbor = transpose_note_up_n_semitones(chord_root, -1)
+            upper_neighbor = transpose_note_n_semitones(chord_root, 1)
+            lower_neighbor = transpose_note_n_semitones(chord_root, -1)
             
             degree_upper = get_degree_for_root(upper_neighbor, sorted_allowed_notes)
             degree_lower = get_degree_for_root(lower_neighbor, sorted_allowed_notes)
             
-            # Currently, blindly priotizing sharps.
-            # TODO: fix this bit to match key signatures.
-            if degree_lower:
+            if degree_lower < 8:
                 degree = degree_lower
                 modifier = '#'
             else:
@@ -165,4 +210,31 @@ def determine_chord_roman_name(chord_name, key, scale, chord_object):
         exc_info = sys.exc_info()
         print('Exception: ', e)
         traceback.print_exception(*exc_info)
+        print('Error: failed to find roman numeral for chord_name: ', chord_name)
+        print('chord object: ',chord_object)
+        print('scale: ', scale)
+        print('key: ', key)
+
         return ''
+
+def build_chord_from_voicing(voicing, chord_root, roman_numeral, octaveRange):
+    # Get the mode of the chord root so we know what the starting scale degree refers to
+    if roman_numeral.isupper():
+        scale_code = 'maj'
+    else:
+        scale_code = 'min'
+
+    # key_scale_notes = get_key_scale_letters(chord_root['note'], scale_code, 3)
+    key_scale_notes = get_allowed_notes(chord_root['note'], scale_code, octaveRange)
+
+    start_degree = voicing['starting_scale_degree']
+    # Scale degrees are 1-indexed, while lists are zero-indexed
+    start_note = key_scale_notes[start_degree - 1]
+    chord = [start_note]
+    prev_note = start_note
+    for interval in voicing['intervals']:
+        prev_note = transpose_note_n_semitones_with_octaves(prev_note, interval)
+        chord.append(prev_note)
+
+    # chord_with_octave_markers = [{ 'note': x, 'octave': random.choice(octaveRange) } for x in chord]
+    return chord #_with_octave_markers
