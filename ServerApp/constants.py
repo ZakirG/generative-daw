@@ -57,7 +57,7 @@ So I wouldn't include that triad in this dictionary. The program will then gener
 triad less often than the voicings that I do like. So it'll generate compositions with nice voicings more often.
 
 starting_scale_degree: 
-    This is the lowest note in the chord, referenced by that note's position in the mode of the root. 
+    This is the lowest note in the chord, referenced by that note's position in the mode of the root.
     So for a C major chord, a 7 would mean B, even if we're playing in the global key of E.
 roman_numerals: 
     An array of numerals this voicing is good for. A major second inversion voicing, for example, will be useful if you
@@ -66,27 +66,56 @@ roman_numerals:
 """
 good_voicings = {
     'major': [
-        {'roman_numerals': ['I', 'IV', 'V'], 'name': 'major first inversion', 'starting_scale_degree': 3, 'intervals': [3, 5]},
-        {'roman_numerals': ['I', 'IV', 'V'], 'name': 'major second inversion', 'starting_scale_degree': 5, 'intervals': [5,4]},
-        {'roman_numerals': ['I'], 'name': 'maj 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 7]},
+        {'name': 'major first inversion', 'starting_scale_degree': 3, 'intervals': [3, 5]},
+        {'name': 'major second inversion', 'starting_scale_degree': 5, 'intervals': [5,4]},
+        {'name': 'maj 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 7]},
+        {'name': 'maj 7 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 5, 3]},
+        {'name': 'maj 9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 3, 2]},
+        {'name': 'major 6/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 5, 5]},
+        # This chord lacks the root entirely. But it sounds great. From the Jazz Piano Book
+        {'name': 'major 6/9 (left hand voicing)', 'starting_scale_degree': 7, 'intervals': [3, 2, 5]},
+        # Taken from Jazz Piano Book's rendition of Infant Eyes
+        {'name': 'major 6/9 (five note voicing)', 'starting_scale_degree': 1, 'intervals': [7, 9, 5, 5]},
         # So pretty. Neo-soul major 7/9 
-        {'roman_numerals': ['I'], 'name': 'neosoul maj7/9', 'starting_scale_degree': 1, 'intervals': [7, 7, 2, 3, 4]},
-        {'roman_numerals': ['I'], 'name': 'gospel maj9', 'starting_scale_degree': 1, 'intervals': [7, 5, 2, 2, 3]},
+        {'name': 'neosoul maj7/9', 'starting_scale_degree': 1, 'intervals': [7, 7, 2, 3, 4]},
+        {'name': 'gospel maj9', 'starting_scale_degree': 1, 'intervals': [7, 5, 2, 2, 3]},
         # Sounds good with the top rolled on:
-        {'roman_numerals': ['I'], 'name': 'neosoul maj7/9/#11', 'starting_scale_degree': 7, 'intervals': [1,4,3,4,3,4]},
-        {'roman_numerals': ['I'], 'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1,4,3,4,3,4]}
+        {'name': 'neosoul maj7/9/#11', 'starting_scale_degree': 7, 'intervals': [1,4,3,4,3,4]},
+        {'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1, 4, 3, 4, 3, 4]},
     ],
     'minor': [
-         {'roman_numerals': ['ii', 'i'], 'name': 'min 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [3, 7]},
-         {'roman_numerals': ['i', 'ii', 'iii', 'iv'], 'name': 'minor (power chord voicing)', 'starting_scale_degree': 1, 'intervals': [7, 5, 3, 4]},
-        {'roman_numerals': ['i', 'ii', 'iii', 'iv'], 'name': 'neosoul minor 7/9', 'starting_scale_degree': 1, 'intervals': [7, 3, 4, 1, 4]}
+        {'name': 'min 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [3, 7]},
+        {'name': 'min 7 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 4]},
+        # The root isn't even in the below chord! But it sounds good. Taken from Jazz Piano Book.
+        {'name': 'min 7 (left hand voicing)', 'starting_scale_degree': 3, 'intervals': [4, 3, 4]},
+        {'name': 'minor (power chord voicing)', 'starting_scale_degree': 1, 'intervals': [7, 5, 3, 4]},
+        {'name': 'neosoul minor 7/9', 'starting_scale_degree': 1, 'intervals': [7, 3, 4, 1, 4]},
+        {'name': 'minor 7/9/11', 'starting_scale_degree': 1, 'intervals': [5, 9, 1, 7]},
+        {'name': 'minor 7/11 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 2]},
+        # From the Jazz Piano Book. The sixth is sometimes played in place of the seventh in minor ii chords.
+        # Minor sixth chords are preferably used as minor tonic i's rather than ii's.
+        {'name': 'minor 6 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5]},
+
     ],
     'dominant 7': [
-        {'roman_numerals': ['V'], 'name': 'dominant 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 6]},
+        {'name': 'dominant 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 6]},
+        {'name': 'dominant 7/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [14, 2, 6]},
+        {'name': 'dominant 7/#9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 6, 5]},
+        {'name': 'dominant 7 alt (left hand voicing)', 'starting_scale_degree': 1, 'intervals': [4, 2, 5]},
+        {'name': 'alt (aug dominant 7/#9)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5, 1, 4]},
         #  Sounds good if u play it right after its root in the bass:
-        {'roman_numerals': ['VII'], 'name': 'neosoul alt dominant seventh chord', 'starting_scale_degree': 7, 'intervals': [6, 4, 4, 3]}
+        {'name': 'neosoul alt dominant seventh chord', 'starting_scale_degree': 7, 'intervals': [6, 4, 4, 3]},
     ],
-    'diminished': [],
+    'jazz-minor': [
+        # The jazz minor is built on the melodic minor, except only the ascendant form is used.
+        # TODO: Add code to support jazz minor.
+        {'name': 'major-minor chord', 'starting_scale_degree': 1, 'intervals': [3, 4, 4] },
+        # A nice 1950s detective TV show type voicing
+        {'name': 'major-minor chord', 'starting_scale_degree': 1, 'intervals': [14, 1, 4, 4] }
+    ],
+    'diminished': [
+        {'name': 'half-diminished 7th chord', 'starting_scale_degree': 1, 'intervals': [6, 4, 5]},
+    ],
     'augmented': []
 }
 
@@ -109,9 +138,10 @@ nice_progressions = {
 
         # Songs that use this chord progression include: No Woman No Cry by Bob Marley, Love Story by Taylor Swift, 
         # the verse of Don’t Stop Believing by Journey, the chorus of Someone Like You by Adele...
-        ['I', 'V', 'vi', 'IV'] # The 'Axis of Awesome' progression.
+        ['I', 'V', 'vi', 'IV'], # The 'Axis of Awesome' progression.
+        ['ii', 'V', 'I'], # Jazz =)
     ],
     'minor': [
-        ['ii', 'V', 'I'],
+        
     ]
 }

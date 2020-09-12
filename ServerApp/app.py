@@ -62,11 +62,11 @@ def generate_chords():
     chance_to_use_chord_leading = content['chanceToUseChordLeadingChart']
     chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
     
-    result = generation_tools.generate_chords(
+    result_chords, result_chord_names = generation_tools.generate_chords(
         length, key, scale, octaveRange, chord_size_lower_bound, 
         chord_size_upper_bound, disallow_repeats, chance_to_use_chord_leading, chance_to_use_voicing_from_library)
-    
-    response = {'generationResult' : result}
+    DawState['chord_names'] = result_chord_names
+    response = {'generationResult' : result_chords}
     return json.dumps(add_logs_to_response(response))
 
 @app.route('/daw-state', methods=['POST', 'OPTIONS'])

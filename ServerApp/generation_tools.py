@@ -119,6 +119,9 @@ def build_chord_with_root_randomly(chord_root_note, chosen_target_degree, key, s
     return result_chord_notes
 
 def build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange):
+    """
+    Returns (built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'])
+    """
     voicings_for_quality = []
     if chosen_target_degree == 'V':
         voicings_for_quality = good_voicings['dominant 7'] + good_voicings['major']
@@ -140,8 +143,10 @@ def build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, 
     if len(applicable_voicings) > 0:
         chosen_voicing = random.choice(applicable_voicings)
         built_chord = build_chord_from_voicing(chosen_voicing, chord_root_note, chosen_target_degree, octaveRange)
-        return built_chord, chosen_voicing['name']
-    return -1, -1
+        chord_letter_name = chord_root_note['note'].upper().replace('S', '#') + ' ' + chosen_voicing['name']
+        chord_roman_name = chosen_target_degree + ' ' + chosen_voicing['name']
+        return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name']
+    return -1, -1, -1
 
 def chord_root_from_roman_numeral(roman_numeral_in, allowed_notes):
     roman_numeral_upper = roman_numeral_in.replace('b',''
@@ -172,12 +177,12 @@ def build_chord_with_root(chosen_target_degree, key, scale,
 
     if use_chord_voicing_from_library:
         # First, lets filter the voicings library down to match the chord size and roman numeral constraints.
-        built_chord, name = build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange)
+        built_chord, name_of_chord, name_of_voicing = build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange)
         if built_chord != -1:
             # print('Choosing to voice {} with voicing {}'.format(chosen_target_degree, chosen_voicing))
             # print('chord root note: ', chord_root_note)
-            generation_method = "- Decided to voice '{}' as a '{}'".format(chosen_target_degree, name)
-            return (built_chord, name, generation_method)
+            generation_method = "- Decided to voice '{}' as a '{}'".format(chosen_target_degree, name_of_voicing)
+            return (built_chord, name_of_chord, generation_method)
 
     # If all else fails, build it randomly.
     built_chord = build_chord_with_root_randomly(chord_root_note, chosen_target_degree, key, scale, chord_size_lower_bound, chord_size_upper_bound, octaveRange, allowed_notes)
@@ -193,13 +198,15 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
     if upper_bd == chord_size_lower_bound:
         allowed_chord_sizes = [upper_bd]
     
-    result = []
+    result_chord_progression = []
+    result_chord_names = []
     previous_chord = []
-    previous_chord_name = ''
+    previous_chord_name = '', ''
     for i in range(length):
         num_notes_in_chord = random.choice(allowed_chord_sizes)
 
         candidate_chord = None
+        name_of_candidate_chord = None
         generation_method = '?'
 
         # Perform weighted coin toss
@@ -225,6 +232,7 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
                 
                     if leading_chord != -1:
                         candidate_chord = leading_chord
+                        name_of_candidate_chord = name_of_chord
                         generation_method = '\t- Used {} chord leading chart suggestion {} -> {}. '.format(quality, previous_chord_name[1].split()[0], chosen_target_degree)
                         generation_method += ('\n\t' + __generation_method)
 
@@ -237,10 +245,11 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
                 chosen_target_degree = random.choice(chord_charts[scale])
                 chord_root_note = chord_root_from_roman_numeral(chosen_target_degree, allowed_notes)
                 if chord_root_note != -1:
-                    built_chord, name = build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange)
+                    built_chord, name_of_chord, name_of_voicing = build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange)
                     if built_chord != -1:
                         candidate_chord = built_chord
-                        generation_method = '\t- Decided to build a {} on a {}.'.format(name, chosen_target_degree)
+                        name_of_candidate_chord = name_of_chord
+                        generation_method = '\t- Decided to build a {} on a {}.'.format(name_of_voicing, chosen_target_degree)
 
         if candidate_chord is None:
             generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
@@ -256,9 +265,14 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
                 candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
                 generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
 
-        result.append(candidate_chord)
+        result_chord_progression.append(candidate_chord)
         previous_chord = candidate_chord
-        previous_chord_name = determine_chord_name(flatten_note_set(previous_chord), key, constants['scales'][scale])
+        if name_of_candidate_chord is not None:
+            previous_chord_name = name_of_candidate_chord
+        else:
+            previous_chord_name = determine_chord_name(flatten_note_set(previous_chord), key, constants['scales'][scale])
+        result_chord_names.append(name_of_candidate_chord)
+        
         previous_chord_degree = previous_chord_name[1].split()[0]
         degree = None
         try:
@@ -267,7 +281,7 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
             pass
         ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], degree, generation_method))
     
-    return result
+    return result_chord_progression, result_chord_names
 
 def transpose_notes_to_grid(notes):
     grid = []
