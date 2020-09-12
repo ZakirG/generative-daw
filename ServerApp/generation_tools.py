@@ -1,5 +1,5 @@
 import random
-from constants import constants, chord_leading_chart, good_voicings_by_chord_size, chord_charts
+from constants import constants, chord_leading_chart, good_voicings, chord_charts
 from utils import roman_to_int, decide_will_event_occur
 from client_logging import ClientLogger
 from music_theory import determine_chord_name, get_allowed_notes, transpose_note_n_semitones, build_chord_from_voicing
@@ -40,7 +40,7 @@ def flatten_note_set(note_set):
     return [x['note'] + str(x['octave']) for x in note_set]
 
 def build_chord_with_root_randomly(chord_root_note, chosen_target_degree, key, scale, chord_size_lower_bound, chord_size_upper_bound, octaveRange, allowed_notes):
-    note_choices_for_result = [chord_root_note['note']]
+    note_choices_for_result = []
 
     quality = 'minor'
     if chosen_target_degree.isupper():
@@ -54,7 +54,9 @@ def build_chord_with_root_randomly(chord_root_note, chosen_target_degree, key, s
         third_of_chord = transpose_note_n_semitones(chord_root_note['note'], 4)
     elif quality == 'minor':
         third_of_chord = transpose_note_n_semitones(chord_root_note['note'], 3)
-    note_choices_for_result.append(third_of_chord)
+
+    # As a rule, let's require the chord root and the third are the chord.
+    result_chord = [chord_root_note['note'], third_of_chord]
     
     fifth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 7)
     if is_diminished:
@@ -102,9 +104,6 @@ def build_chord_with_root_randomly(chord_root_note, chosen_target_degree, key, s
 
     # print('possible notes: ', note_choices_for_result)
     
-    
-    # As a rule, let's require the chord root in the chord.
-    result_chord = [note_choices_for_result[0]]
 
     # Eliminate note choices outside of the key.
     allowed_letters = [x['note'] for x in allowed_notes]
@@ -120,14 +119,23 @@ def build_chord_with_root_randomly(chord_root_note, chosen_target_degree, key, s
     return result_chord_notes
 
 def build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange):
+    voicings_for_quality = []
+    if chosen_target_degree == 'V':
+        voicings_for_quality = good_voicings['dominant 7'] + good_voicings['major']
+    elif '\xB0' in chosen_target_degree:
+        voicings_for_quality = good_voicings['diminished']
+    elif '+' in chosen_target_degree and chosen_target_degree.isupper():
+        voicings_for_quality = good_voicings['augmented']
+    elif chosen_target_degree.isupper():
+        voicings_for_quality = good_voicings['major']
+    else:
+        voicings_for_quality = good_voicings['minor']
+    
     applicable_voicings = []
-    for chord_size in good_voicings_by_chord_size:
+    for voicing in voicings_for_quality:
+        chord_size = len(voicing['intervals']) + 1
         if chord_size >= chord_size_lower_bound and chord_size <= chord_size_upper_bound:
-            # These voicings match the chord size constraint
-            for voicing in good_voicings_by_chord_size[chord_size]:
-                if chosen_target_degree in voicing['roman_numerals']:
-                    # This voicing matches the roman numeral constraint
-                    applicable_voicings.append(voicing)
+            applicable_voicings.append(voicing)    
     
     if len(applicable_voicings) > 0:
         chosen_voicing = random.choice(applicable_voicings)
@@ -135,12 +143,8 @@ def build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, 
         return built_chord, chosen_voicing['name']
     return -1, -1
 
-def build_chord_with_root(chosen_target_degree, key, scale, 
-    allowed_notes, chord_size_lower_bound, chord_size_upper_bound, octaveRange, chance_to_use_voicing_from_library):
-    """
-    Returns (built_chord, name_of_chord, generation_method)
-    """
-    roman_numeral_upper = chosen_target_degree.replace('b',''
+def chord_root_from_roman_numeral(roman_numeral_in, allowed_notes):
+    roman_numeral_upper = roman_numeral_in.replace('b',''
         ).replace('#','').replace('+','').replace('\xB0', ''
         ).upper()
     target_digit = roman_to_int(roman_numeral_upper)
@@ -153,6 +157,15 @@ def build_chord_with_root(chosen_target_degree, key, scale,
         # Therefore, we cannot proceed.
         print(e)
         return -1
+    
+    return chord_root_note
+
+def build_chord_with_root(chosen_target_degree, key, scale, 
+    allowed_notes, chord_size_lower_bound, chord_size_upper_bound, octaveRange, chance_to_use_voicing_from_library):
+    """
+    Returns (built_chord, name_of_chord, generation_method)
+    """
+    chord_root_note = chord_root_from_roman_numeral(chosen_target_degree, allowed_notes)
 
     # Perform weighted coin toss
     use_chord_voicing_from_library = decide_will_event_occur(chance_to_use_voicing_from_library)
@@ -163,7 +176,7 @@ def build_chord_with_root(chosen_target_degree, key, scale,
         if built_chord != -1:
             # print('Choosing to voice {} with voicing {}'.format(chosen_target_degree, chosen_voicing))
             # print('chord root note: ', chord_root_note)
-            generation_method = "- Decided to voice '{}' as '{}'".format(chosen_target_degree, name)
+            generation_method = "- Decided to voice '{}' as a '{}'".format(chosen_target_degree, name)
             return (built_chord, name, generation_method)
 
     # If all else fails, build it randomly.
@@ -192,20 +205,6 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
         # Perform weighted coin toss
         use_chord_leading = decide_will_event_occur(chance_to_use_chord_leading)
 
-        # TODO: get this block working
-        # if len(previous_chord) == 0:
-        #     # First chord of the progression.
-        #     # Perform weighted coin toss to decide whether to use a common voicing
-        #     use_chord_voicing_from_library = decide_will_event_occur(chance_to_use_voicing_from_library)
-        #     if use_chord_voicing_from_library:
-        #         chosen_target_degree = random.choice(chord_charts[scale])
-        #         allowed_notes
-        #         chord_root_note = 
-        #         built_chord = build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange)
-        #         if built_chord != -1:
-        #             candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
-        #             generation_method = '\t- Decided to build a {} a {}.'.format(num_notes_in_chord)
-        
         if use_chord_leading and len(previous_chord) > 0 and previous_chord_name[1] != '':
             # The chosen scale tells us which chord leading chart to use
             quality = 'minor'
@@ -231,6 +230,18 @@ def generate_chords(length, key, scale, octaveRange, chord_size_lower_bound, cho
 
                     leading_targets.remove(chosen_target_degree)
         
+        if candidate_chord is None:
+            # Perform weighted coin toss to decide whether to use a common voicing
+            use_chord_voicing_from_library = decide_will_event_occur(chance_to_use_voicing_from_library)
+            if use_chord_voicing_from_library:
+                chosen_target_degree = random.choice(chord_charts[scale])
+                chord_root_note = chord_root_from_roman_numeral(chosen_target_degree, allowed_notes)
+                if chord_root_note != -1:
+                    built_chord, name = build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, chord_size_lower_bound, chord_size_upper_bound, octaveRange)
+                    if built_chord != -1:
+                        candidate_chord = built_chord
+                        generation_method = '\t- Decided to build a {} on a {}.'.format(name, chosen_target_degree)
+
         if candidate_chord is None:
             generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
             candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
