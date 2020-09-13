@@ -22,7 +22,7 @@ export class PianoRollComponent {
     octaveUpperBound = 4;
     octaveLowerBound = 3;
     chordSizeLowerBound = 3;
-    chordSizeUpperBound = 4;
+    chordSizeUpperBound = 7;
     disallowRepeats = true;
     chanceToUseChordLeadingChart = 0.7;
     chanceToUseCommonVoicing = 0.9;
