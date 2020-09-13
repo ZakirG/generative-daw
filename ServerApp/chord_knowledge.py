@@ -50,7 +50,11 @@ good_voicings = {
         {'name': 'major second inversion', 'starting_scale_degree': 5, 'intervals': [5,4]},
         {'name': 'maj 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 7]},
         {'name': 'maj 7 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 5, 3]},
+        {'name': 'maj 7 (Bill Evans voicing)', 'starting_scale_degree': 7, 'intervals': [1, 4, 8]},
         {'name': 'maj 9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 3, 2]},
+        
+        # A very lovely voicing.
+        {'name': 'maj 9 (Bill Evans voicing)', 'starting_scale_degree': 5, 'intervals': [4, 1, 4, 10]},
         {'name': 'major 6/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 5, 5]},
         # This chord lacks the root entirely. But it sounds great. From the Jazz Piano Book
         {'name': 'major 6/9 (left hand voicing)', 'starting_scale_degree': 7, 'intervals': [3, 2, 5]},
@@ -61,10 +65,17 @@ good_voicings = {
         {'name': 'major 6/9 (Bud Powell Fourth Chord)', 'starting_scale_degree': 3, 'intervals': [5, 5, 5, 5]},
         # So pretty. Neo-soul major 7/9 
         {'name': 'neosoul maj7/9', 'starting_scale_degree': 1, 'intervals': [7, 7, 2, 3, 4]},
+        
+        {'name': 'maj 7/9 (open voicing)', 'starting_scale_degree': 1, 'intervals': [7, 7, 2, 7, 5]},
         {'name': 'gospel maj9', 'starting_scale_degree': 1, 'intervals': [7, 5, 2, 2, 3]},
         # Sounds good with the top rolled on:
         {'name': 'neosoul maj7/9/#11', 'starting_scale_degree': 7, 'intervals': [1,4,3,4,3,4]},
-        {'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1, 4, 3, 4, 3, 4]},
+        {'name': 'gospel maj13', 'starting_scale_degree': 1, 'intervals': [10, 6, 3, 2, 3]},
+    # This chord is very spicy. I'm disabling it for now.
+    #    {'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1, 4, 3, 4, 3, 4]},
+
+        # {'name': 'maj 7/b5', 'starting_scale_degree': '5b', 'intervals': [5,1,4]},
+
     ],
     'minor': [
         {'name': 'min 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [3, 7]},
@@ -73,13 +84,16 @@ good_voicings = {
         {'name': 'min 7 (left hand voicing)', 'starting_scale_degree': 3, 'intervals': [4, 3, 4]},
         {'name': 'minor (power chord voicing)', 'starting_scale_degree': 1, 'intervals': [7, 5, 3, 4]},
         {'name': 'neosoul minor 7/9', 'starting_scale_degree': 1, 'intervals': [7, 3, 4, 1, 4]},
+        {'name': 'gospel minor 7/9', 'starting_scale_degree': 1, 'intervals': [3, 4, 3, 4, 1, 4]},
         {'name': 'minor 7/9/11', 'starting_scale_degree': 1, 'intervals': [5, 9, 1, 7]},
         {'name': 'minor 7/11 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 2]},
         # This below chord is enharmonic with major 6/9 So What built on the root that is 4 semitones below this starting scale degree 
         {'name': 'minor 7/11 (So What voicing)', 'starting_scale_degree': 1, 'intervals': [5, 5, 5, 4]},
+
         # From the Jazz Piano Book. The sixth is sometimes played in place of the seventh in minor ii chords.
         # Minor sixth chords are preferably used as minor tonic i's rather than ii's.
         {'name': 'minor 6 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5]},
+        {'name': 'minor 7/9/11 (gospel voicing)', 'starting_scale_degree': 1, 'intervals': [3, 4, 3, 9, 3, 4, 3]},
 
     ],
     'dominant 7': [
@@ -91,7 +105,10 @@ good_voicings = {
         #  Sounds good if u play it right after its root in the bass:
         {'name': 'neosoul alt dominant seventh chord', 'starting_scale_degree': 7, 'intervals': [6, 4, 4, 3]},
         {'name': 'dominant 7 (Bud Powell Fourth Chord over root)', 'starting_scale_degree': 7, 'intervals': [6, 5, 5, 5]},
-        {'name': 'dominant 7/11 (upper structure II)', 'starting_scale_degree': 3, 'intervals': [6, 4, 4, 3]},
+        # Wow, so beautiful
+        {'name': 'dom 7/9/11 (gospel voicing)', 'starting_scale_degree': 1, 'intervals': [7, 3, 4, 3, 5]},
+        # This chord is very spicy. Beware.
+        {'name': 'dominant 7/b9 (upper structure II)', 'starting_scale_degree': 3, 'intervals': [6, 5, 4, 3]},
     ],
     'jazz-minor': [
         # The jazz minor is built on the melodic minor, except only the ascendant form is used.

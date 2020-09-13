@@ -226,7 +226,18 @@ def build_chord_from_voicing(voicing, chord_root, roman_numeral, octaveRange):
     # key_scale_notes = get_key_scale_letters(chord_root['note'], scale_code, 3)
     key_scale_notes = get_allowed_notes(chord_root['note'], scale_code, octaveRange)
 
-    start_degree = voicing['starting_scale_degree']
+    start_degree_as_str = str(voicing['starting_scale_degree'])
+    start_degree = 0
+    if len(start_degree_as_str) > 1:
+        modifier = 0
+        if start_degree_as_str[1] == 'b':
+            modifier = -1
+        else:
+            modifier = 1
+        start_degree = (int(start_degree_as_str[0]) + modifier) 
+    else:
+        start_degree = int(start_degree_as_str)
+ 
     # Scale degrees are 1-indexed, while lists are zero-indexed
     start_note = key_scale_notes[start_degree - 1]
     chord = [start_note]

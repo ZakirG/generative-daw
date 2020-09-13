@@ -4,6 +4,7 @@ from chord_knowledge import chord_leading_chart, good_voicings, chord_charts
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set, pick_n_random_notes
 from client_logging import ClientLogger
 from music_theory import determine_chord_name, get_allowed_notes, transpose_note_n_semitones, build_chord_from_voicing
+import sys, traceback
 ClientLogger = ClientLogger()
 
 class Generator:
@@ -123,7 +124,9 @@ class Generator:
         Returns (built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'])
         """
         voicings_for_quality = []
-        if chosen_target_degree == 'V':
+        if chosen_target_degree == 'V' and self.v_must_be_dom_7:
+            voicings_for_quality = good_voicings['dominant 7']
+        elif chosen_target_degree == 'V' and not self.v_must_be_dom_7:
             voicings_for_quality = good_voicings['dominant 7'] + good_voicings['major']
         elif '\xB0' in chosen_target_degree:
             voicings_for_quality = good_voicings['diminished']
@@ -180,7 +183,7 @@ class Generator:
             if built_chord != -1:
                 # print('Choosing to voice {} with voicing {}'.format(chosen_target_degree, chosen_voicing))
                 # print('chord root note: ', chord_root_note)
-                generation_method = "- Decided to voice '{}' as a '{}'".format(chosen_target_degree, name_of_voicing)
+                generation_method = "- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
                 return (built_chord, name_of_chord, generation_method)
 
         # If all else fails, build it randomly.
@@ -268,14 +271,16 @@ class Generator:
             if name_of_candidate_chord is not None:
                 previous_chord_name = name_of_candidate_chord
             else:
-                previous_chord_name = determine_chord_name(flatten_note_set(previous_chord), self.key, constants['scales'][self.scale])
-            result_chord_names.append(name_of_candidate_chord)
+                previous_chord_name = determine_chord_name(flatten_note_set(candidate_chord), self.key, constants['scales'][self.scale])
+            result_chord_names.append(previous_chord_name)
             
             previous_chord_degree = previous_chord_name[1].split()[0]
             degree = None
             try:
                 degree = previous_chord_name[1].split()[0]
             except Exception as e:
+                print('Exception: ', e)
+                traceback.print_exception(*exc_info)
                 pass
             ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], degree, generation_method))
         

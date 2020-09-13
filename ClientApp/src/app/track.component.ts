@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfigDataService } from './configdata.service';
+import { PianoRollComponent } from './piano-roll.component';
 
 @Component({
     selector:    'track',
@@ -25,6 +26,7 @@ export class TrackComponent {
 
     @Output()
     trackChange = new EventEmitter<any>();
+
 
     constructor(public configDataService: ConfigDataService) { }
 

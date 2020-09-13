@@ -140,6 +140,12 @@
                     <span class='glyphicon glyphicon-ban-circle'></span>
                     CLEAR
                 </button>
+
+                <div class='piano-roll-input-group'>
+                    Roll notes in
+                    <input class='form-control' type='number' value='0.01' max='10' min='0' step='0.01' id='playOffsetPerNoteDueToRoll' style='width:70px;display:inline-block' [(ngModel)]="this.configDataService.playOffsetPerNoteDueToRoll"/>
+                    s
+                </div>
             </div>
             <div class='col piano-roll-col'>
                 <div class="row piano-roll">
