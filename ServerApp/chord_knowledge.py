@@ -29,12 +29,7 @@ chord_leading_chart = {
 
 
 """
-Fill this dictionary with voicings that you find to be tasteful.
-The goal is to increase the probability that a tasteful voicing will be used over a boring or dissonant one. 
-
-By my personal standards, a 1-3-5 major triad is boring and I will never use it in a composition with my name on it.
-So I wouldn't include that triad in this dictionary. The program will then generate a 1-3-5
-triad less often than the voicings that I do like. So it'll generate compositions with nice voicings more often.
+Fill this dictionary with chord voicings that you find to be tasteful.
 
 starting_scale_degree: 
     This is the lowest note in the chord, referenced by that note's position in the mode of the root.
@@ -47,13 +42,14 @@ roman_numerals:
 good_voicings = {
     'major': [
         {'name': 'major first inversion', 'starting_scale_degree': 3, 'intervals': [3, 5]},
-        {'name': 'major second inversion', 'starting_scale_degree': 5, 'intervals': [5,4]},
+        {'name': 'major second inversion', 'starting_scale_degree': 5, 'intervals': [5, 4]},
         {'name': 'maj 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 7]},
         {'name': 'maj 7 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 5, 3]},
         {'name': 'maj 7 (Bill Evans voicing)', 'starting_scale_degree': 7, 'intervals': [1, 4, 8]},
         {'name': 'maj 9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 3, 2]},
         {'name': 'maj 7 (drop 2 voicing)', 'starting_scale_degree': 5, 'intervals': [5, 4, 7]},
         {'name': 'maj 7 (2 drop 2 voicing)', 'starting_scale_degree': 3, 'intervals': [7, 1, 7]},
+        {'name': 'maj 6 (open voicing)', 'starting_scale_degree': 1, 'intervals': [7, 9, 5]},
         # A very lovely voicing.
         {'name': 'maj 9 (Bill Evans voicing)', 'starting_scale_degree': 5, 'intervals': [4, 1, 4, 10]},
         {'name': 'major 6/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 5, 5]},
@@ -85,6 +81,8 @@ good_voicings = {
     'minor': [
         {'name': 'min 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [3, 7]},
         {'name': 'min 7 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 4]},
+        {'name': 'min 7 (open voicing)', 'starting_scale_degree': 1, 'intervals': [7, 8, 7]},
+        {'name': 'min 7 (open voicing #2)', 'starting_scale_degree': 1, 'intervals': [10, 5, 7]},
         # The root isn't even in the below chord! But it sounds good. Taken from Jazz Piano Book.
         {'name': 'min 7 (left hand voicing)', 'starting_scale_degree': 3, 'intervals': [4, 3, 4]},
         {'name': 'minor (power chord voicing)', 'starting_scale_degree': 1, 'intervals': [7, 5, 3, 4]},
@@ -94,6 +92,8 @@ good_voicings = {
         {'name': 'minor 7/11 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 2]},
         # This below chord is enharmonic with major 6/9 So What built on the root that is 4 semitones below this starting scale degree 
         {'name': 'minor 7/11 (So What voicing)', 'starting_scale_degree': 1, 'intervals': [5, 5, 5, 4]},
+
+        {'name': 'minor 7/b5', 'starting_scale_degree': 1, 'intervals': [3, 7, 8]},
 
         # From the Jazz Piano Book. The sixth is sometimes played in place of the seventh in minor ii chords.
         # Minor sixth chords are preferably used as minor tonic i's rather than ii's.
@@ -106,6 +106,7 @@ good_voicings = {
         {'name': 'dominant 7', 'starting_scale_degree': 1, 'intervals': [4, 3, 3]},
         {'name': 'dominant 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 6]},
         {'name': 'dominant 7/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [14, 2, 6]},
+        {'name': 'dominant 7 (open voicing)', 'starting_scale_degree': 1, 'intervals': [7, 3, 6]},
     # A little too spicy
         # {'name': 'dominant 7/#9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 6, 5]},
         {'name': 'dominant 7 alt (left hand voicing)', 'starting_scale_degree': 1, 'intervals': [4, 2, 5]},
