@@ -52,7 +52,8 @@ good_voicings = {
         {'name': 'maj 7 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 5, 3]},
         {'name': 'maj 7 (Bill Evans voicing)', 'starting_scale_degree': 7, 'intervals': [1, 4, 8]},
         {'name': 'maj 9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [11, 3, 2]},
-        
+        {'name': 'maj 7 (drop 2 voicing)', 'starting_scale_degree': 5, 'intervals': [5, 4, 7]},
+        {'name': 'maj 7 (2 drop 2 voicing)', 'starting_scale_degree': 3, 'intervals': [7, 1, 7]},
         # A very lovely voicing.
         {'name': 'maj 9 (Bill Evans voicing)', 'starting_scale_degree': 5, 'intervals': [4, 1, 4, 10]},
         {'name': 'major 6/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 5, 5]},
@@ -63,19 +64,23 @@ good_voicings = {
         # This below chord is enharmonic with minor 7/11 So What built on the root that is 4 semitones above this starting scale degree 
         {'name': 'major 6/9 (So What voicing)', 'starting_scale_degree': 3, 'intervals': [5, 5, 5, 4]},
         {'name': 'major 6/9 (Bud Powell Fourth Chord)', 'starting_scale_degree': 3, 'intervals': [5, 5, 5, 5]},
+        # Source: https://www.youtube.com/watch?v=owi7EmvoGsk&ab_channel=PianoLessonwithWarren
+        {'name': 'gospel major 6/9/11', 'starting_scale_degree': 1, 'intervals': [7, 5, 2, 2, 1, 4]},
         # So pretty. Neo-soul major 7/9 
         {'name': 'neosoul maj7/9', 'starting_scale_degree': 1, 'intervals': [7, 7, 2, 3, 4]},
         
         {'name': 'maj 7/9 (open voicing)', 'starting_scale_degree': 1, 'intervals': [7, 7, 2, 7, 5]},
         {'name': 'gospel maj9', 'starting_scale_degree': 1, 'intervals': [7, 5, 2, 2, 3]},
         # Sounds good with the top rolled on:
-        {'name': 'neosoul maj7/9/#11', 'starting_scale_degree': 7, 'intervals': [1,4,3,4,3,4]},
+        # {'name': 'neosoul maj7/9/#11', 'starting_scale_degree': 7, 'intervals': [1,4,3,4,3,4]},
         {'name': 'gospel maj13', 'starting_scale_degree': 1, 'intervals': [10, 6, 3, 2, 3]},
-    # This chord is very spicy. I'm disabling it for now.
-    #    {'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1, 4, 3, 4, 3, 4]},
+        # Source: https://www.youtube.com/watch?v=KhpPqV6j59Y&ab_channel=8-bitMusicTheory
+        {'name': 'maj7/13 (Halo 3 ODST Voicing)', 'starting_scale_degree': 1, 'intervals': [7, 2, 7, 7]},
 
         # {'name': 'maj 7/b5', 'starting_scale_degree': '5b', 'intervals': [5,1,4]},
-
+    ],
+    'lydian': [
+        {'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1, 4, 3, 4, 3, 4]},
     ],
     'minor': [
         {'name': 'min 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [3, 7]},
@@ -93,20 +98,24 @@ good_voicings = {
         # From the Jazz Piano Book. The sixth is sometimes played in place of the seventh in minor ii chords.
         # Minor sixth chords are preferably used as minor tonic i's rather than ii's.
         {'name': 'minor 6 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5]},
-        {'name': 'minor 7/9/11 (gospel voicing)', 'starting_scale_degree': 1, 'intervals': [3, 4, 3, 9, 3, 4, 3]},
-
+        {'name': 'gospel minor 7/9/11', 'starting_scale_degree': 1, 'intervals': [3, 4, 3, 9, 3, 4, 3]},
+        # Source: https://www.youtube.com/watch?v=fk9r8sVGb74&ab_channel=AlainMerville at 1:31
+        {'name': 'minor 7/9/11 (Jesús Molina 10-note voicing)', 'starting_scale_degree': 1, 'intervals': [7, 3, 4, 1, 2, 2, 3, 4, 3]},
     ],
-    'dominant 7': [
+    'dominant-7': [
+        {'name': 'dominant 7', 'starting_scale_degree': 1, 'intervals': [4, 3, 3]},
         {'name': 'dominant 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 6]},
         {'name': 'dominant 7/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [14, 2, 6]},
-        {'name': 'dominant 7/#9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 6, 5]},
+    # A little too spicy
+        # {'name': 'dominant 7/#9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 6, 5]},
         {'name': 'dominant 7 alt (left hand voicing)', 'starting_scale_degree': 1, 'intervals': [4, 2, 5]},
-        {'name': 'alt (aug dominant 7/#9)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5, 1, 4]},
+    # A little too spicy
+        # {'name': 'alt (aug dominant 7/#9)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5, 1, 4]},
         #  Sounds good if u play it right after its root in the bass:
         {'name': 'neosoul alt dominant seventh chord', 'starting_scale_degree': 7, 'intervals': [6, 4, 4, 3]},
         {'name': 'dominant 7 (Bud Powell Fourth Chord over root)', 'starting_scale_degree': 7, 'intervals': [6, 5, 5, 5]},
         # Wow, so beautiful
-        {'name': 'dom 7/9/11 (gospel voicing)', 'starting_scale_degree': 1, 'intervals': [7, 3, 4, 3, 5]},
+        {'name': 'gospel dom 7/9/11', 'starting_scale_degree': 1, 'intervals': [7, 3, 4, 3, 5]},
         # This chord is very spicy. Beware.
         {'name': 'dominant 7/b9 (upper structure II)', 'starting_scale_degree': 3, 'intervals': [6, 5, 4, 3]},
     ],

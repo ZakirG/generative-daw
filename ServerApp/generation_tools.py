@@ -19,6 +19,7 @@ class Generator:
         self.chord_size_lower_bound = chord_size_bounds[0]
         self.octave_range = octave_range
         self.v_must_be_dom_7 = v_must_be_dom_7
+        self.allow_neapolitan_chords = True
     
     def generate_melody(self, length):
         allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
@@ -125,15 +126,21 @@ class Generator:
         """
         voicings_for_quality = []
         if chosen_target_degree == 'V' and self.v_must_be_dom_7:
-            voicings_for_quality = good_voicings['dominant 7']
+            voicings_for_quality = good_voicings['dominant-7']
         elif chosen_target_degree == 'V' and not self.v_must_be_dom_7:
-            voicings_for_quality = good_voicings['dominant 7'] + good_voicings['major']
+            voicings_for_quality = good_voicings['dominant-7'] + good_voicings['major']
         elif '\xB0' in chosen_target_degree:
             voicings_for_quality = good_voicings['diminished']
         elif '+' in chosen_target_degree and chosen_target_degree.isupper():
             voicings_for_quality = good_voicings['augmented']
+        elif chosen_target_degree == 'IV':
+            voicings_for_quality = good_voicings['major'] # + good_voicings['lydian']
         elif chosen_target_degree.isupper():
             voicings_for_quality = good_voicings['major']
+        elif chosen_target_degree == 'v' and self.allow_neapolitan_chords:
+            # Neapolitan chord https://www.youtube.com/watch?v=K8Z6MTonoXE&ab_channel=MusicTheoryForGuitar
+            # Contains an accidental, from the harmonic minor
+            voicings_for_quality = good_voicings['minor'] + good_voicings['dominant-7']
         else:
             voicings_for_quality = good_voicings['minor']
         
@@ -144,10 +151,14 @@ class Generator:
                 applicable_voicings.append(voicing)    
         
         if len(applicable_voicings) > 0:
-            chosen_voicing = random.choice(applicable_voicings)
+            chosen_voicing = random.choice(applicable_voicings).copy()
             built_chord = build_chord_from_voicing(chosen_voicing, chord_root_note, chosen_target_degree, self.octave_range)
             chord_letter_name = chord_root_note['note'].upper().replace('S', '#') + ' ' + chosen_voicing['name']
             chord_roman_name = chosen_target_degree + ' ' + chosen_voicing['name']
+            if chosen_target_degree == 'v' and 'dominant 7' in chord_roman_name:
+                chord_roman_name += ' Neapolitan chord'
+                chord_letter_name += ' Neapolitan chord'
+                chosen_voicing['name'] += ' Neapolitan chord'
             return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name']
         return -1, -1, -1
 
