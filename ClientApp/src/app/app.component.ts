@@ -151,18 +151,41 @@ export class AppComponent {
         this.queuedSounds = [];
         this.configDataService.inPlayState = true;
 
-        for (var noteIndex = 0; noteIndex < this.notes.length; noteIndex++) {
-            for (var timeStateIndex = 0; timeStateIndex < this.configDataService.timeStateLength; timeStateIndex++) {
-                for (let track of this.tracks) {
-                    var note = track.gridState[noteIndex];
-                    if(note['timeStates'][timeStateIndex]) {
-                        // beat number * seconds per beat
-                        var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo);
-                        this.playNote(note.note, note.octave, timeToPlay);
+        let rollChords = true;
+
+        if(!rollChords) {
+            for (var noteIndex = 0; noteIndex < this.notes.length; noteIndex++) {
+                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.timeStateLength; timeStateIndex++) {
+                    for (let track of this.tracks) {
+                        var note = track.gridState[noteIndex];
+                        if(note['timeStates'][timeStateIndex]) {
+                            // beat number * seconds per beat
+                            var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo);
+                            this.playNote(note.note, note.octave, timeToPlay);
+                        }
+                    }
+                }
+            }
+        } else {
+            // Build chords
+            for (let track of this.tracks) {
+                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.timeStateLength; timeStateIndex++) {
+                    let playOffsetDueToRoll = 0;
+                    for (var noteIndex = this.notes.length - 1; noteIndex >= 0;  noteIndex--) {
+                        var note = track.gridState[noteIndex];
+                        if(note['timeStates'][timeStateIndex]) {
+                            // beat number * seconds per beat
+                            var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo) + playOffsetDueToRoll;
+                            this.playNote(note.note, note.octave, timeToPlay);
+                            playOffsetDueToRoll += this.configDataService.playOffsetPerNoteDueToRoll
+                        }
                     }
                 }
             }
         }
+
+
+
         var root = this;
         setTimeout(function(){
             root.configDataService.inPlayState = false;

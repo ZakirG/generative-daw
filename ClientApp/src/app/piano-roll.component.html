@@ -91,6 +91,10 @@
                                 <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
                                     Chance to use tastefully selected voicings from chord voicing library
                                 </label>
+
+                                <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                    Constrain V chords to be dominant 7 chords
+                                </label>
                             </div>
                             <div class='col-4'>
                                 <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
@@ -98,6 +102,10 @@
                                 </label>
                                 <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
                                     <input class='form-control' [(ngModel)]="chanceToUseCommonVoicing" type="number" name="chanceToUseCommonVoicing" style='width:70px; display:inline-block' >
+                                </label>
+                                <label class='custom-checkbox' style='display:block;margin-right:15px;'>
+                                    <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="VMustBeDominant7" type="checkbox" name="VMustBeDominant7">
+                                    <span class="checkmark"></span>
                                 </label>
                             </div>
                         </div>
@@ -132,6 +140,12 @@
                     <span class='glyphicon glyphicon-ban-circle'></span>
                     CLEAR
                 </button>
+
+                <div class='piano-roll-input-group'>
+                    Roll notes in
+                    <input class='form-control' type='number' value='0.01' max='10' min='0' step='0.01' id='playOffsetPerNoteDueToRoll' style='width:70px;display:inline-block' [(ngModel)]="this.configDataService.playOffsetPerNoteDueToRoll"/>
+                    s
+                </div>
             </div>
             <div class='col piano-roll-col'>
                 <div class="row piano-roll">

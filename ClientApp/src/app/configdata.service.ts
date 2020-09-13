@@ -17,6 +17,7 @@ export class ConfigDataService {
     serverURL: string;
     constantsURL: string;
     notes: any;
+    playOffsetPerNoteDueToRoll : number;
     
     keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -26,13 +27,14 @@ export class ConfigDataService {
         
         this.key = this.keys[0];
         this.scale = [];
-        this.tempo = 60;
+        this.tempo = 40;
         this.inPlayState = false;
         this.timeStateLength = 8;
         this.dawState = {};
         this.stateWidth = (100 / this.timeStateLength)  + '%';
         this.dawState.chord_names = [[]];
         this.dawState.chord_degrees = [[]];
+        this.playOffsetPerNoteDueToRoll = 0.01;
 
         var noteColors = [
           {'color' : 'white', 'note' : 'b' },
