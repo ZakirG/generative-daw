@@ -1,5 +1,6 @@
 import random
-from constants import constants, chord_leading_chart, good_voicings, chord_charts
+from constants import constants
+from chord_knowledge import chord_leading_chart, good_voicings, chord_charts
 from utils import roman_to_int, decide_will_event_occur
 from client_logging import ClientLogger
 from music_theory import determine_chord_name, get_allowed_notes, transpose_note_n_semitones, build_chord_from_voicing

@@ -10,10 +10,12 @@ GenerativeDAW is a digital audio workstation webapp that provides generative com
 
 In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical music theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
 
+
+
 #### Music generation features:
 - Can generate purely random melodies and progressions in a given key, scale, and octave
-- Pending diceroll with user-provided probability, a chord leading chart may be used to select next chord in progression
-- Pending diceroll with user-provided probability, a chord voicing from library of tasteful voicings may be randomly selected to build a chord
+- Pending configurable weighted cointoss, a chord leading chart may be used to select next chord in progression
+- Pending configurable weighted cointoss, a chord voicing from the library of tasteful voicings may be randomly selected to build a chord
 - Specify allowed chord sizes in generated output
 - Option to disallow consecutive identical notesets
 
@@ -70,3 +72,10 @@ A tab will automatically open in your default web browser at localhost:4200.
 for their examples on audio manipulation in Angular. Code snippets of theirs are used in this application.
 
 This project's interface is based on Logic Pro X.
+
+#### Discussion
+"People respond favorably to music that is well-structured." - The Jazz Piano Book by Mark Levine (97)
+
+This app bakes ideas from melody theory, classical chord approaches, and jazz theory into a set of configurable music generation algorithms. For the most part, these algorithms resemble processes that I use as a composer -- the process of selecting a key, scale, set of chord voicings of interest, chord progression form, selecting melody notes from the chords, and other techniques. As a result, the music that this application outputs is highly structured, and often resembles the set of pieces that a human reading a textbook on such theory might compose.
+
+Much of the composition process I use as a human is automatable -- picking a voicing to use, translating chord numerals to notes, testing out chord progressions that apply pop progressions in a given scale domain. As a piano player, recalling voicings of interest and transposing them to the root of interest while creating a chord progression is a process that often feels less about taste and more about memorization. I designed this tool with that problem in mind, and I'm surprised with the quality of the compositions that this program has been creating for me for so far. I hope to grow the codebase as I learn new composition techniques from contemporary music.
