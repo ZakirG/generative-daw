@@ -6,8 +6,10 @@ import json
 from crossdomain import crossdomain
 import constants
 import generation_tools
+from music_theory import name_chords_in_tracks
 import midi_tools
 from client_logging import ClientLogger
+from generation_tools import Generator
 app = Flask(__name__)
 CORS(app)
 
@@ -52,19 +54,30 @@ def generate_chords():
 
     content = request.get_json()
     
-    length = content['length']
-    key = content['key'].replace('#', 's').lower()
-    scale = content['scale']
-    octaveRange = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
-    chord_size_lower_bound = content['chordSizeLowerBound']
-    chord_size_upper_bound = content['chordSizeUpperBound']
-    disallow_repeats = content['disallowRepeats']
-    chance_to_use_chord_leading = content['chanceToUseChordLeadingChart']
-    chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
+    # length = content['length']
+    # key = content['key'].replace('#', 's').lower()
+    # scale = content['scale']
+    # octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
+    # chord_size_lower_bound = content['chordSizeLowerBound']
+    # chord_size_upper_bound = content['chordSizeUpperBound']
+    # disallow_repeats = content['disallowRepeats']
+    # chance_to_use_chord_leading = content['chanceToUseChordLeadingChart']
+    # chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
+    # v_must_be_dom_7 = content['VMustBeDominant7']
     
-    result_chords, result_chord_names = generation_tools.generate_chords(
-        length, key, scale, octaveRange, chord_size_lower_bound, 
-        chord_size_upper_bound, disallow_repeats, chance_to_use_chord_leading, chance_to_use_voicing_from_library)
+    chord_generator = Generator(
+        key = content['key'].replace('#', 's').lower(),
+        scale = content['scale'],
+        length = content['length'],
+        chance_to_use_chord_leading=content['chanceToUseChordLeadingChart'], 
+        chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing'],
+        v_must_be_dom_7 = content['VMustBeDominant7'],
+        disallow_repeats = content['disallowRepeats'],
+        chord_size_bounds = (content['chordSizeLowerBound'], content['chordSizeUpperBound']),
+        octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1)),
+    )
+    result_chords, result_chord_names = chord_generator.generate_chords()
+
     DawState['chord_names'] = result_chord_names
     response = {'generationResult' : result_chords}
     return json.dumps(add_logs_to_response(response))
@@ -82,7 +95,7 @@ def update_daw_state():
     DawState['key'] =  key
     DawState['tempo'] =  tempo
     DawState['tracks'] =  tracks
-    chord_names, chord_degrees = generation_tools.name_chords_in_tracks(tracks, key, scale)
+    chord_names, chord_degrees = name_chords_in_tracks(tracks, key, scale)
     DawState['chord_names'] = chord_names
     DawState['chord_degrees'] = chord_degrees
     

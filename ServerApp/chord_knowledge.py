@@ -90,7 +90,8 @@ good_voicings = {
         {'name': 'alt (aug dominant 7/#9)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5, 1, 4]},
         #  Sounds good if u play it right after its root in the bass:
         {'name': 'neosoul alt dominant seventh chord', 'starting_scale_degree': 7, 'intervals': [6, 4, 4, 3]},
-        {'name': 'dominant 7 (Bud Powell Fourth Chord over root)', 'starting_scale_degree': 7, 'intervals': [6, 5, 5, 5, ]},
+        {'name': 'dominant 7 (Bud Powell Fourth Chord over root)', 'starting_scale_degree': 7, 'intervals': [6, 5, 5, 5]},
+        {'name': 'dominant 7/11 (upper structure II)', 'starting_scale_degree': 3, 'intervals': [6, 4, 4, 3]},
     ],
     'jazz-minor': [
         # The jazz minor is built on the melodic minor, except only the ascendant form is used.

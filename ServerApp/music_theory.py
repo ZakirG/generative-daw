@@ -4,6 +4,7 @@ from music21 import key as music21_key
 from music21 import chord as music21_chords
 import sys, traceback
 import re
+import random
 
 def build_big_chromatic_scale_with_octaves(start_octave, num_octaves):
     chromatic_scale = [ { 'note': x['note'], 'octave': start_octave } for x in constants['chromatic_scale'] ]
@@ -137,8 +138,6 @@ def determine_chord_name(chord, key, scale):
         ).replace('incomplete', '').replace('dominant', '').replace('-', ' '
         ).replace('E#', 'F')
     
-    
-
     if abbreviation.startswith('enharmonic equivalent'):
         enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
         matches = re.search(enharmonicRegex, abbreviation)
@@ -238,3 +237,25 @@ def build_chord_from_voicing(voicing, chord_root, roman_numeral, octaveRange):
 
     # chord_with_octave_markers = [{ 'note': x, 'octave': random.choice(octaveRange) } for x in chord]
     return chord #_with_octave_markers
+
+def transpose_notes_to_grid(notes):
+        grid = []
+        timeStateLength = 8
+        for step in range(timeStateLength):
+            notes_at_this_step = []
+            for note in notes:
+                if note['timeStates'][step] == True:
+                    notes_at_this_step.append(note['note'])
+            grid.append(notes_at_this_step)
+        return grid
+
+def name_chords_in_tracks(tracks, key, scale):
+    grid_by_tracks = list(map(transpose_notes_to_grid, tracks))
+    coupled = []
+    for grid in grid_by_tracks:
+        coupled.append(list(map(lambda x: determine_chord_name(x, key, scale), grid)))
+    
+    chord_names_by_tracks = [ [x[0] for x in track] for track in coupled ]
+    chord_degrees_by_tracks = [ [x[1] for x in track] for track in coupled ]
+    
+    return chord_names_by_tracks, chord_degrees_by_tracks

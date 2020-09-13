@@ -26,6 +26,7 @@ export class PianoRollComponent {
     disallowRepeats = true;
     chanceToUseChordLeadingChart = 0.7;
     chanceToUseCommonVoicing = 0.9;
+    VMustBeDominant7 = true;
     notes: Array<any>;
     _ref: any;
 
