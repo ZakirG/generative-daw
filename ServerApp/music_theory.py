@@ -1,4 +1,6 @@
 from constants import constants
+from chord_knowledge import chord_charts, good_voicings
+from utils import roman_to_int, decide_will_event_occur, flatten_note_set
 import music21
 from music21 import key as music21_key
 from music21 import chord as music21_chords
@@ -66,7 +68,7 @@ def get_key_scale_notes(key, scale_code, octave, allowed_chromatic_notes):
     # Rotate the result so that the tonic is first in the list
     return key_scale_notes[-1:] + key_scale_notes[:-1]
 
-def get_key_scale_letters(key_letter, scale_code, octave):
+def get_key_scale_letters(key_letter, scale_code):
     index_of_key = constants['chromatic_scale_letters'].index( key_letter.lower() )
     notes_sorted_starting_at_root = constants['chromatic_scale_letters'][index_of_key:] + constants['chromatic_scale_letters'][:index_of_key]
     notes_sorted_starting_at_root = notes_sorted_starting_at_root * 2 # big list to keep note selection circular
@@ -92,6 +94,9 @@ def are_notes_enharmonically_equivalent(note_a, note_b):
         return True
     
     return False
+
+def chords_are_equal(chord_a, chord_b):
+    set(flatten_note_set(chord_a)) == set(flatten_note_set(chord_b))
 
 def correct_mispelled_enharmonic_notes_according_to_key_sig(key, scale_code, note_set):
     """
@@ -145,13 +150,57 @@ def determine_chord_name(chord, key, scale):
         
     return (abbreviation, determine_chord_roman_name(abbreviation, key, scale, c))
 
-def get_degree_for_root(chord_root, sorted_allowed_notes):
+def note_to_roman_numeral(note, sorted_allowed_notes):
+    """
+    Translate a note choice in a scale to a roman numeral.
+    Supports accidentals.
+    Note: this function disrespects key signatures. It just biases sharps over flats.
+    """
     degree = 1
     for note in sorted_allowed_notes:
-        if are_notes_enharmonically_equivalent(note['note'], chord_root):
+        if are_notes_enharmonically_equivalent(note['note'], note['note']):
             break
         degree += 1
-    return degree
+    
+    modifier = '' # sharp or flat
+
+    if degree == 8:
+        # Case where we couldn't find the note in the scale.
+        # We'll mark it as a sharpened or flattened scale degree.
+        upper_neighbor = transpose_note_n_semitones(note, 1)
+        lower_neighbor = transpose_note_n_semitones(note, -1)
+        
+        degree_upper = get_degree_for_root(upper_neighbor, sorted_allowed_notes)
+        degree_lower = get_degree_for_root(lower_neighbor, sorted_allowed_notes)
+        
+        if degree_lower < 8:
+            degree = degree_lower
+            modifier = '#'
+        else:
+            degree = degree_upper
+            modifier = 'b'
+    
+    roman_numeral = constants['roman_numerals_upper'][degree - 1] + modifier
+    
+    return roman_numeral
+
+def roman_numeral_to_note(roman_numeral_in, allowed_notes):
+    # Translate the roman numeral to a note in the context of a key.
+    roman_numeral_upper = roman_numeral_in.replace('b',''
+        ).replace('#','').replace('+','').replace('\xB0', ''
+        ).upper()
+    target_digit = roman_to_int(roman_numeral_upper)
+
+    # Lists are zero-indexed while roman numerals are 1-indexed, so subtract 1 from the target_digit
+    try:
+        chord_root_note = allowed_notes[target_digit - 1]
+    except Exception as e:
+        # The chord root in question is not in the allowed scale. 
+        # Therefore, we cannot proceed.
+        print(e)
+        return -1
+    
+    return chord_root_note
 
 def determine_chord_roman_name(chord_name, key, scale, chord_object):
     try:
@@ -170,28 +219,9 @@ def determine_chord_roman_name(chord_name, key, scale, chord_object):
             parent_scale_code = constants['scales'][scale_code]['parent_scale']
             full_allowed_notes = get_allowed_notes(key, parent_scale_code, 3)
 
-        degree = get_degree_for_root(chord_root, full_allowed_notes)
-        modifier = '' # sharp or flat
-
-        if degree == 8:
-            # Case where we couldn't find the note in the scale.
-            # We'll mark it as a sharpened or flattened scale degree.
-            upper_neighbor = transpose_note_n_semitones(chord_root, 1)
-            lower_neighbor = transpose_note_n_semitones(chord_root, -1)
-            
-            degree_upper = get_degree_for_root(upper_neighbor, sorted_allowed_notes)
-            degree_lower = get_degree_for_root(lower_neighbor, sorted_allowed_notes)
-            
-            if degree_lower < 8:
-                degree = degree_lower
-                modifier = '#'
-            else:
-                degree = degree_upper
-                modifier = 'b'
+        roman_numeral = note_to_roman_numeral(chord_root, full_allowed_notes)
         
         quality = chord_object.quality
-        roman_numeral = constants['roman_numerals_upper'][degree - 1] + modifier
-
         is_major = 'major' in pieces or 'maj' in pieces
         is_incomplete_dominant_in_major = 'maj' in scale_code and ('min' not in pieces and ('dominant-seventh' in pieces or '7' in pieces))
         
@@ -269,4 +299,53 @@ def name_chords_in_tracks(tracks, key, scale):
     chord_names_by_tracks = [ [x[0] for x in track] for track in coupled ]
     chord_degrees_by_tracks = [ [x[1] for x in track] for track in coupled ]
     
-    return chord_names_by_tracks, chord_degrees_by_tracks
+    return chord_names_by_tracks, chord_degrees_by_tracks   
+
+def label_voicings_by_roman_numeral(key, scale):
+    """
+    You can technically do this in one pass without the key by 
+    evaluating intervals alone, but I'm too lazy to write that algorithm.
+
+    The return value has the same structure as good_voicings, but with 
+    an allowed_roman_numerals property on each voicing. The allowed roman numerals
+    are the ones that don't cause accidentals. (Purely diatonic chords)
+
+    A side comment: what a lovely function. As a musician, this function is incredibly useful to me.
+    """
+    
+    labeled_result = {}
+
+    voicings_list = good_voicings.values()
+    
+    # Flatten list with list comprehension. The scale breakdowns are irrelevant since we're 
+    # gonna filter out accidentals anyway
+    voicings_list = [ voicing for voicing_group in voicings_list for voicing in voicing_group ]
+
+    allowed_notes = get_key_scale_letters(key, scale)
+    for voicing_group_key in good_voicings.keys():
+        voicing_group = good_voicings[voicing_group_key]
+        voicing_group_copy = []
+        for voicing in voicing_group:
+            allowed_roman_numerals_for_this_voicing = []
+            for roman_numeral in chord_charts[scale]:
+                chord_root = roman_numeral_to_note(roman_numeral, allowed_notes)
+                chord = build_chord_from_voicing(voicing, { 'note': chord_root, 'octave': 2 }, roman_numeral, [3])
+                it_contains_accidentals = False
+                for chord_note in chord:
+                    found_equivalent = False
+                    for scale_note in allowed_notes:
+                        are_equivalent = are_notes_enharmonically_equivalent(scale_note, chord_note['note'])
+                        if are_equivalent:
+                            found_equivalent = True
+                    if not found_equivalent:
+                        it_contains_accidentals = True
+                        break
+                if not it_contains_accidentals:
+                    allowed_roman_numerals_for_this_voicing.append(roman_numeral)
+            voicing_copy = voicing.copy()
+            voicing_copy['allowed_roman_numerals'] = allowed_roman_numerals_for_this_voicing
+            voicing_group_copy.append(voicing_copy)
+        
+        labeled_result[voicing_group_key] = voicing_group_copy
+    return labeled_result
+

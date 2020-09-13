@@ -279,6 +279,10 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     padding-left: 20px;
 }
 
+.custom-checkbox {
+    height: 26px;
+}
+
 /* Hide the browser's default radio button */
 .custom-radio-button input, .custom-checkbox input {
     position: absolute;
