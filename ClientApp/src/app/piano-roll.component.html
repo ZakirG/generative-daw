@@ -73,9 +73,6 @@
                                     <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="disallowRepeats" type="checkbox" name="disallowRepeats">
                                     <span class="checkmark"></span>
                                 </label>
-                                
-                                <br/>
-                                <br/>
                             </div>
                         </div>
                         <hr/>
@@ -86,18 +83,18 @@
                                 </label>
 
                                 <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to use tastefully selected voicing from chord voicing library
+                                    Chance to use chord voicing from a list of good voicings
                                 </label>
 
                                 <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
                                     Chance to allow arbitrary non-diatonic chord
                                 </label>
                                 <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to allow alt dominant chords with accidentals (stacks)
+                                    Chance to allow alt dominant chords with accidentals. (Stacks with non-diatonic chord probability)
                                  </label>
 
                                 <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to allow borrowed chord (does not stack)
+                                    Chance to allow borrowed chord. (Does not stack with non-diatonic chord probability)
                                 </label>
 
                                 <!-- <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
