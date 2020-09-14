@@ -9,28 +9,16 @@
                 </div>
                 <div class="modal-body">
                      <form #generationForm="ngForm">
-                        <span class='form-label'>What would you like to generate?</span>
-                        <label class="custom-radio-button form-label">A chord progression
-                            <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
-                            <span class="radio"></span>
-                        </label>
-
-                        <label class="custom-radio-button form-label">
-                            <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">A melody
-                            <span class="radio"></span>
-                        </label>
-                        <hr/>
                         <div class='row'>
-                            <div class='col-6'>
+                            <div class='col-4'>
                                 <label class="form-label form-label-text">
                                     Generate notes in
                                 </label>
-                                
                                 <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;'>
                                     Allowed octaves
                                 </label>
                             </div>
-                            <div class='col-6'>
+                            <div class='col-8'>
                                 <select name="key" style="text-align-last:center;width:70px;display:inline-block"  class='form-control' [ngModel]="configDataService.key" >
                                     <option *ngFor="let key of configDataService.keys" [ngValue]="key">
                                         {{ key }}
@@ -41,7 +29,6 @@
                                         {{ scale.name }}
                                     </option>
                                 </select>
-
                                 <label class='form-label' style='display:inline-block;margin-right:15px;'>
                                     <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveLowerBound" type="number" name="octaveLowerBound">
                                     thru
@@ -49,77 +36,90 @@
                                 </label>
                             </div>
                         </div>
-                        <div class='row'>
-                            <div class='col-6'>
-                                <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chords may contain between
-                                </label>
-
-                                <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;'>
-                                    Disallow consecutive <span *ngIf="generationType == 'melody'">note</span> <span *ngIf="generationType == 'chords'">chord</span> repeats
-                                </label>
-
-                                
+                        <br/>
+                        <label class="custom-radio-button form-label" style='display:inline-block; margin-right: 15px'>Generate chord progression
+                            <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
+                            <span class="radio"></span>
+                        </label>
+                        <label class="custom-radio-button form-label" style='display:inline-block'>
+                            <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">Generate melody
+                            <span class="radio"></span>
+                        </label>
+                        <hr/>
+                        <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-toggle="collapse" data-target="#chordVoicings" aria-expanded="true" aria-controls="chordVoicings" *ngIf="generationType == 'chords'">
+                            Chord voicing options
+                        </button>
+                        <div class="generation-modal-collapsible collapse show" id="chordVoicings" *ngIf="generationType == 'chords'">
+                            <div class='row'>
+                                <div class='col-6'>
+                                    <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        Chords may contain
+                                    </label>
+                                </div>
+                                <div class='col-6'>
+                                    <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        <input class='form-control' [(ngModel)]="chordSizeLowerBound" type="number" name="chordSizeLowerBound" style='width:70px; display:inline-block' >
+                                        to
+                                        <input class='form-control' [(ngModel)]="chordSizeUpperBound" type="number" name="chordSizeUpperBound" style='width:70px; display:inline-block' >
+                                        notes
+                                    </label>
+                                </div>
                             </div>
-                            <div class='col-6'>
-                                <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    <input class='form-control' [(ngModel)]="chordSizeLowerBound" type="number" name="chordSizeLowerBound" style='width:70px; display:inline-block' >
-                                    and 
-                                    <input class='form-control' [(ngModel)]="chordSizeUpperBound" type="number" name="chordSizeUpperBound" style='width:70px; display:inline-block' >
-                                    notes
-                                </label>
-                                <br *ngIf="generationType == 'chords'"/>
-                                <label class='custom-checkbox' style='display:block;margin-right:15px;'>
-                                    <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="disallowRepeats" type="checkbox" name="disallowRepeats">
-                                    <span class="checkmark"></span>
-                                </label>
+                            <div class='row'>
+                                <div class='col-8'>
+                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;'>
+                                        Chance to voice chord using a voicing from the voicings library
+                                    </label>
+                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;'>
+                                        Chance to allow arbitrary non-diatonic chord
+                                    </label>
+                                    <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;'>
+                                        Chance to allow alt dominant chords with accidentals. (Stacks with non-diatonic chord probability)
+                                     </label>
+                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;'>
+                                        Chance to allow borrowed chord. (Does not stack with non-diatonic chord probability)
+                                    </label>
+                                </div>
+                                <div class='col-4'>
+                                    <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        <input class='form-control' [(ngModel)]="chanceToUseCommonVoicing" type="number" name="chanceToUseCommonVoicing" style='width:70px; display:inline-block' >
+                                    </label>
+                                    <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        <input class='form-control' [(ngModel)]="chanceToAllowNonDiatonicChord" type="number" name="chanceToAllowNonDiatonicChord" style='width:70px; display:inline-block' >
+                                    </label>
+                                    <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        <input class='form-control' [(ngModel)]="chanceToAllowAlteredDominantChord" type="number" name="chanceToAllowAlteredDominantChord" style='width:70px; display:inline-block' >
+                                    </label>
+                                    <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        <input class='form-control' [(ngModel)]="chanceToAllowBorrowedChord" type="number" name="chanceToAllowBorrowedChord" style='width:70px; display:inline-block' >
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <hr/>
-                        <div class='row'>
-                            <div class='col-8'>
-                                <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to use classical chord leading charts to choose follow-up chord
-                                </label>
 
-                                <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to use chord voicing from a list of good voicings
-                                </label>
-
-                                <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to allow arbitrary non-diatonic chord
-                                </label>
-                                <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to allow alt dominant chords with accidentals. (Stacks with non-diatonic chord probability)
-                                 </label>
-
-                                <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Chance to allow borrowed chord. (Does not stack with non-diatonic chord probability)
-                                </label>
-
-                                <!-- <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    Constrain V to be dominant 7 chords
-                                     Allow dominant chords to contain accidentals from altered notes -->
-                                <!-- </label> -->
-
-                                
-                            </div>
-                            <div class='col-4'>
-                                <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    <input class='form-control' [(ngModel)]="chanceToUseChordLeadingChart" type="number" name="chanceToUseChordLeadingChart" style='width:70px; display:inline-block' >
-                                </label>
-                                <label class='form-label' style='display:inline-block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    <input class='form-control' [(ngModel)]="chanceToUseCommonVoicing" type="number" name="chanceToUseCommonVoicing" style='width:70px; display:inline-block' >
-                                </label>
-                                <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    <input class='form-control' [(ngModel)]="chanceToAllowNonDiatonicChord" type="number" name="chanceToAllowNonDiatonicChord" style='width:70px; display:inline-block' >
-                                </label>
-                                <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    <input class='form-control' [(ngModel)]="chanceToAllowAlteredDominantChord" type="number" name="chanceToAllowAlteredDominantChord" style='width:70px; display:inline-block' >
-                                </label>
-                                <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
-                                    <input class='form-control' [(ngModel)]="chanceToAllowBorrowedChord" type="number" name="chanceToAllowBorrowedChord" style='width:70px; display:inline-block' >
-                                </label>
+                        <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-toggle="collapse" data-target="#chordProgressions" aria-expanded="true" aria-controls="chordProgressions" *ngIf="generationType == 'chords'">
+                            Chord progression options
+                        </button>
+                        <div class="generation-modal-collapsible collapse show" id="chordProgressions" *ngIf="generationType == 'chords'">
+                            <div class='row'>    
+                                <div class='col-8'>
+                                    <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;'>
+                                        Disallow consecutive <span *ngIf="generationType == 'melody'">note</span> <span *ngIf="generationType == 'chords'">chord</span> repeats
+                                    </label>
+                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        Chance to use classical chord leading charts to choose follow-up chord
+                                    </label>
+                                </div>
+                                <div class='col-4'>
+                                    <br *ngIf="generationType == 'chords'"/>
+                                    <label class='custom-checkbox' style='display:block;margin-right:15px;'>
+                                        <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="disallowRepeats" type="checkbox" name="disallowRepeats">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                        <input class='form-control' [(ngModel)]="chanceToUseChordLeadingChart" type="number" name="chanceToUseChordLeadingChart" style='width:70px; display:inline-block' >
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </form>
