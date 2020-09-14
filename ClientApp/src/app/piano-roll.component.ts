@@ -25,9 +25,11 @@ export class PianoRollComponent {
     chordSizeUpperBound = 7;
     disallowRepeats = true;
     chanceToUseChordLeadingChart = 0.7;
-    chanceToUseCommonVoicing = 0.9;
+    chanceToUseCommonVoicing = 0.95;
     VMustBeDominant7 = false;
-    chanceToUseNonDiatonicChord = 0.1;
+    chanceToAllowNonDiatonicChord = 0.001;
+    chanceToAllowBorrowedChord = 0.001;
+    chanceToAllowAlteredDominantChord = 0.5;
     notes: Array<any>;
     _ref: any;
 

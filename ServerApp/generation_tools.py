@@ -10,7 +10,9 @@ import sys, traceback
 ClientLogger = ClientLogger()
 
 class Generator:
-    def __init__(self, key, scale, length, chance_to_use_chord_leading, chance_to_use_voicing_from_library, disallow_repeats, chord_size_bounds, octave_range, v_must_be_dom_7, chance_to_use_non_diatonic_chord):
+    def __init__(self, key, scale, length, chance_to_use_chord_leading, chance_to_use_voicing_from_library, \
+        disallow_repeats, chord_size_bounds, octave_range, chance_to_allow_non_diatonic_chord, \
+        chance_to_allow_borrowed_chord, chance_to_allow_alt_dom_chord):
         self.key = key
         self.scale = scale
         self.length = length
@@ -20,9 +22,10 @@ class Generator:
         self.chord_size_upper_bound = chord_size_bounds[1]
         self.chord_size_lower_bound = chord_size_bounds[0]
         self.octave_range = octave_range
-        self.v_must_be_dom_7 = v_must_be_dom_7
         self.allow_neapolitan_chords = True
-        self.chance_to_use_non_diatonic_chord = chance_to_use_non_diatonic_chord
+        self.chance_to_allow_non_diatonic_chord = chance_to_allow_non_diatonic_chord
+        self.chance_to_allow_borrowed_chord = chance_to_allow_borrowed_chord
+        self.chance_to_allow_alt_dom_chord = chance_to_allow_alt_dom_chord
 
         # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
         # This result is specific to the scale of interest. But not its key.
@@ -131,60 +134,82 @@ class Generator:
         """
         Returns (built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'])
         """
-        # We can select a voicing by its quality instead of being constrained to the scale.
-        # This allows for altered notes, non-diatonic chords, borrowed chords.
-        # voicings_for_quality = []
+        
+        allowed_qualities = []
         # if chosen_target_degree == 'V' and self.v_must_be_dom_7:
-        #     voicings_for_quality = self.labeled_voicings['dominant-7']
-        # elif chosen_target_degree == 'V' and not self.v_must_be_dom_7:
-        #     voicings_for_quality = self.labeled_voicings['dominant-7'] + self.labeled_voicings['major']
-        # elif '\xB0' in chosen_target_degree:
-        #     voicings_for_quality = self.labeled_voicings['diminished']
-        # elif '+' in chosen_target_degree and chosen_target_degree.isupper():
-        #     voicings_for_quality = self.labeled_voicings['augmented']
-        # elif chosen_target_degree == 'IV':
-        #     voicings_for_quality = self.labeled_voicings['major'] # + labeled_voicings['lydian']
-        # elif chosen_target_degree.isupper():
-        #     voicings_for_quality = self.labeled_voicings['major']
-        # elif chosen_target_degree == 'v' and self.chance_to_use_non_diatonic_chord > 0:
+        #     allowed_qualities = ['dominant-7']
+        # if chosen_target_degree == 'V': # and not self.v_must_be_dom_7:
+        #     allowed_qualities = ['dominant-7', 'major']
+        if '\xB0' in chosen_target_degree:
+            allowed_qualities = ['diminished']
+        elif '+' in chosen_target_degree and chosen_target_degree.isupper():
+            allowed_qualities = ['augmented']
+        elif chosen_target_degree.isupper():
+            allowed_qualities = ['major', 'dominant-7']
+        else:
+            allowed_qualities = ['minor']
+        # elif chosen_target_degree == 'v' and self.chance_to_allow_non_diatonic_chord > 0:
         #     # V Dominant 7 chords are sometimes borrowed for use in a minor context
         #     # Contains an accidental, from the harmonic minor
         #     voicings_for_quality = self.labeled_voicings['minor'] + self.labeled_voicings['dominant-7']
-        # else:
-        #     voicings_for_quality = self. labeled_voicings['minor']
         # elif chosen_target_degree == 'iv' and self.allow_accidentals:
-            # The Neapolitan chord https://www.youtube.com/watch?v=K8Z6MTonoXE&ab_channel=MusicTheoryForGuitar
+        #     The Neapolitan chord https://www.youtube.com/watch?v=K8Z6MTonoXE&ab_channel=MusicTheoryForGuitar
         
         applicable_voicings = []
-        for voicing_group in self.labeled_voicings.values():
+        for voicing_group_quality in self.labeled_voicings.keys():
+            voicing_group = self.labeled_voicings[voicing_group_quality]
             for voicing in voicing_group:
                 chord_size = len(voicing['intervals']) + 1
                 matches_chord_size_constraint = (chord_size >= self.chord_size_lower_bound and chord_size <= self.chord_size_upper_bound)
                 matches_octave_constraint = True # TODO
-                matches_roman_numeral_constraint = True
-                
+                matches_diatonicity_constraint = True
+
+                # TODO: add exceptions here, if configured by the user, for specific non-diatonic techniques (like 
+                # allowing altered notes in dominants)
                 # Perform weighted coin-toss: will we allow a non-diatonic chord?
                 # Technically, this configuration option is misleadingly named. It's not the
                 # chance to allow a non-diatonic chord, it's the chance to not reject a chord
                 # for being non-diatonic.
-                reject_non_diatonic_chord =  decide_will_event_occur(1 - self.chance_to_use_non_diatonic_chord)
+                reject_non_diatonic_chord =  decide_will_event_occur(1 - self.chance_to_allow_non_diatonic_chord)
+                allow_borrowed_chord = decide_will_event_occur(self.chance_to_allow_borrowed_chord)
+                allow_alt_dom_chord = decide_will_event_occur(self.chance_to_allow_alt_dom_chord)
 
-                # TODO: add exceptions here, if configured by the user, for specific borrowed chord techniques (like 
-                # allowing altered notes in dominants)
-
-                if chosen_target_degree not in voicing['allowed_roman_numerals'] and reject_non_diatonic_chord:
-                    matches_roman_numeral_constraint = False
+                chord_is_non_diatonic = chosen_target_degree not in voicing['allowed_roman_numerals']
+                chord_is_borrowed = voicing_group_quality not in allowed_qualities and (voicing_group_quality == 'major' or voicing_group_quality == 'minor')
+                chord_is_alt_dom = chosen_target_degree == 'V' and voicing_group_quality == 'dominant' and not chord_is_diatonic
                 
-                if matches_chord_size_constraint and matches_octave_constraint and matches_roman_numeral_constraint:
-                    applicable_voicings.append(voicing)
+                bypass_diatonicity_constraint_because_chord_is_borrowed = chord_is_borrowed and allow_borrowed_chord
+                bypass_diatonicity_constraint_because_chord_is_alt_dom = chord_is_alt_dom and allow_alt_dom_chord
+                bypass_diatonicity_constraint = bypass_diatonicity_constraint_because_chord_is_borrowed or bypass_diatonicity_constraint_because_chord_is_alt_dom
+                
+                if chord_is_non_diatonic and reject_non_diatonic_chord and not bypass_diatonicity_constraint:
+                    matches_diatonicity_constraint = False
+                
+                if matches_chord_size_constraint and matches_octave_constraint and matches_diatonicity_constraint:
+                    voicing_copy = voicing.copy()
+                    voicing_copy['quality'] = voicing_group_quality
+                    voicing_copy['is_borrowed'] = chord_is_borrowed
+                    voicing_copy['is_alt_dom'] = chord_is_alt_dom
+                    voicing_copy['is_non_diatonic'] = chord_is_non_diatonic
+                    applicable_voicings.append(voicing_copy)
         
         if len(applicable_voicings) > 0:
-            chosen_voicing = random.choice(applicable_voicings).copy()
+            chosen_voicing = random.choice(applicable_voicings)
             built_chord = build_chord_from_voicing(chosen_voicing, chord_root_note, chosen_target_degree, self.octave_range)
             chord_letter_name = chord_root_note['note'].upper().replace('S', '#') + ' ' + chosen_voicing['name']
-            chord_roman_name = chosen_target_degree + ' ' + chosen_voicing['name']
-            return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name']
-        return -1, -1, -1
+            
+            # Must recalculate degree here, as a borrowed chord may have been used.
+            recalculated_degree = chosen_target_degree
+            if chosen_voicing['quality'] == 'major':
+                recalculated_degree = recalculated_degree.upper()
+            if chosen_voicing['quality'] == 'minor':
+                recalculated_degree = recalculated_degree.lower()
+            chord_roman_name = recalculated_degree + ' ' + chosen_voicing['name']
+            is_non_diatonic = chosen_voicing['is_non_diatonic']
+            is_borrowed = chosen_voicing['is_borrowed']
+            is_alt_dom = chosen_voicing['is_alt_dom']
+            return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'], is_non_diatonic, is_borrowed, is_alt_dom
+        return -1, -1, -1, -1, -1, -1
 
     def build_chord_with_root(self, chosen_target_degree, allowed_notes):
         """
@@ -197,16 +222,21 @@ class Generator:
 
         if use_chord_voicing_from_library:
             # First, lets filter the voicings library down to match the chord size and roman numeral constraints.
-            built_chord, name_of_chord, name_of_voicing = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
+            built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
             if built_chord != -1:
-                # print('Choosing to voice {} with voicing {}'.format(chosen_target_degree, chosen_voicing))
-                # print('chord root note: ', chord_root_note)
-                generation_method = "- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
+                generation_method = ''
+                if is_borrowed:
+                    generation_method += "\n\t- Decided to allow a borrowed chord."
+                elif is_alt_dom:
+                    generation_method += "\n\t- Decided to allow a non-diatonic altered dominant chord."
+                elif is_non_diatonic:
+                    generation_method += "\n\t- Decided to allow a non-diatonic chord."
+                generation_method += "\n\t- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
                 return (built_chord, name_of_chord, generation_method)
 
         # If all else fails, build it randomly.
         built_chord = self.build_chord_with_root_randomly(chord_root_note, chosen_target_degree, allowed_notes)
-        generation_method = '- Built {} by picking scale notes at random.'.format(chosen_target_degree)
+        generation_method = '\n\t- Built {} by picking chord tones at random.'.format(chosen_target_degree)
         return (built_chord, None, generation_method)
 
     def generate_chords(self):
@@ -253,7 +283,7 @@ class Generator:
                             candidate_chord = leading_chord
                             name_of_candidate_chord = name_of_chord
                             generation_method = '\t- Used {} chord leading chart suggestion {} -> {}. '.format(quality, previous_chord_name[1].split()[0], chosen_target_degree)
-                            generation_method += ('\n\t' + __generation_method)
+                            generation_method += __generation_method
 
                         leading_targets.remove(chosen_target_degree)
             
@@ -264,11 +294,18 @@ class Generator:
                     chosen_target_degree = random.choice(chord_charts[self.scale])
                     chord_root_note = roman_numeral_to_note(chosen_target_degree, allowed_notes)
                     if chord_root_note != -1:
-                        built_chord, name_of_chord, name_of_voicing = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
+                        built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
                         if built_chord != -1:
                             candidate_chord = built_chord
                             name_of_candidate_chord = name_of_chord
-                            generation_method = '\t- Decided to build a {} on a {}.'.format(name_of_voicing, chosen_target_degree)
+                            generation_method = ''
+                            if is_borrowed:
+                                generation_method += "\t- Decided to allow a borrowed chord.\n"
+                            elif is_alt_dom:
+                                generation_method += "\t- Decided to allow a non-diatonic altered dominant chord.\n"
+                            elif is_non_diatonic:
+                                generation_method += "\t- Decided to allow a non-diatonic chord.\n"
+                            generation_method += "\t- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
 
             if candidate_chord is None:
                 generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)

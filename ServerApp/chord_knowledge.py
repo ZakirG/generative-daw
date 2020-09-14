@@ -73,7 +73,7 @@ good_voicings = {
         # Source: https://www.youtube.com/watch?v=KhpPqV6j59Y&ab_channel=8-bitMusicTheory
         {'name': 'maj7/13 (Halo 3 ODST Voicing)', 'starting_scale_degree': 1, 'intervals': [7, 2, 7, 7]},
 
-        # {'name': 'maj 7/b5', 'starting_scale_degree': '5b', 'intervals': [5,1,4]},
+        {'name': 'maj 7/b5', 'starting_scale_degree': '5b', 'intervals': [5,1,4]},
     ],
     'lydian': [
         {'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1, 4, 3, 4, 3, 4]},
@@ -108,10 +108,10 @@ good_voicings = {
         {'name': 'dominant 7/9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [14, 2, 6]},
         {'name': 'dominant 7 (open voicing)', 'starting_scale_degree': 1, 'intervals': [7, 3, 6]},
     # A little too spicy
-        # {'name': 'dominant 7/#9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 6, 5]},
+        {'name': 'dominant 7/#9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 6, 5]},
         {'name': 'dominant 7 alt (left hand voicing)', 'starting_scale_degree': 1, 'intervals': [4, 2, 5]},
     # A little too spicy
-        # {'name': 'alt (aug dominant 7/#9)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5, 1, 4]},
+        {'name': 'alt (aug dominant 7/#9)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5, 1, 4]},
         #  Sounds good if u play it right after its root in the bass:
         {'name': 'neosoul alt dominant seventh chord', 'starting_scale_degree': 7, 'intervals': [6, 4, 4, 3]},
         {'name': 'dominant 7 (Bud Powell Fourth Chord over root)', 'starting_scale_degree': 7, 'intervals': [6, 5, 5, 5]},
