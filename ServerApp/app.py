@@ -35,14 +35,8 @@ def generate_melody():
     ClientLogger.log('Generating new melody...')
 
     content = request.get_json()
-    
-    length = content['length']
-    key = content['key'].replace('#', 's').lower()
-    scale = content['scale']
-    octaveRange = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
-    disallow_repeats = content['disallowRepeats']
-
-    result = generation_tools.generate_melody(length, key, scale, octaveRange, disallow_repeats)
+    melody_generator = Generator(content)
+    result = melody_generator.generate_melody()
     
     response = {'generationResult' : result}
     return json.dumps(add_logs_to_response(response))
@@ -53,40 +47,7 @@ def generate_chords():
     ClientLogger.log('Generating new chord progression...')
 
     content = request.get_json()
-    
-    # length = content['length']
-    # key = content['key'].replace('#', 's').lower()
-    # scale = content['scale']
-    # octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
-    # chord_size_lower_bound = content['chordSizeLowerBound']
-    # chord_size_upper_bound = content['chordSizeUpperBound']
-    # disallow_repeats = content['disallowRepeats']
-    # chance_to_use_chord_leading = content['chanceToUseChordLeadingChart']
-    # chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
-    # v_must_be_dom_7 = content['VMustBeDominant7']
-    # v_must_be_dom_7 = content['VMustBeDominant7'],
-
-    """
-self, key, scale, length, chance_to_use_chord_leading, chance_to_use_voicing_from_library, \
-        disallow_repeats, chord_size_bounds, octave_range, chance_to_allow_non_diatonic_chord, \
-        chance_to_allow_borrowed_chord)
-
-    """
-
-    # TODO: refactor this messy function signature
-    chord_generator = Generator(
-        key = content['key'].replace('#', 's').lower(),
-        scale = content['scale'],
-        length = content['length'],
-        chance_to_use_chord_leading=content['chanceToUseChordLeadingChart'], 
-        chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing'],
-        disallow_repeats = content['disallowRepeats'],
-        chord_size_bounds = (content['chordSizeLowerBound'], content['chordSizeUpperBound']),
-        octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1)),
-        chance_to_allow_non_diatonic_chord = content['chanceToAllowNonDiatonicChord'],
-        chance_to_allow_borrowed_chord = content['chanceToAllowBorrowedChord'],
-        chance_to_allow_alt_dom_chord = content['chanceToAllowAlteredDominantChord']
-    )
+    chord_generator = Generator(content)
     result_chords, result_chord_names = chord_generator.generate_chords()
 
     DawState['chord_names'] = result_chord_names

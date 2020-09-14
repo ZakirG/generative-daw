@@ -10,28 +10,29 @@ import sys, traceback
 ClientLogger = ClientLogger()
 
 class Generator:
-    def __init__(self, key, scale, length, chance_to_use_chord_leading, chance_to_use_voicing_from_library, \
-        disallow_repeats, chord_size_bounds, octave_range, chance_to_allow_non_diatonic_chord, \
-        chance_to_allow_borrowed_chord, chance_to_allow_alt_dom_chord):
-        self.key = key
-        self.scale = scale
-        self.length = length
-        self.chance_to_use_chord_leading = chance_to_use_chord_leading
-        self.chance_to_use_voicing_from_library = chance_to_use_voicing_from_library
-        self.disallow_repeats = disallow_repeats
-        self.chord_size_upper_bound = chord_size_bounds[1]
-        self.chord_size_lower_bound = chord_size_bounds[0]
-        self.octave_range = octave_range
-        self.allow_neapolitan_chords = True
-        self.chance_to_allow_non_diatonic_chord = chance_to_allow_non_diatonic_chord
-        self.chance_to_allow_borrowed_chord = chance_to_allow_borrowed_chord
-        self.chance_to_allow_alt_dom_chord = chance_to_allow_alt_dom_chord
+    def __init__(self, content):
+        generation_type = content['generationType']
 
-        # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
-        # This result is specific to the scale of interest. But not its key.
-        self.labeled_voicings = label_voicings_by_roman_numeral(key, scale)
-            
-    def generate_melody(self, length):
+        self.key = content['key'].replace('#', 's').lower()
+        self.scale = content['scale']
+        self.length = content['length']
+        self.disallow_repeats = content['disallowRepeats']
+        self.octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
+
+        if generation_type == 'chords':
+            self.chance_to_use_chord_leading=content['chanceToUseChordLeadingChart']
+            self.chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
+            chord_size_bounds = (content['chordSizeLowerBound'], content['chordSizeUpperBound'])
+            self.chord_size_upper_bound = chord_size_bounds[1]
+            self.chord_size_lower_bound = chord_size_bounds[0]
+            self.chance_to_allow_non_diatonic_chord = content['chanceToAllowNonDiatonicChord']
+            self.chance_to_allow_borrowed_chord = content['chanceToAllowBorrowedChord']
+            self.chance_to_allow_alt_dom_chord = content['chanceToAllowAlteredDominantChord']
+            # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
+            # This result is specific to the scale of interest. But not its key.
+            self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale)
+ 
+    def generate_melody(self):
         allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
         
         result = []
