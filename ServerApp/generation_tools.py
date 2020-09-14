@@ -177,7 +177,7 @@ class Generator:
 
                 chord_is_non_diatonic = chosen_target_degree not in voicing['allowed_roman_numerals']
                 chord_is_borrowed = voicing_group_quality not in allowed_qualities and (voicing_group_quality == 'major' or voicing_group_quality == 'minor')
-                chord_is_alt_dom = chosen_target_degree == 'V' and voicing_group_quality == 'dominant' and not chord_is_diatonic
+                chord_is_alt_dom = chosen_target_degree == 'V' and voicing_group_quality == 'dominant-7' and chord_is_non_diatonic
                 
                 bypass_diatonicity_constraint_because_chord_is_borrowed = chord_is_borrowed and allow_borrowed_chord
                 bypass_diatonicity_constraint_because_chord_is_alt_dom = chord_is_alt_dom and allow_alt_dom_chord

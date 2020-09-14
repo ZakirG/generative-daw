@@ -29,7 +29,7 @@ export class PianoRollComponent {
     VMustBeDominant7 = false;
     chanceToAllowNonDiatonicChord = 0.001;
     chanceToAllowBorrowedChord = 0.001;
-    chanceToAllowAlteredDominantChord = 0.5;
+    chanceToAllowAlteredDominantChord = 0.7;
     notes: Array<any>;
     _ref: any;
 
