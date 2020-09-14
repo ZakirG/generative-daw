@@ -12,17 +12,18 @@ In contrast with similar generative tools out there, this application does not a
 
 
 #### Music generation features:
-- Can generate purely random melodies and progressions in a given key, scale, and octave
-- Configurable chance to use a chord leading chart to select next chord in progression
-- Configurable chance to use a chord voicing from the library of tasteful voicings
-- Specify allowed chord sizes in generated output
-- Option to disallow consecutive identical notesets
+- Generates melodies and chord progressions in a given key, scale, and octave
+- Configurable chance to use a chord leading chart to select the next chord in progression
+- Configurable chance to use a chord voicing from the included library of tasteful voicings
+- Configure probabilities for the inclusion of non-diatonic chords, borrowed chords, altered dominant chords
+- Logging panel in UI provides step-by-step explanations of the result generation method
 
 #### General features:
-- Automatic chord labeling with common names and scale degrees
-- Logging panel in UI provides step-by-step explanations of the result generation method
 - Add tracks and edit notes in a resizable piano roll window
-- Export application state to a MIDI file and logs file
+- Chord can be rolled bottom-up during playback with a configurable note roll offset. This feature is useful for gauging chord quality
+- Export application state to a MIDI file and a logs file explaining the generation pathway
+- UI automatically labels chords with names and scale degrees
+
 
 <!-- <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/>  -->
 
