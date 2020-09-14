@@ -21,7 +21,7 @@ In contrast with similar generative tools out there, this application does not a
 #### General features:
 - Add tracks and edit notes in a resizable piano roll window
 - Chord can be rolled bottom-up during playback with a configurable note roll offset
-- Export application state to a MIDI file and a logs file explaining the generation pathway
+- Export application state to a MIDI file and optionally download its generation log
 - UI automatically labels chords with names and scale degrees
 
 
