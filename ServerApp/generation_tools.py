@@ -218,11 +218,11 @@ class Generator:
             return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'], is_non_diatonic, is_borrowed, is_alt_dom
         return -1, -1, -1, -1, -1, -1
 
-    def build_chord_with_root(self, chosen_target_degree, allowed_notes):
+    def build_chord_with_root(self, chosen_target_degree, allowed_notes, parent_scale_allowed_notes):
         """
         Returns (built_chord, name_of_chord, generation_method)
         """
-        chord_root_note = roman_numeral_to_note(chosen_target_degree, allowed_notes)
+        chord_root_note = roman_numeral_to_note(chosen_target_degree, parent_scale_allowed_notes)
 
         # Perform weighted coin toss
         use_chord_voicing_from_library = decide_will_event_occur(self.chance_to_use_voicing_from_library)
@@ -248,6 +248,10 @@ class Generator:
 
     def generate_chords(self):
         allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
+        parent_scale_allowed_notes = allowed_notes
+        if len(constants['scales'][self.scale]['intervals']) < 7:
+            parent_scale_code = constants['scales'][self.scale]['parent_scale']
+            parent_scale_allowed_notes = get_allowed_notes(self.key, parent_scale_code, [3])
 
         # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
         upper_bd = min(self.chord_size_upper_bound, len(allowed_notes))
@@ -258,6 +262,7 @@ class Generator:
         result_chord_progression = []
         result_chord_names = []
         previous_chord = []
+        previous_chord_degree = '?'
         previous_chord_name = '', ''
         for i in range(self.length):
             num_notes_in_chord = random.choice(allowed_chord_sizes)
@@ -283,8 +288,7 @@ class Generator:
                     leading_chord = -1
                     while leading_chord == -1 and len(leading_targets) > 0:
                         chosen_target_degree = random.choice(leading_targets)
-                        # TODO: use global_key here instead of key
-                        leading_chord, name_of_chord, __generation_method = self.build_chord_with_root(chosen_target_degree, allowed_notes)
+                        leading_chord, name_of_chord, __generation_method = self.build_chord_with_root(chosen_target_degree, allowed_notes, parent_scale_allowed_notes)
                     
                         if leading_chord != -1:
                             candidate_chord = leading_chord
@@ -299,7 +303,7 @@ class Generator:
                 use_chord_voicing_from_library = decide_will_event_occur(self.chance_to_use_voicing_from_library)
                 if use_chord_voicing_from_library:
                     chosen_target_degree = random.choice(chord_charts[self.scale])
-                    chord_root_note = roman_numeral_to_note(chosen_target_degree, allowed_notes)
+                    chord_root_note = roman_numeral_to_note(chosen_target_degree, parent_scale_allowed_notes)
                     if chord_root_note != -1:
                         built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
                         if built_chord != -1:
@@ -341,14 +345,13 @@ class Generator:
                 previous_chord_name = determine_chord_name(flatten_note_set(candidate_chord), self.key, constants['scales'][self.scale])
             result_chord_names.append(previous_chord_name)
             
-            previous_chord_degree = previous_chord_name[1].split()[0]
-            degree = None
             try:
-                degree = previous_chord_name[1].split()[0]
+                previous_chord_degree = previous_chord_name[1].split()[0]
             except Exception as e:
+                previous_chord_degree = '?'
                 print('Exception: ', e)
+                exc_info = sys.exc_info()
                 traceback.print_exception(*exc_info)
-                pass
-            ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], degree, generation_method))
+            ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], previous_chord_degree, generation_method))
         
         return result_chord_progression, result_chord_names

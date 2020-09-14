@@ -1,6 +1,8 @@
 chord_charts = {
     'maj': ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\xB0'],
-    'min': ['i', 'ii', 'III', 'iv', 'v', 'VI', 'VII' ]
+    'min': ['i', 'ii', 'III', 'iv', 'v', 'VI', 'VII' ],
+    'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
+    'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
 }
 
 # When the chord leading constraint is applied, if a chord has no member
