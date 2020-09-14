@@ -96,7 +96,7 @@ def are_notes_enharmonically_equivalent(note_a, note_b):
     return False
 
 def chords_are_equal(chord_a, chord_b):
-    set(flatten_note_set(chord_a)) == set(flatten_note_set(chord_b))
+    return set(flatten_note_set(chord_a)) == set(flatten_note_set(chord_b))
 
 def correct_mispelled_enharmonic_notes_according_to_key_sig(key, scale_code, note_set):
     """

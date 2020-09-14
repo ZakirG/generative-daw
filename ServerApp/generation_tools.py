@@ -115,9 +115,6 @@ class Generator:
         #     sixth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 9)
         #     note_choices_for_result.append(sixth_of_chord)
 
-        # print('possible notes: ', note_choices_for_result)
-        
-
         # Eliminate note choices outside of the self.key.
         allowed_letters = [x['note'] for x in allowed_notes]
         chord_size = min(random.choice(range(self.chord_size_lower_bound, self.chord_size_upper_bound + 1)), len(allowed_letters))
@@ -326,16 +323,15 @@ class Generator:
             # Try to design the previous algorithms so that we avoid having to regenerate from random.
             # (I checked for accidentals during the voicing selection process)
             fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
-            if self.disallow_repeats and fails_repeats_constraint:
-                max_retries = 6
-                retries = 0
-                while fails_repeats_constraint and retries < max_retries:
-                    retries += 1
-                    num_notes_in_chord = random.choice(allowed_chord_sizes)
-                    candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
-                    generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
-                    fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
-                    # fails_accidentals_constraint = (not self.allow_accidentals) and does_chord_contain_accidentals(candidate_chord, allowed_notes)
+            max_retries = 6
+            retries = 0
+            while fails_repeats_constraint and retries < max_retries:
+                retries += 1
+                num_notes_in_chord = random.choice(allowed_chord_sizes)
+                candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
+                generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
+                fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
+                # fails_accidentals_constraint = (not self.allow_accidentals) and does_chord_contain_accidentals(candidate_chord, allowed_notes)
 
             result_chord_progression.append(candidate_chord)
             previous_chord = candidate_chord

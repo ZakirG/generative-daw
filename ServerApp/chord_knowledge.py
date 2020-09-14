@@ -1,6 +1,6 @@
 chord_charts = {
     'maj': ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\xB0'],
-    'min': ['i', 'ii', 'III', 'iv', 'v', 'VI', 'VII' ],
+    'min': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
     'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
     'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
 }
@@ -158,6 +158,6 @@ nice_progressions = {
         ['ii', 'V', 'I'], # Jazz =)
     ],
     'minor': [
-        
+        ['i', 'iv', 'v']
     ]
 }
