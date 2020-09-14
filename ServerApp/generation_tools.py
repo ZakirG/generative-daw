@@ -182,7 +182,13 @@ class Generator:
                 bypass_diatonicity_constraint_because_chord_is_alt_dom = chord_is_alt_dom and allow_alt_dom_chord
                 bypass_diatonicity_constraint = bypass_diatonicity_constraint_because_chord_is_borrowed or bypass_diatonicity_constraint_because_chord_is_alt_dom
                 
-                if chord_is_non_diatonic and reject_non_diatonic_chord and not bypass_diatonicity_constraint:
+                """
+                This logic is a little complex, but the idea is -- self.chance_to_allow_non_diatonic_chord should be
+                independent of self.allow_borrowed_chord. If the allow non-diatonic chord diceroll succeeded,
+                but the allow_borrowed_chord diceroll failed and this is a borrowed chord, DO NOT allow a borrowed chord.
+                """
+                if (chord_is_non_diatonic and reject_non_diatonic_chord and not bypass_diatonicity_constraint) \
+                    or (chord_is_borrowed and not bypass_diatonicity_constraint):
                     matches_diatonicity_constraint = False
                 
                 if matches_chord_size_constraint and matches_octave_constraint and matches_diatonicity_constraint:
