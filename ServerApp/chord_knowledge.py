@@ -1,6 +1,8 @@
 chord_charts = {
     'maj': ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\xB0'],
-    'min': ['i', 'ii', 'III', 'iv', 'v', 'VI', 'VII' ]
+    'min': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
+    'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
+    'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
 }
 
 # When the chord leading constraint is applied, if a chord has no member
@@ -79,6 +81,8 @@ good_voicings = {
         {'name': 'major 7/9/#11 (lydian chord)', 'starting_scale_degree': 7, 'intervals': [1, 4, 3, 4, 3, 4]},
     ],
     'minor': [
+        {'name': 'minor (Lil Tecca - Ransom voicing)', 'starting_scale_degree': 5, 'intervals': [5, 3, 4]},
+        {'name': 'minor (add root on top)', 'starting_scale_degree': 1, 'intervals': [3, 4, 5]},
         {'name': 'min 7 (three note voicing)', 'starting_scale_degree': 1, 'intervals': [3, 7]},
         {'name': 'min 7 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [10, 5, 4]},
         {'name': 'min 7 (open voicing)', 'starting_scale_degree': 1, 'intervals': [7, 8, 7]},
@@ -110,6 +114,7 @@ good_voicings = {
     # A little too spicy
         {'name': 'dominant 7/#9 (four note voicing)', 'starting_scale_degree': 1, 'intervals': [4, 6, 5]},
         {'name': 'dominant 7 alt (left hand voicing)', 'starting_scale_degree': 1, 'intervals': [4, 2, 5]},
+        {'name': 'dominant 7 (Lil Tecca - Ransom voicing)', 'starting_scale_degree': 1, 'intervals': [4, 3, 3, 2, 4]},
     # A little too spicy
         {'name': 'alt (aug dominant 7/#9)', 'starting_scale_degree': 1, 'intervals': [10, 5, 5, 1, 4]},
         #  Sounds good if u play it right after its root in the bass:
@@ -149,13 +154,21 @@ nice_progressions = {
         ['vi', 'IV', 'I', 'V'],
         ['vi', 'V', 'I', 'IV'],
         ['vi', 'I', 'V', 'IV'],
-
-        # Songs that use this chord progression include: No Woman No Cry by Bob Marley, Love Story by Taylor Swift, 
-        # the verse of Don’t Stop Believing by Journey, the chorus of Someone Like You by Adele...
         ['I', 'V', 'vi', 'IV'], # The 'Axis of Awesome' progression.
         ['ii', 'V', 'I'], # Jazz =)
+        ['iii', 'IV', 'iii', 'vi'], # from a prod. superstar beat
+        ['iii', 'IV'] # Example: PND - Come and See Me
     ],
     'minor': [
-        
+        ['i', 'iv', 'v'], # Example: The Weeknd - Often
+        # ['i', 'ii\xB0', 'V', 'i'], # Contains borrowed chord
+        ['i', 'VI', 'III', 'VII'],
+        ['i', 'iv', 'V'], # Contains borrowed chord
+        ['iv', 'v', 'i'],
+        ['i', 'iv', 'iv', 'i'], # Example: Bandkidjay - Bleu Chanel
+        ['VI', 'i', 'i', 'i'], # Example: Nav - Myself
+        ['i', 'VI', 'i', 'V7'], # Example: Lil Tecca - Ransom
+        [ 'i' , 'III', 'v'],  # Example: 88Glam - On Sight
+        [ 'iv', 'i', 'iv', 'VII' ],  # Example: J Balvin - Solitario        
     ]
 }

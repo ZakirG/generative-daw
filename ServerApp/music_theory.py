@@ -96,7 +96,7 @@ def are_notes_enharmonically_equivalent(note_a, note_b):
     return False
 
 def chords_are_equal(chord_a, chord_b):
-    set(flatten_note_set(chord_a)) == set(flatten_note_set(chord_b))
+    return set(flatten_note_set(chord_a)) == set(flatten_note_set(chord_b))
 
 def correct_mispelled_enharmonic_notes_according_to_key_sig(key, scale_code, note_set):
     """
@@ -196,7 +196,8 @@ def roman_numeral_to_note(roman_numeral_in, allowed_notes):
         chord_root_note = allowed_notes[target_digit - 1]
     except Exception as e:
         # The chord root in question is not in the allowed scale. 
-        # Therefore, we cannot proceed.
+        exc_info = sys.exc_info()
+        traceback.print_exception(*exc_info)
         print(e)
         return -1
     
@@ -217,7 +218,7 @@ def determine_chord_roman_name(chord_name, key, scale, chord_object):
             # If we're working in a derived scale like a pentatonic, 
             # use the full parent scale to find the correct scale degree.
             parent_scale_code = constants['scales'][scale_code]['parent_scale']
-            full_allowed_notes = get_allowed_notes(key, parent_scale_code, 3)
+            full_allowed_notes = get_allowed_notes(key, parent_scale_code, [3])
 
         roman_numeral = note_to_roman_numeral(chord_root, full_allowed_notes)
         
@@ -253,7 +254,6 @@ def build_chord_from_voicing(voicing, chord_root, roman_numeral, octaveRange):
     else:
         scale_code = 'min'
 
-    # key_scale_notes = get_key_scale_letters(chord_root['note'], scale_code, 3)
     key_scale_notes = get_allowed_notes(chord_root['note'], scale_code, octaveRange)
 
     start_degree_as_str = str(voicing['starting_scale_degree'])
@@ -303,14 +303,17 @@ def name_chords_in_tracks(tracks, key, scale):
 
 def label_voicings_by_roman_numeral(key, scale):
     """
-    You can technically do this in one pass without the key by 
-    evaluating intervals alone, but I'm too lazy to write that algorithm.
+    Labels chord voicings with the roman numeral chord roots
+    that allow those voicings to be played diatonically.
 
     The return value has the same structure as good_voicings, but with 
     an allowed_roman_numerals property on each voicing. The allowed roman numerals
-    are the ones that don't cause accidentals. (Purely diatonic chords)
+    are the ones that don't cause accidentals.
 
-    A side comment: what a lovely function. As a musician, this function is incredibly useful to me.
+    You can technically do this in one pass without the key by 
+    evaluating intervals alone, but I'm too lazy to write that algorithm.
+
+    A lovely function. As a musician, this is so useful to me.
     """
     
     labeled_result = {}
@@ -322,13 +325,22 @@ def label_voicings_by_roman_numeral(key, scale):
     voicings_list = [ voicing for voicing_group in voicings_list for voicing in voicing_group ]
 
     allowed_notes = get_key_scale_letters(key, scale)
+    full_allowed_notes = allowed_notes
+    
+    if len(constants['scales'][scale]['intervals']) < 7:
+        parent_scale_code = constants['scales'][scale]['parent_scale']
+        full_allowed_notes = get_allowed_notes(key, parent_scale_code, [3])
+        full_allowed_notes = [ note['note'] for note in full_allowed_notes]
+
     for voicing_group_key in good_voicings.keys():
         voicing_group = good_voicings[voicing_group_key]
         voicing_group_copy = []
         for voicing in voicing_group:
             allowed_roman_numerals_for_this_voicing = []
             for roman_numeral in chord_charts[scale]:
-                chord_root = roman_numeral_to_note(roman_numeral, allowed_notes)
+                chord_root = roman_numeral_to_note(roman_numeral, full_allowed_notes)
+                if chord_root == -1:
+                    continue
                 chord = build_chord_from_voicing(voicing, { 'note': chord_root, 'octave': 2 }, roman_numeral, [3])
                 it_contains_accidentals = False
                 for chord_note in chord:
@@ -342,6 +354,7 @@ def label_voicings_by_roman_numeral(key, scale):
                         break
                 if not it_contains_accidentals:
                     allowed_roman_numerals_for_this_voicing.append(roman_numeral)
+            
             voicing_copy = voicing.copy()
             voicing_copy['allowed_roman_numerals'] = allowed_roman_numerals_for_this_voicing
             voicing_group_copy.append(voicing_copy)

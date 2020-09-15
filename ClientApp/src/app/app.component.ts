@@ -64,8 +64,8 @@ export class AppComponent {
             let constants = data;
             let scales = Object.values(constants['scales']);
             this.configDataService.scales = scales;
-            this.configDataService.scale = scales[0];
-            let scale = scales[0];
+            this.configDataService.scale = scales[1];
+            let scale = scales[1];
             this.controlPanelForm.controls.scale.setValue(scale);
         });
 

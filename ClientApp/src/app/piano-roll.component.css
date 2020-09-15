@@ -240,10 +240,13 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     top:30px;
     position:absolute;
     width:650px;
+    max-height: 540px;
+    overflow-y: scroll;
 }
 
 .generation-modal .modal-body {
     font-size:12px;
+    padding-bottom: 35px;
 }
 
 .generation-modal input, .generation-modal select {
@@ -409,4 +412,36 @@ label.disabled {
 .piano-roll-input-group input {
     width: 80px;
     height:30px;
+}
+
+.generation-modal-collapsible {
+    margin:0;
+    padding:0;
+}
+
+.generation-modal-collapsible-btn {
+    border: 0;
+    background: none;
+    padding: 10px 0;
+    margin-top:10px;
+    font-size:13px;
+    font-weight:500;
+    display:block;
+    border-bottom: solid 1px pink;
+    width: 100%;
+    text-align: left;
+}
+
+.generation-modal-collapsible-btn:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";
+    position:relative;
+    top:2px;
+}
+
+.generation-modal-collapsible-btn.collapsed:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e080";
+    position:relative;
+    top:3px;
 }
