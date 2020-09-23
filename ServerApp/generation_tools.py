@@ -1,7 +1,7 @@
 import random
 from constants import constants
-from chord_knowledge import chord_leading_chart, good_voicings, chord_charts
-from utils import roman_to_int, decide_will_event_occur, flatten_note_set, pick_n_random_notes
+from chord_knowledge import chord_leading_chart, good_voicings, chord_charts, good_chord_progressions
+from utils import roman_to_int, decide_will_event_occur, flatten_note_set, pick_n_random_notes, pretty_print_progression
 from client_logging import ClientLogger
 from music_theory import determine_chord_name, get_allowed_notes, \
     transpose_note_n_semitones, build_chord_from_voicing, label_voicings_by_roman_numeral, \
@@ -15,6 +15,7 @@ class Generator:
 
         self.key = content['key'].replace('#', 's').lower()
         self.scale = content['scale']
+        self.scale_name = constants['scales'][self.scale]['name']
         self.length = content['length']
         self.disallow_repeats = content['disallowRepeats']
         self.octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
@@ -33,7 +34,7 @@ class Generator:
             self.chance_to_allow_non_diatonic_chord = content['chanceToAllowNonDiatonicChord']
             self.chance_to_allow_borrowed_chord = content['chanceToAllowBorrowedChord']
             self.chance_to_allow_alt_dom_chord = content['chanceToAllowAlteredDominantChord']
-            self.chance_to_use_good_progression = content['chanceToUseCommonProgression']
+            self.chance_to_use_common_progression = content['chanceToUseCommonProgression']
             # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
             # This result is specific to the scale of interest. But not its key.
             self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale)
@@ -224,7 +225,7 @@ class Generator:
             return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'], is_non_diatonic, is_borrowed, is_alt_dom
         return -1, -1, -1, -1, -1, -1
 
-    def build_chord_with_root(self, chosen_target_degree):
+    def build_chord_from_roman_numeral(self, chosen_target_degree):
         """
         Returns (built_chord, name_of_chord, generation_method)
         """
@@ -244,13 +245,16 @@ class Generator:
                     generation_method += "\n\t- Decided to allow a non-diatonic altered dominant chord."
                 elif is_non_diatonic:
                     generation_method += "\n\t- Decided to allow a non-diatonic chord."
-                generation_method += "\n\t- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
+                generation_method += "\n\t- Decided to voice {} as a {}.".format(chosen_target_degree, name_of_voicing)
                 return (built_chord, name_of_chord, generation_method)
 
         # If all else fails, build it randomly.
         built_chord = self.build_chord_with_root_randomly(chord_root_note, chosen_target_degree)
         generation_method = '\n\t- Built {} by picking chord tones at random.'.format(chosen_target_degree)
-        return (built_chord, None, generation_method)
+        name_of_chord = None
+        if built_chord != -1:
+            name_of_chord = determine_chord_name(flatten_note_set(built_chord), self.key, constants['scales'][self.scale])
+        return (built_chord, name_of_chord, generation_method)
 
     def generate_next_chord(self, previous_chord, previous_chord_degree, previous_chord_name):
         """
@@ -260,9 +264,9 @@ class Generator:
         candidate_chord = None
         name_of_candidate_chord = None
         degree_of_candidate_chord = None
-        generation_method = '?'
+        generation_method = ''
 
-        # Perform weighted coin toss
+        # Perform weighted coin toss to use a chord leading chart
         use_chord_leading = decide_will_event_occur(self.chance_to_use_chord_leading)
 
         if use_chord_leading and len(previous_chord) > 0 and previous_chord_name[1] != '':
@@ -279,7 +283,7 @@ class Generator:
                 leading_chord = -1
                 while leading_chord == -1 and len(leading_targets) > 0:
                     chosen_target_degree = random.choice(leading_targets)
-                    leading_chord, name_of_chord, __generation_method = self.build_chord_with_root(chosen_target_degree)
+                    leading_chord, name_of_chord, __generation_method = self.build_chord_from_roman_numeral(chosen_target_degree)
                 
                     if leading_chord != -1:
                         candidate_chord = leading_chord
@@ -290,24 +294,14 @@ class Generator:
                     leading_targets.remove(chosen_target_degree)
         
         if candidate_chord is None:
-            # Perform weighted coin toss to decide whether to use a common voicing
-            use_chord_voicing_from_library = decide_will_event_occur(self.chance_to_use_voicing_from_library)
-            if use_chord_voicing_from_library:
-                chosen_target_degree = random.choice(chord_charts[self.scale])
-                chord_root_note = roman_numeral_to_note(chosen_target_degree, self.parent_scale_allowed_notes)
-                if chord_root_note != -1:
-                    built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
-                    if built_chord != -1:
-                        candidate_chord = built_chord
-                        name_of_candidate_chord = name_of_chord
-                        generation_method = ''
-                        if is_borrowed:
-                            generation_method += "\t- Decided to allow a borrowed chord.\n"
-                        elif is_alt_dom:
-                            generation_method += "\t- Decided to allow a non-diatonic altered dominant chord.\n"
-                        elif is_non_diatonic:
-                            generation_method += "\t- Decided to allow a non-diatonic chord.\n"
-                        generation_method += "\t- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
+            # Pick a random degree of the scale and build a chord on it
+            chosen_target_degree = random.choice(chord_charts[self.scale])
+            built_chord, name_of_chord, __generation_method = self.build_chord_from_roman_numeral(chosen_target_degree)
+            if built_chord != -1:
+                candidate_chord = built_chord
+                name_of_candidate_chord = name_of_chord
+                generation_method = '\t- Picked scale degree {} randomly.'.format(chosen_target_degree)
+                generation_method += __generation_method
 
         if candidate_chord is None:
             generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
@@ -346,15 +340,64 @@ class Generator:
         previous_chord = []
         previous_chord_degree = '?'
         previous_chord_name = '', ''
-        for i in range(self.length):
-            chord, chord_name, chord_degree, generation_method = self.generate_next_chord(previous_chord, previous_chord_degree, previous_chord_name)
-            result_chord_progression.append(chord)
-            result_chord_names.append(chord_name)
-
-            previous_chord = chord
-            previous_chord_name = chord_name
-            previous_chord_degree = chord_degree
+        while len(result_chord_progression) < self.length:
+            # Perform weighted coin toss to use a pre-selected chord progression
+            use_chord_progression_from_library = decide_will_event_occur(self.chance_to_use_common_progression)
+            # Which chord progressions fit in the remaining space?
+            allowed_progressions = []
+            for progression in good_chord_progressions[self.scale_name]:
+                if len(progression['roman_numerals']) + len(result_chord_progression) < self.length:
+                    allowed_progressions.append(progression)
             
-            ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], previous_chord_degree, generation_method))
+            if use_chord_progression_from_library and len(allowed_progressions) > 0:
+                progression = random.choice(allowed_progressions)
+                progression_str = pretty_print_progression(progression['roman_numerals'])
+                progression_chords = []
+                progression_chord_names = []
+                # Log at the end only if everything is successful
+                if len(progression['name']) > 0:
+                    lines_to_log = ['Decided to incorporate {}. ({})'.format(progression_str, progression['name'])]
+                else:
+                    lines_to_log = ['Decided to incorporate {} progression.'.format(progression_str)]
+                failure = False
+
+                # If the first chosen progression happens to start on the same roman numeral as the previous
+                # chord, lets skip that chord.
+                remaining_numerals = progression['roman_numerals']
+                if remaining_numerals[0] == previous_chord_degree:
+                    remaining_numerals = remaining_numerals[1:]
+                    lines_to_log += ["The previous chord was a {}, so we'll start the progression from {}.".format(previous_chord_degree, remaining_numerals[0])]
+
+                for numeral_to_add in remaining_numerals:
+                    chord, chord_name, __generation_method = self.build_chord_from_roman_numeral(numeral_to_add)
+                    if chord == -1:
+                        print('Failed to build chord on ', numeral_to_add)
+                        failure = True
+                        break
+                    generation_method = '\t- Using {} to satisfy the {}.'.format(numeral_to_add, progression_str)
+                    generation_method += __generation_method
+                    progression_chords.append(chord)
+                    progression_chord_names.append(chord_name)
+                    lines_to_log.append('Added {} ( {} ). Generation pathway: \n{}'.format(chord_name[0], numeral_to_add, generation_method))
+                if failure:
+                    continue
+                result_chord_progression += progression_chords
+                result_chord_names += progression_chord_names
+                previous_chord = result_chord_progression[-1]
+                previous_chord_name = result_chord_names[-1]
+                previous_chord_degree = progression['roman_numerals'][-1]
+                for line in lines_to_log:
+                    ClientLogger.log(line)
+                ClientLogger.log('{} progression completed.'.format(progression_str))
+            else:
+                chord, chord_name, chord_degree, generation_method = self.generate_next_chord(previous_chord, previous_chord_degree, previous_chord_name)
+                result_chord_progression.append(chord)
+                result_chord_names.append(chord_name)
+
+                previous_chord = chord
+                previous_chord_name = chord_name
+                previous_chord_degree = chord_degree
+                
+                ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], previous_chord_degree, generation_method))
         
         return result_chord_progression, result_chord_names

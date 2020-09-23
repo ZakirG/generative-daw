@@ -100,16 +100,16 @@
                         <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-toggle="collapse" data-target="#chordProgressions" aria-expanded="true" aria-controls="chordProgressions" *ngIf="generationType == 'chords'">
                             Chord progression options
                         </button>
-                        <div class="generation-modal-collapsible collapse show" id="chordProgressions" *ngIf="generationType == 'chords'">
+                        <div class="generation-modal-collapsible collapse show" id="chordProgressions" >
                             <div class='row'>
                                 <div class='col-8'>
                                     <label class='form-label form-label-text' style='display:inline-block;margin-right:15px;'>
-                                        Disallow consecutive chord repeats
+                                        Disallow consecutive repeats
                                     </label>
-                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;'>
+                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
                                         Chance to use classical chord leading charts to choose follow-up chord
                                     </label>
-                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;margin-top:10px;'>
+                                    <label class='form-label form-label-text' style='display:block;margin-right:15px;margin-top:10px;' *ngIf="generationType == 'chords'" >
                                         Chance to integrate progression from progressions library
                                     </label>
                                 </div>
@@ -118,7 +118,7 @@
                                         <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="disallowRepeats" type="checkbox" name="disallowRepeats">
                                         <span class="checkmark"></span>
                                     </label>
-                                    <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">
+                                    <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'" >
                                         <input class='form-control' [(ngModel)]="chanceToUseChordLeadingChart" type="number" name="chanceToUseChordLeadingChart" style='width:70px; display:inline-block' >
                                     </label>
                                     <label class='form-label' style='display:block;margin-right:15px;' *ngIf="generationType == 'chords'">

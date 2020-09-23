@@ -186,9 +186,10 @@ def note_to_roman_numeral(note, sorted_allowed_notes):
 
 def roman_numeral_to_note(roman_numeral_in, allowed_notes):
     # Translate the roman numeral to a note in the context of a key.
+    # Remove diminished marks, seventh chord notation, augmented notation, sharps, flats
     roman_numeral_upper = roman_numeral_in.replace('b',''
         ).replace('#','').replace('+','').replace('\xB0', ''
-        ).upper()
+        ).replace('7', '').upper()
     target_digit = roman_to_int(roman_numeral_upper)
 
     # Lists are zero-indexed while roman numerals are 1-indexed, so subtract 1 from the target_digit

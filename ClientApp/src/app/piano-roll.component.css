@@ -236,11 +236,15 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     background: rgba(0,0,0,0.4);
 }
 
+.generation-modal .modal-dialog {
+    margin-top:10px;
+}
+
 .generation-modal .modal-content {
-    top:30px;
+    /* top:10px; */
     position:absolute;
     width:650px;
-    max-height: 600px;
+    max-height: 680px;
     overflow-y: scroll;
 }
 
