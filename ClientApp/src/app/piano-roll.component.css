@@ -252,9 +252,9 @@ span.note-label[data-note='C'] {
     padding-top:5px;
 }
 
-.form-label-text {
+/* .form-label-text {
     padding-top:9px;
-}
+} */
 
 .custom-radio-button, .custom-checkbox, .form-label {
     display: block;

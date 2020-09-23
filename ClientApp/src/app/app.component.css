@@ -19,6 +19,14 @@ header, .control-bar, #top-toolbar {
     z-index:3;
 }
 
+.text-left {
+    text-align:left;
+}
+
+.text-right {
+    text-align:right;
+}
+
 .title-box {
   border: solid #1d626d 1px;
   padding:7px 15px;
