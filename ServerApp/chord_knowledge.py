@@ -141,34 +141,34 @@ good_voicings = {
 # Some sources:
 # >> https://mixedinkey.com/captain-plugins/wiki/best-chord-progressions/
 # >> https://www.libertyparkmusic.com/common-chord-progressions/
-nice_progressions = {
+good_chord_progressions = {
     'major': [
-        ['I', 'IV', 'V'],
-        ['I', 'V6', 'vi', 'V'],
-        ['I', 'V', 'vi', 'iii', 'IV'],
-        ['I', 'vi', 'IV', 'V'], # the 50s progression
-        ['I', 'IV', 'V', 'vi'],
-        ['I', 'IV', 'vi', 'V'],
-        ['IV', 'I6', 'ii'],
-        ['vi', 'V', 'IV', 'V'],
-        ['vi', 'IV', 'I', 'V'],
-        ['vi', 'V', 'I', 'IV'],
-        ['vi', 'I', 'V', 'IV'],
-        ['I', 'V', 'vi', 'IV'], # The 'Axis of Awesome' progression.
-        ['ii', 'V', 'I'], # Jazz =)
-        ['iii', 'IV', 'iii', 'vi'], # from a prod. superstar beat
-        ['iii', 'IV'] # Example: PND - Come and See Me
+        { 'roman_numerals': ['I', 'IV', 'V'], 'name': ''},
+        # { 'roman_numerals': ['I', 'V6', 'vi', 'V'], 'name': ''},
+        { 'roman_numerals': ['I', 'V', 'vi', 'iii', 'IV'], 'name': ''},
+        { 'roman_numerals': ['I', 'vi', 'IV', 'V'], 'name': 'The 50s progression'},
+        { 'roman_numerals': ['I', 'IV', 'V', 'vi'], 'name': ''},
+        { 'roman_numerals': ['I', 'IV', 'vi', 'V'], 'name': ''},
+        # { 'roman_numerals': ['IV', 'I6', 'ii'], 'name': ''},
+        { 'roman_numerals': ['vi', 'V', 'IV', 'V'], 'name': ''},
+        { 'roman_numerals': ['vi', 'IV', 'I', 'V'], 'name': ''},
+        { 'roman_numerals': ['vi', 'V', 'I', 'IV'], 'name': ''},
+        { 'roman_numerals': ['vi', 'I', 'V', 'IV'], 'name': ''},
+        { 'roman_numerals': ['I', 'V', 'vi', 'IV'], 'name': 'The Axis of Awesome overused pop progression.'},
+        { 'roman_numerals': ['ii', 'V', 'I'], 'name': ''},
+        { 'roman_numerals': ['iii', 'IV', 'iii', 'vi'], 'name': ''},
+        { 'roman_numerals': ['iii', 'IV'], 'name': 'PND - Come and See Me progression'}
     ],
     'minor': [
-        ['i', 'iv', 'v'], # Example: The Weeknd - Often
-        # ['i', 'ii\xB0', 'V', 'i'], # Contains borrowed chord
-        ['i', 'VI', 'III', 'VII'],
-        ['i', 'iv', 'V'], # Contains borrowed chord
-        ['iv', 'v', 'i'],
-        ['i', 'iv', 'iv', 'i'], # Example: Bandkidjay - Bleu Chanel
-        ['VI', 'i', 'i', 'i'], # Example: Nav - Myself
-        ['i', 'VI', 'i', 'V7'], # Example: Lil Tecca - Ransom
-        [ 'i' , 'III', 'v'],  # Example: 88Glam - On Sight
-        [ 'iv', 'i', 'iv', 'VII' ],  # Example: J Balvin - Solitario        
+        { 'roman_numerals': ['i', 'iv', 'v'], 'name': 'The Weeknd - Often progression'}, # Example:
+        # { 'roman_numerals': ['i', 'ii\xB0', 'V', 'i'], 'name': ''}, # Contains borrowed chord
+        { 'roman_numerals': ['i', 'VI', 'III', 'VII'], 'name': ''},
+        { 'roman_numerals': ['i', 'iv', 'V'], 'name': ''}, # Contains borrowed chord
+        { 'roman_numerals': ['iv', 'v', 'i'], 'name': ''},
+        { 'roman_numerals': ['i', 'iv', 'iv', 'i'], 'name': 'Bandkidjay - Bleu Chanel progression'},
+        { 'roman_numerals': ['VI', 'i', 'i', 'i'], 'name': 'Nav - Myself progression'},
+        # { 'roman_numerals': ['i', 'VI', 'i', 'V7'], 'name': 'Lil Tecca - Ransom progression'},
+        { 'roman_numerals': [ 'i' , 'III', 'v'], 'name': '88Glam - On Sight progression'},
+        { 'roman_numerals': [ 'iv', 'i', 'iv', 'VII'], 'name': 'J Balvin - Solitario progression'},
     ]
 }

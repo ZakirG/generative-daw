@@ -38,3 +38,12 @@ def pick_n_random_notes(allowed_notes_in, n):
         note_set.append(allowed_notes[random_index])
         allowed_notes.pop(random_index)
     return note_set
+
+def pretty_print_progression(progression):
+    rv = ''
+    for numeral in progression:
+        rv += numeral
+        rv += ', '
+    
+    return rv[:-2]
+

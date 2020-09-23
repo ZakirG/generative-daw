@@ -26,6 +26,7 @@ export class PianoRollComponent {
     disallowRepeats = true;
     chanceToUseChordLeadingChart = 0.7;
     chanceToUseCommonVoicing = 0.95;
+    chanceToUseCommonProgression = 0.4;
     VMustBeDominant7 = false;
     chanceToAllowNonDiatonicChord = 0.001;
     chanceToAllowBorrowedChord = 0.001;

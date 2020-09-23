@@ -196,20 +196,6 @@ span.note-label[data-note='C'] {
     border:solid 1px #00889e;
 }
 
-/*
-Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data-active='true'] + .grid-state-wrapper[data-active='true'] {
-    border-left:0;
-    margin-left:-3%;
-    width:15.5% !important;
-}
-
-.grid-state-wrapper[data-active='true'] + .grid-state-wrapper[data-active='true'] hr {
-    width:90%;
-    padding-right:10%;
-    padding-left:0;
-}
- */
-
 .grid-state-wrapper hr {
     opacity:0;
     width:80%;
@@ -236,11 +222,14 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     background: rgba(0,0,0,0.4);
 }
 
+.generation-modal .modal-dialog {
+    margin-top:10px;
+}
+
 .generation-modal .modal-content {
-    top:30px;
     position:absolute;
     width:650px;
-    max-height: 540px;
+    max-height: 680px;
     overflow-y: scroll;
 }
 
@@ -264,7 +253,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .form-label-text {
-    padding-top:7px;
+    padding-top:9px;
 }
 
 .custom-radio-button, .custom-checkbox, .form-label {
