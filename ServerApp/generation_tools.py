@@ -155,9 +155,9 @@ class Generator:
         elif '+' in chosen_target_degree and chosen_target_degree.isupper():
             allowed_qualities = ['augmented']
         elif chosen_target_degree.isupper():
-            allowed_qualities = ['major', 'dominant-7']
+            allowed_qualities = ['major', 'dominant-7', 'sus']
         else:
-            allowed_qualities = ['minor']
+            allowed_qualities = ['minor', 'sus']
         # elif chosen_target_degree == 'v' and self.chance_to_allow_non_diatonic_chord > 0:
         #     # V Dominant 7 chords are sometimes borrowed for use in a minor context
         #     # Contains an accidental, from the harmonic minor
