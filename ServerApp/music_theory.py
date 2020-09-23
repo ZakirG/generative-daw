@@ -248,14 +248,14 @@ def determine_chord_roman_name(chord_name, key, scale, chord_object):
 
         return ''
 
-def build_chord_from_voicing(voicing, chord_root, roman_numeral, octaveRange):
+def build_chord_from_voicing(voicing, chord_root, roman_numeral, octave_range):
     # Get the mode of the chord root so we know what the starting scale degree refers to
     if roman_numeral.isupper():
         scale_code = 'maj'
     else:
         scale_code = 'min'
 
-    key_scale_notes = get_allowed_notes(chord_root['note'], scale_code, octaveRange)
+    key_scale_notes = get_allowed_notes(chord_root['note'], scale_code, octave_range)
 
     start_degree_as_str = str(voicing['starting_scale_degree'])
     start_degree = 0
@@ -302,10 +302,10 @@ def name_chords_in_tracks(tracks, key, scale):
     
     return chord_names_by_tracks, chord_degrees_by_tracks   
 
-def label_voicings_by_roman_numeral(key, scale):
+def label_voicings_by_roman_numeral(key, scale, octave_range):
     """
     Labels chord voicings with the roman numeral chord roots
-    that allow those voicings to be played diatonically.
+    that allow those voicings to be played diatonically in the global key.
 
     The return value has the same structure as good_voicings, but with 
     an allowed_roman_numerals property on each voicing. The allowed roman numerals
@@ -342,9 +342,13 @@ def label_voicings_by_roman_numeral(key, scale):
                 chord_root = roman_numeral_to_note(roman_numeral, full_allowed_notes)
                 if chord_root == -1:
                     continue
-                chord = build_chord_from_voicing(voicing, { 'note': chord_root, 'octave': 2 }, roman_numeral, [3])
+                chord = build_chord_from_voicing(voicing, { 'note': chord_root, 'octave': octave_range[0] }, roman_numeral, octave_range)
                 it_contains_accidentals = False
+                it_fits_in_the_octave_range = True
                 for chord_note in chord:
+                    if chord_note['octave'] not in octave_range:
+                        it_fits_in_the_octave_range = False
+                        break
                     found_equivalent = False
                     for scale_note in allowed_notes:
                         are_equivalent = are_notes_enharmonically_equivalent(scale_note, chord_note['note'])
@@ -353,7 +357,7 @@ def label_voicings_by_roman_numeral(key, scale):
                     if not found_equivalent:
                         it_contains_accidentals = True
                         break
-                if not it_contains_accidentals:
+                if not it_contains_accidentals and it_fits_in_the_octave_range:
                     allowed_roman_numerals_for_this_voicing.append(roman_numeral)
             
             voicing_copy = voicing.copy()

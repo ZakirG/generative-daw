@@ -3,6 +3,7 @@ chord_charts = {
     'min': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
     'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
     'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
+    # 'dhmaj': [] # TODO: fill this in
 }
 
 # When the chord leading constraint is applied, if a chord has no member

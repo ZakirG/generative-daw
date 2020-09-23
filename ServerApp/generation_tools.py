@@ -39,7 +39,7 @@ class Generator:
             self.chance_to_use_common_progression = content['chanceToUseCommonProgression']
             # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
             # This result is specific to the scale of interest. But not its key.
-            self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale)
+            self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale, self.octave_range)
             # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
             upper_bd = min(self.chord_size_upper_bound, len(self.allowed_notes))
             self.allowed_chord_sizes = range(self.chord_size_lower_bound, upper_bd + 1)
