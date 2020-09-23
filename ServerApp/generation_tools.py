@@ -18,6 +18,11 @@ class Generator:
         self.length = content['length']
         self.disallow_repeats = content['disallowRepeats']
         self.octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
+        self.allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
+        self.parent_scale_allowed_notes = self.allowed_notes
+        if len(constants['scales'][self.scale]['intervals']) < 7:
+            self.parent_scale_code = constants['scales'][self.scale]['parent_scale']
+            self.parent_scale_allowed_notes = get_allowed_notes(self.key, parent_scale_code, [3])
 
         if generation_type == 'chords':
             self.chance_to_use_chord_leading=content['chanceToUseChordLeadingChart']
@@ -28,31 +33,35 @@ class Generator:
             self.chance_to_allow_non_diatonic_chord = content['chanceToAllowNonDiatonicChord']
             self.chance_to_allow_borrowed_chord = content['chanceToAllowBorrowedChord']
             self.chance_to_allow_alt_dom_chord = content['chanceToAllowAlteredDominantChord']
+            self.chance_to_use_good_progression = content['chanceToUseCommonProgression']
             # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
             # This result is specific to the scale of interest. But not its key.
             self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale)
+            # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
+            upper_bd = min(self.chord_size_upper_bound, len(self.allowed_notes))
+            self.allowed_chord_sizes = range(self.chord_size_lower_bound, upper_bd + 1)
+            if upper_bd == self.chord_size_lower_bound:
+                self.allowed_chord_sizes = [upper_bd]
  
     def generate_melody(self):
-        allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
-        
         result = []
         previous_note = None
         for i in range(self.length):
-            candidate_note = random.choice(allowed_notes)
+            candidate_note = random.choice(self.allowed_notes)
             # If repeats are disallowed, allow up to 6 retries to find a different noteset.
             if self.disallow_repeats and previous_note is not None:
                 max_retries = 6
                 retries = 0
                 while set(flatten_note_set([previous_note])) == set(flatten_note_set([candidate_note])) and retries < max_retries:
                     retries += 1
-                    candidate_note = random.choice(allowed_notes)
+                    candidate_note = random.choice(self.allowed_notes)
 
             result.append([candidate_note])
             previous_note = candidate_note
         
         return result
 
-    def build_chord_with_root_randomly(self, chord_root_note, chosen_target_degree, allowed_notes):
+    def build_chord_with_root_randomly(self, chord_root_note, chosen_target_degree):
         note_choices_for_result = []
 
         quality = 'minor'
@@ -116,7 +125,7 @@ class Generator:
         #     note_choices_for_result.append(sixth_of_chord)
 
         # Eliminate note choices outside of the self.key.
-        allowed_letters = [x['note'] for x in allowed_notes]
+        allowed_letters = [x['note'] for x in self.allowed_notes]
         chord_size = min(random.choice(range(self.chord_size_lower_bound, self.chord_size_upper_bound + 1)), len(allowed_letters))
         note_choices_for_result = [x for x in note_choices_for_result if x in allowed_letters]
 
@@ -215,11 +224,11 @@ class Generator:
             return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'], is_non_diatonic, is_borrowed, is_alt_dom
         return -1, -1, -1, -1, -1, -1
 
-    def build_chord_with_root(self, chosen_target_degree, allowed_notes, parent_scale_allowed_notes):
+    def build_chord_with_root(self, chosen_target_degree):
         """
         Returns (built_chord, name_of_chord, generation_method)
         """
-        chord_root_note = roman_numeral_to_note(chosen_target_degree, parent_scale_allowed_notes)
+        chord_root_note = roman_numeral_to_note(chosen_target_degree, self.parent_scale_allowed_notes)
 
         # Perform weighted coin toss
         use_chord_voicing_from_library = decide_will_event_occur(self.chance_to_use_voicing_from_library)
@@ -239,115 +248,113 @@ class Generator:
                 return (built_chord, name_of_chord, generation_method)
 
         # If all else fails, build it randomly.
-        built_chord = self.build_chord_with_root_randomly(chord_root_note, chosen_target_degree, allowed_notes)
+        built_chord = self.build_chord_with_root_randomly(chord_root_note, chosen_target_degree)
         generation_method = '\n\t- Built {} by picking chord tones at random.'.format(chosen_target_degree)
         return (built_chord, None, generation_method)
 
-    def generate_chords(self):
-        allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
-        parent_scale_allowed_notes = allowed_notes
-        if len(constants['scales'][self.scale]['intervals']) < 7:
-            parent_scale_code = constants['scales'][self.scale]['parent_scale']
-            parent_scale_allowed_notes = get_allowed_notes(self.key, parent_scale_code, [3])
+    def generate_next_chord(self, previous_chord, previous_chord_degree, previous_chord_name):
+        """
+        Returns (chord, chord_name, chord_degree, generation_method)
+        """
+        num_notes_in_chord = random.choice(self.allowed_chord_sizes)
+        candidate_chord = None
+        name_of_candidate_chord = None
+        degree_of_candidate_chord = None
+        generation_method = '?'
 
-        # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
-        upper_bd = min(self.chord_size_upper_bound, len(allowed_notes))
-        allowed_chord_sizes = range(self.chord_size_lower_bound, upper_bd + 1)
-        if upper_bd == self.chord_size_lower_bound:
-            allowed_chord_sizes = [upper_bd]
+        # Perform weighted coin toss
+        use_chord_leading = decide_will_event_occur(self.chance_to_use_chord_leading)
+
+        if use_chord_leading and len(previous_chord) > 0 and previous_chord_name[1] != '':
+            # The chosen scale tells us which chord leading chart to use
+            quality = 'minor'
+            if 'maj' in self.scale:
+                quality = 'major'
+
+            if previous_chord_degree in chord_leading_chart[quality]:
+                leading_targets = chord_leading_chart[quality][previous_chord_degree].copy()
+                # Now we attempt to build a chord with one of the leading targets.
+                # This may take multiple tries, as certain scales lack certain leading targets.
+                # If all leading targets fail to produce a chord, we abort and use a different chord creation method.
+                leading_chord = -1
+                while leading_chord == -1 and len(leading_targets) > 0:
+                    chosen_target_degree = random.choice(leading_targets)
+                    leading_chord, name_of_chord, __generation_method = self.build_chord_with_root(chosen_target_degree)
+                
+                    if leading_chord != -1:
+                        candidate_chord = leading_chord
+                        name_of_candidate_chord = name_of_chord
+                        generation_method = '\t- Used {} chord leading chart suggestion {} -> {}. '.format(quality, previous_chord_name[1].split()[0], chosen_target_degree)
+                        generation_method += __generation_method
+
+                    leading_targets.remove(chosen_target_degree)
         
+        if candidate_chord is None:
+            # Perform weighted coin toss to decide whether to use a common voicing
+            use_chord_voicing_from_library = decide_will_event_occur(self.chance_to_use_voicing_from_library)
+            if use_chord_voicing_from_library:
+                chosen_target_degree = random.choice(chord_charts[self.scale])
+                chord_root_note = roman_numeral_to_note(chosen_target_degree, self.parent_scale_allowed_notes)
+                if chord_root_note != -1:
+                    built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
+                    if built_chord != -1:
+                        candidate_chord = built_chord
+                        name_of_candidate_chord = name_of_chord
+                        generation_method = ''
+                        if is_borrowed:
+                            generation_method += "\t- Decided to allow a borrowed chord.\n"
+                        elif is_alt_dom:
+                            generation_method += "\t- Decided to allow a non-diatonic altered dominant chord.\n"
+                        elif is_non_diatonic:
+                            generation_method += "\t- Decided to allow a non-diatonic chord.\n"
+                        generation_method += "\t- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
+
+        if candidate_chord is None:
+            generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
+            candidate_chord = pick_n_random_notes(self.allowed_notes, num_notes_in_chord)
+        
+        # If the candidate chord fails user-applied constraints, regenerate it randomly.
+        # Try to design the previous algorithms so that we avoid having to regenerate from random.
+        # (I checked for accidentals during the voicing selection process)
+        fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
+        max_retries = 6
+        retries = 0
+        while fails_repeats_constraint and retries < max_retries:
+            retries += 1
+            num_notes_in_chord = random.choice(self.allowed_chord_sizes)
+            candidate_chord = pick_n_random_notes(self.allowed_notes, num_notes_in_chord)
+            generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
+            fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
+            # fails_accidentals_constraint = (not self.allow_accidentals) and does_chord_contain_accidentals(candidate_chord, self.allowed_notes)
+
+        if name_of_candidate_chord is None:
+            name_of_candidate_chord = determine_chord_name(flatten_note_set(candidate_chord), self.key, constants['scales'][self.scale])
+        
+        try:
+            degree_of_candidate_chord = name_of_candidate_chord[1].split()[0]
+        except Exception as e:
+            degree_of_candidate_chord = '?'
+            print('Exception: ', e)
+            exc_info = sys.exc_info()
+            traceback.print_exception(*exc_info)
+        
+        return candidate_chord, name_of_candidate_chord, degree_of_candidate_chord, generation_method
+
+    def generate_chords(self):
         result_chord_progression = []
         result_chord_names = []
         previous_chord = []
         previous_chord_degree = '?'
         previous_chord_name = '', ''
         for i in range(self.length):
-            num_notes_in_chord = random.choice(allowed_chord_sizes)
+            chord, chord_name, chord_degree, generation_method = self.generate_next_chord(previous_chord, previous_chord_degree, previous_chord_name)
+            result_chord_progression.append(chord)
+            result_chord_names.append(chord_name)
 
-            candidate_chord = None
-            name_of_candidate_chord = None
-            generation_method = '?'
-
-            # Perform weighted coin toss
-            use_chord_leading = decide_will_event_occur(self.chance_to_use_chord_leading)
-
-            if use_chord_leading and len(previous_chord) > 0 and previous_chord_name[1] != '':
-                # The chosen scale tells us which chord leading chart to use
-                quality = 'minor'
-                if 'maj' in self.scale:
-                    quality = 'major'
-
-                if previous_chord_degree in chord_leading_chart[quality]:
-                    leading_targets = chord_leading_chart[quality][previous_chord_degree].copy()
-                    # Now we attempt to build a chord with one of the leading targets.
-                    # This may take multiple tries, as certain scales lack certain leading targets.
-                    # If all leading targets fail to produce a chord, we abort and use a different chord creation method.
-                    leading_chord = -1
-                    while leading_chord == -1 and len(leading_targets) > 0:
-                        chosen_target_degree = random.choice(leading_targets)
-                        leading_chord, name_of_chord, __generation_method = self.build_chord_with_root(chosen_target_degree, allowed_notes, parent_scale_allowed_notes)
-                    
-                        if leading_chord != -1:
-                            candidate_chord = leading_chord
-                            name_of_candidate_chord = name_of_chord
-                            generation_method = '\t- Used {} chord leading chart suggestion {} -> {}. '.format(quality, previous_chord_name[1].split()[0], chosen_target_degree)
-                            generation_method += __generation_method
-
-                        leading_targets.remove(chosen_target_degree)
+            previous_chord = chord
+            previous_chord_name = chord_name
+            previous_chord_degree = chord_degree
             
-            if candidate_chord is None:
-                # Perform weighted coin toss to decide whether to use a common voicing
-                use_chord_voicing_from_library = decide_will_event_occur(self.chance_to_use_voicing_from_library)
-                if use_chord_voicing_from_library:
-                    chosen_target_degree = random.choice(chord_charts[self.scale])
-                    chord_root_note = roman_numeral_to_note(chosen_target_degree, parent_scale_allowed_notes)
-                    if chord_root_note != -1:
-                        built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
-                        if built_chord != -1:
-                            candidate_chord = built_chord
-                            name_of_candidate_chord = name_of_chord
-                            generation_method = ''
-                            if is_borrowed:
-                                generation_method += "\t- Decided to allow a borrowed chord.\n"
-                            elif is_alt_dom:
-                                generation_method += "\t- Decided to allow a non-diatonic altered dominant chord.\n"
-                            elif is_non_diatonic:
-                                generation_method += "\t- Decided to allow a non-diatonic chord.\n"
-                            generation_method += "\t- Decided to voice {} as a {}".format(chosen_target_degree, name_of_voicing)
-
-            if candidate_chord is None:
-                generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
-                candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
-            
-            # If the candidate chord fails user-applied constraints, regenerate it randomly.
-            # Try to design the previous algorithms so that we avoid having to regenerate from random.
-            # (I checked for accidentals during the voicing selection process)
-            fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
-            max_retries = 6
-            retries = 0
-            while fails_repeats_constraint and retries < max_retries:
-                retries += 1
-                num_notes_in_chord = random.choice(allowed_chord_sizes)
-                candidate_chord = pick_n_random_notes(allowed_notes, num_notes_in_chord)
-                generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
-                fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
-                # fails_accidentals_constraint = (not self.allow_accidentals) and does_chord_contain_accidentals(candidate_chord, allowed_notes)
-
-            result_chord_progression.append(candidate_chord)
-            previous_chord = candidate_chord
-            if name_of_candidate_chord is not None:
-                previous_chord_name = name_of_candidate_chord
-            else:
-                previous_chord_name = determine_chord_name(flatten_note_set(candidate_chord), self.key, constants['scales'][self.scale])
-            result_chord_names.append(previous_chord_name)
-            
-            try:
-                previous_chord_degree = previous_chord_name[1].split()[0]
-            except Exception as e:
-                previous_chord_degree = '?'
-                print('Exception: ', e)
-                exc_info = sys.exc_info()
-                traceback.print_exception(*exc_info)
             ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], previous_chord_degree, generation_method))
         
         return result_chord_progression, result_chord_names

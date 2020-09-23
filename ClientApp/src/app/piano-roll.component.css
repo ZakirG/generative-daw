@@ -240,7 +240,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     top:30px;
     position:absolute;
     width:650px;
-    max-height: 540px;
+    max-height: 600px;
     overflow-y: scroll;
 }
 
@@ -264,7 +264,7 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .form-label-text {
-    padding-top:7px;
+    padding-top:9px;
 }
 
 .custom-radio-button, .custom-checkbox, .form-label {
