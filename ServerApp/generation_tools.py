@@ -388,7 +388,7 @@ class Generator:
                 previous_chord_degree = progression['roman_numerals'][-1]
                 for line in lines_to_log:
                     ClientLogger.log(line)
-                ClientLogger.log('{} progression completed.'.format(progression_str))
+                ClientLogger.log('{} progression complete.'.format(progression_str))
             else:
                 chord, chord_name, chord_degree, generation_method = self.generate_next_chord(previous_chord, previous_chord_degree, previous_chord_name)
                 result_chord_progression.append(chord)

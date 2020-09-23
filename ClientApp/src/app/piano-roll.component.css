@@ -196,20 +196,6 @@ span.note-label[data-note='C'] {
     border:solid 1px #00889e;
 }
 
-/*
-Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data-active='true'] + .grid-state-wrapper[data-active='true'] {
-    border-left:0;
-    margin-left:-3%;
-    width:15.5% !important;
-}
-
-.grid-state-wrapper[data-active='true'] + .grid-state-wrapper[data-active='true'] hr {
-    width:90%;
-    padding-right:10%;
-    padding-left:0;
-}
- */
-
 .grid-state-wrapper hr {
     opacity:0;
     width:80%;
@@ -241,7 +227,6 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 }
 
 .generation-modal .modal-content {
-    /* top:10px; */
     position:absolute;
     width:650px;
     max-height: 680px;
