@@ -3,8 +3,10 @@ from constants import constants
 from chord_knowledge import chord_leading_chart, good_voicings, chord_charts, good_chord_progressions
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set, pick_n_random_notes, pretty_print_progression
 from client_logging import ClientLogger
+import midi_tools
+import music_theory
 from music_theory import determine_chord_name, get_allowed_notes, \
-    transpose_note_n_semitones, build_chord_from_voicing, label_voicings_by_roman_numeral, \
+    transpose_note_n_semitones, build_chord_from_voicing, label_voicings_with_metadata, \
     roman_numeral_to_note, chords_are_equal
 import sys, traceback
 ClientLogger = ClientLogger()
@@ -39,12 +41,16 @@ class Generator:
             self.chance_to_use_common_progression = content['chanceToUseCommonProgression']
             # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
             # This result is specific to the scale of interest. But not its key.
-            self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale, self.octave_range)
+            self.labeled_voicings = label_voicings_with_metadata(self.key, self.scale, self.octave_range)
             # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
             upper_bd = min(self.chord_size_upper_bound, len(self.allowed_notes))
             self.allowed_chord_sizes = range(self.chord_size_lower_bound, upper_bd + 1)
             if upper_bd == self.chord_size_lower_bound:
                 self.allowed_chord_sizes = [upper_bd]
+            self.max_topline_distance = content["maxToplineDistance"]
+            self.note_changes_lower_bound = content["noteChangesLowerBound"]
+            self.note_changes_upper_bound= content["noteChangesUpperBound"]
+            self.topline_contour = content["toplineContour"]
  
     def generate_melody(self):
         result = []
@@ -64,9 +70,7 @@ class Generator:
         
         return result
 
-    def build_chord_with_root_randomly(self, chord_root_note, chosen_target_degree):
-        note_choices_for_result = []
-
+    def build_chord_with_root_randomly(self, chord_root_note, chosen_target_degree, previous_chord):
         quality = 'minor'
         if chosen_target_degree.isupper():
             quality = 'major'
@@ -80,8 +84,9 @@ class Generator:
         elif quality == 'minor':
             third_of_chord = transpose_note_n_semitones(chord_root_note['note'], 3)
 
-        # As a rule, let's require the chord root and the third are the chord.
+        # As a rule, let's require the chord root and the third are in the chord.
         result_chord = [chord_root_note['note'], third_of_chord]
+        extra_notes_to_add = []
         
         fifth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 7)
         if is_diminished:
@@ -90,7 +95,7 @@ class Generator:
         elif is_augmented:
             # augmented chord
             fifth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 8)
-        note_choices_for_result.append(fifth_of_chord)
+        extra_notes_to_add.append(fifth_of_chord)
         
         semitones_up_to_seventh = 11 # major seventh
         if is_diminished:
@@ -98,7 +103,7 @@ class Generator:
         elif is_augmented or quality == 'minor':
             semitones_up_to_seventh = 10
         seventh_of_chord = transpose_note_n_semitones(chord_root_note['note'], semitones_up_to_seventh)
-        note_choices_for_result.append(seventh_of_chord)
+        extra_notes_to_add.append(seventh_of_chord)
         
         # Diminished chords sound good with major ninths too
         semitones_up_to_ninth = 14
@@ -106,7 +111,7 @@ class Generator:
             # Augmented sharp-nine chords sound cool
             semitones_up_to_ninth = 15
         ninth_of_chord = transpose_note_n_semitones(chord_root_note['note'], semitones_up_to_ninth)
-        note_choices_for_result.append(ninth_of_chord)
+        extra_notes_to_add.append(ninth_of_chord)
 
         # Avoiding major sharp 11ths for now. Sharp 11ths on a major chord are done in jazz, but my code doesn't yet support accidentals.
         # if quality == 'major':
@@ -114,33 +119,77 @@ class Generator:
         #    eleventh_of_chord = transpose_note_n_semitones(chord_root_note['note'], 18)
         if quality == 'minor':
             eleventh_of_chord = transpose_note_n_semitones(chord_root_note['note'], 17)
-            note_choices_for_result.append(eleventh_of_chord)
+            extra_notes_to_add.append(eleventh_of_chord)
         
         if quality == 'major':
             # 13th is the 6th
             sixth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 9)
-            note_choices_for_result.append(sixth_of_chord)
+            extra_notes_to_add.append(sixth_of_chord)
         
         # Avoiding minor 13ths for now, because minor sixths chords usually sharpen to get a major sixth, 
         # and my code doesn't support accidentals yet.
         # if quality == 'minor':
         #     sixth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 9)
-        #     note_choices_for_result.append(sixth_of_chord)
+        #     extra_notes_to_add.append(sixth_of_chord)
 
-        # Eliminate note choices outside of the self.key.
-        allowed_letters = [x['note'] for x in self.allowed_notes]
-        chord_size = min(random.choice(range(self.chord_size_lower_bound, self.chord_size_upper_bound + 1)), len(allowed_letters))
-        note_choices_for_result = [x for x in note_choices_for_result if x in allowed_letters]
+        # Filtering allowed notes by diatonicity
+        reject_non_diatonic_chord =  decide_will_event_occur(1 - self.chance_to_allow_non_diatonic_chord)
+        diatonic_letters = [x['note'] for x in self.allowed_notes]
+        if reject_non_diatonic_chord:
+            # Eliminate note choices outside of the self.key.
+            extra_notes_to_add = [x for x in extra_notes_to_add if x in diatonic_letters]
 
-        if len(note_choices_for_result) < chord_size:
-            # Note enough notes in the scale to build a decent chord on this root.
-            return -1
-        result_chord.extend(pick_n_random_notes(note_choices_for_result[1:], chord_size - 1))
+        note_choices_all_octaves = []
+        for octave in self.octave_range:
+            note_choices_all_octaves += list(map(lambda x: {'note': x, 'octave': octave}, extra_notes_to_add))
         
-        result_chord_notes = [ {'note': x, 'octave': random.choice(self.octave_range)} for x in result_chord ]
-        return result_chord_notes
+        extra_notes_to_add = note_choices_all_octaves.copy()
+        if previous_chord is not None and len(previous_chord) > 0:
+            # Filtering allowed notes by topline position
+            previous_chord_topline_position = music_theory.chord_to_topline_int(previous_chord)
+            extra_notes_to_add_filtered = []
+            for note in note_choices_all_octaves:
+                note_position = midi_tools.note_to_numeral(note)
+                # If the note is higher than the previous chord by more than max topline distance, 
+                # it isn't permissible. That's why we don't use abs() here.
+                if note_position - previous_chord_topline_position < self.max_topline_distance:
+                    extra_notes_to_add_filtered.append(note)
+            extra_notes_to_add = extra_notes_to_add_filtered
 
-    def build_chord_with_random_good_voicing(self, chosen_target_degree, chord_root_note):
+        if len(extra_notes_to_add) + len(result_chord) < self.chord_size_lower_bound:
+            # Not enough notes in the scale to build a decent chord on this root.
+            return -1
+        
+        random_chord_size = random.choice(range(self.chord_size_lower_bound, self.chord_size_upper_bound + 1))
+        if reject_non_diatonic_chord:
+            random_chord_size = min(random_chord_size, len(diatonic_letters))
+        chord_size = min(random_chord_size, len(extra_notes_to_add) + len(result_chord))
+        result_chord = [ {'note': x, 'octave': random.choice(self.octave_range)} for x in result_chord ]
+        
+        # In order to meet the topline constraint, place the highest note in the allowed set in the chord.
+        # This is okay because notes that are too high have already been removed. So the highest note will be the closest.
+        extra_notes_to_add_topline_positions = list(map(lambda x: midi_tools.note_to_numeral(x), extra_notes_to_add))
+        highest = max(extra_notes_to_add_topline_positions)
+        highest_note_position = extra_notes_to_add_topline_positions.index(highest)
+        highest_note = extra_notes_to_add[highest_note_position]
+        # Remove that highest note from the extras, put it in the result chord.
+        extra_notes_to_add = extra_notes_to_add[:highest_note_position] + extra_notes_to_add[highest_note_position+1:]
+        result_chord.append(highest_note)
+        
+        if len(extra_notes_to_add) > 0:
+            result_chord.extend(pick_n_random_notes(extra_notes_to_add, (chord_size - len(result_chord))))
+
+        # Verify that we meet the topline constraint
+        candidate_topline_position = music_theory.chord_to_topline_int(result_chord)
+        if previous_chord is not None and len(previous_chord) > 0:
+            topline_distance = abs(previous_chord_topline_position - candidate_topline_position)
+            if topline_distance > self.max_topline_distance:
+                # We tried to get as close as possible, but we failed the topline constraint.
+                return -1
+
+        return result_chord
+
+    def build_chord_with_random_good_voicing(self, chosen_target_degree, chord_root_note, previous_chord):
         """
         Returns (built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'])
         """
@@ -164,14 +213,16 @@ class Generator:
         #     voicings_for_quality = self.labeled_voicings['minor'] + self.labeled_voicings['dominant-7']
         # elif chosen_target_degree == 'iv' and self.allow_accidentals:
         #     The Neapolitan chord https://www.youtube.com/watch?v=K8Z6MTonoXE&ab_channel=MusicTheoryForGuitar
-        
+        previous_chord_topline_position = 0
+        if previous_chord is not None and len(previous_chord) > 0:
+            previous_chord_topline_position = music_theory.chord_to_topline_int(previous_chord)
         applicable_voicings = []
         for voicing_group_quality in self.labeled_voicings.keys():
             voicing_group = self.labeled_voicings[voicing_group_quality]
             for voicing in voicing_group:
                 chord_size = len(voicing['intervals']) + 1
                 matches_chord_size_constraint = (chord_size >= self.chord_size_lower_bound and chord_size <= self.chord_size_upper_bound)
-                matches_octave_constraint = True # TODO
+                matches_octave_constraint = True # TODO: make the octave constraint check work
                 matches_diatonicity_constraint = True
 
                 # TODO: add exceptions here, if configured by the user, for specific non-diatonic techniques (like 
@@ -184,7 +235,7 @@ class Generator:
                 allow_borrowed_chord = decide_will_event_occur(self.chance_to_allow_borrowed_chord)
                 allow_alt_dom_chord = decide_will_event_occur(self.chance_to_allow_alt_dom_chord)
 
-                chord_is_non_diatonic = chosen_target_degree not in voicing['allowed_roman_numerals']
+                chord_is_non_diatonic = chosen_target_degree not in voicing['diatonic_roman_numerals']
                 chord_is_borrowed = voicing_group_quality not in allowed_qualities and (voicing_group_quality == 'major' or voicing_group_quality == 'minor')
                 chord_is_alt_dom = chosen_target_degree == 'V' and voicing_group_quality == 'dominant-7' and chord_is_non_diatonic
                 
@@ -201,7 +252,16 @@ class Generator:
                     or (chord_is_borrowed and not bypass_diatonicity_constraint):
                     matches_diatonicity_constraint = False
                 
-                if matches_chord_size_constraint and matches_octave_constraint and matches_diatonicity_constraint:
+                matches_topline_distance_constraint = True
+                if previous_chord is not None and len(previous_chord) > 0:
+                    # The topline position for a voicing on this scale degree has been precalculated.
+                    candidate_topline_position = voicing['roman_numerals_to_topline_positions'][chosen_target_degree]
+                    # {'i': 77, 'ii': 67, 'iii': 67, 'iv': 69, 'v': 72, 'vi': 72, 'vii': 74, 'I': 77, 'II': 67, 'III': 69, 'IV': 71, 'V': 72, 'VI': 74, 'VII': 76}
+                    topline_distance = abs(previous_chord_topline_position - candidate_topline_position)
+                    if topline_distance > self.max_topline_distance:
+                        matches_topline_distance_constraint = False
+
+                if matches_chord_size_constraint and matches_octave_constraint and matches_diatonicity_constraint and matches_topline_distance_constraint:
                     voicing_copy = voicing.copy()
                     voicing_copy['quality'] = voicing_group_quality
                     voicing_copy['is_borrowed'] = chord_is_borrowed
@@ -227,7 +287,7 @@ class Generator:
             return built_chord, [chord_letter_name, chord_roman_name], chosen_voicing['name'], is_non_diatonic, is_borrowed, is_alt_dom
         return -1, -1, -1, -1, -1, -1
 
-    def build_chord_from_roman_numeral(self, chosen_target_degree):
+    def build_chord_from_roman_numeral(self, chosen_target_degree, previous_chord):
         """
         Returns (built_chord, name_of_chord, generation_method)
         """
@@ -238,7 +298,7 @@ class Generator:
 
         if use_chord_voicing_from_library:
             # First, lets filter the voicings library down to match the chord size and roman numeral constraints.
-            built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note)
+            built_chord, name_of_chord, name_of_voicing, is_non_diatonic, is_borrowed, is_alt_dom = self.build_chord_with_random_good_voicing(chosen_target_degree, chord_root_note, previous_chord)
             if built_chord != -1:
                 generation_method = ''
                 if is_borrowed:
@@ -251,7 +311,7 @@ class Generator:
                 return (built_chord, name_of_chord, generation_method)
 
         # If all else fails, build it randomly.
-        built_chord = self.build_chord_with_root_randomly(chord_root_note, chosen_target_degree)
+        built_chord = self.build_chord_with_root_randomly(chord_root_note, chosen_target_degree, previous_chord)
         generation_method = '\n\t- Built {} by picking chord tones at random.'.format(chosen_target_degree)
         name_of_chord = None
         if built_chord != -1:
@@ -285,7 +345,7 @@ class Generator:
                 leading_chord = -1
                 while leading_chord == -1 and len(leading_targets) > 0:
                     chosen_target_degree = random.choice(leading_targets)
-                    leading_chord, name_of_chord, __generation_method = self.build_chord_from_roman_numeral(chosen_target_degree)
+                    leading_chord, name_of_chord, __generation_method = self.build_chord_from_roman_numeral(chosen_target_degree, previous_chord)
                 
                     if leading_chord != -1:
                         candidate_chord = leading_chord
@@ -298,7 +358,7 @@ class Generator:
         if candidate_chord is None:
             # Pick a random degree of the scale and build a chord on it
             chosen_target_degree = random.choice(chord_charts[self.scale])
-            built_chord, name_of_chord, __generation_method = self.build_chord_from_roman_numeral(chosen_target_degree)
+            built_chord, name_of_chord, __generation_method = self.build_chord_from_roman_numeral(chosen_target_degree, previous_chord)
             if built_chord != -1:
                 candidate_chord = built_chord
                 name_of_candidate_chord = name_of_chord
@@ -311,17 +371,49 @@ class Generator:
         
         # If the candidate chord fails user-applied constraints, regenerate it randomly.
         # Try to design the previous algorithms so that we avoid having to regenerate from random.
-        # (I checked for accidentals during the voicing selection process)
         fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
-        max_retries = 6
+        fails_topline_distance_constraint = previous_chord is not None and len(previous_chord) > 0 and (music_theory.calculate_topline_distance(previous_chord, candidate_chord) > self.max_topline_distance)
+        note_choices_to_add_to_chord = self.allowed_notes.copy()
+        required_notes_in_chord = []
+        
+        if fails_topline_distance_constraint:
+            previous_chord_topline_position = music_theory.chord_to_topline_int(previous_chord)
+            # Force the chord to have one note in the topline range.
+            allowed_highest_notes = []
+            for note in self.allowed_notes:
+                if abs(midi_tools.note_to_numeral(note) - previous_chord_topline_position) <= self.max_topline_distance:
+                    allowed_highest_notes.append(note)
+
+            highest_note_choice = random.choice(allowed_highest_notes)
+            highest_note_index = note_choices_to_add_to_chord.index(highest_note_choice)
+            # Remove that note from the remaining choices.
+            note_choices_to_add_to_chord = note_choices_to_add_to_chord[:highest_note_index] + note_choices_to_add_to_chord[highest_note_index+1:]
+            required_notes_in_chord.append(highest_note_choice)
+        
+            # Remove notes from candidates that would violate the topline distance constraint from above
+            note_choices_to_add_to_chord_filtered = []
+            for note in note_choices_to_add_to_chord:
+                note_position = midi_tools.note_to_numeral(note)
+                if note_position - previous_chord_topline_position < self.max_topline_distance:
+                    note_choices_to_add_to_chord_filtered.append(note)
+            note_choices_to_add_to_chord = note_choices_to_add_to_chord_filtered
+
+        max_retries = 20
         retries = 0
-        while fails_repeats_constraint and retries < max_retries:
+        # If we run out of retries, we'll just have to violate the constraint. There are no other generation algorithms after this one.
+        while (fails_repeats_constraint or fails_topline_distance_constraint) and retries < max_retries:
             retries += 1
             num_notes_in_chord = random.choice(self.allowed_chord_sizes)
-            candidate_chord = pick_n_random_notes(self.allowed_notes, num_notes_in_chord)
+            candidate_chord = pick_n_random_notes(note_choices_to_add_to_chord, num_notes_in_chord - len(required_notes_in_chord)) + required_notes_in_chord
             generation_method = '\t- Picked {} scale notes at random.'.format(num_notes_in_chord)
             fails_repeats_constraint = self.disallow_repeats and chords_are_equal(previous_chord, candidate_chord)
+            fails_topline_distance_constraint = previous_chord is not None and len(previous_chord) > 0 and (music_theory.calculate_topline_distance(previous_chord, candidate_chord) > self.max_topline_distance)
             # fails_accidentals_constraint = (not self.allow_accidentals) and does_chord_contain_accidentals(candidate_chord, self.allowed_notes)
+
+        if retries == max_retries and fails_repeats_constraint:
+            print('After {} retries, the disallow repeats constraint could not be satisfied.'.format(retries))
+        if retries == max_retries and fails_topline_distance_constraint:
+            print('After {} retries, the topline distance constraint could not be satisfied.'.format(retries))
 
         if name_of_candidate_chord is None:
             name_of_candidate_chord = determine_chord_name(flatten_note_set(candidate_chord), self.key, constants['scales'][self.scale])
@@ -330,12 +422,45 @@ class Generator:
             degree_of_candidate_chord = name_of_candidate_chord[1].split()[0]
         except Exception as e:
             degree_of_candidate_chord = '?'
-            print('Exception: ', e)
+            print('Failed to name chord. Exception: ', e)
             exc_info = sys.exc_info()
             traceback.print_exception(*exc_info)
         
         return candidate_chord, name_of_candidate_chord, degree_of_candidate_chord, generation_method
 
+    def materialize_chord_progression(self, progression, previous_chord, previous_chord_degree):
+        progression_str = pretty_print_progression(progression['roman_numerals'])
+        progression_chords = []
+        prev_chord = previous_chord
+        progression_chord_names = []
+        # Log at the end only if everything is successful
+        if len(progression['name']) > 0:
+            lines_to_log = ['Decided to incorporate {}. ({})'.format(progression_str, progression['name'])]
+        else:
+            lines_to_log = ['Decided to incorporate {} progression.'.format(progression_str)]
+        failure = False
+
+        # If the first chosen progression happens to start on the same roman numeral as the previous
+        # chord, lets skip that chord.
+        remaining_numerals = progression['roman_numerals']
+        if remaining_numerals[0] == previous_chord_degree:
+            remaining_numerals = remaining_numerals[1:]
+            lines_to_log += ["The previous chord was a {}, so we'll start the progression from {}.".format(previous_chord_degree, remaining_numerals[0])]
+
+        for numeral_to_add in remaining_numerals:
+            chord, chord_name, __generation_method = self.build_chord_from_roman_numeral(numeral_to_add, prev_chord)
+            if chord == -1:
+                print('Failed to build chord on ', numeral_to_add)
+                # Exit early because we failed to build one of the chords without violating constraints.
+                return None, None, None
+            generation_method = '\t- Using {} to satisfy the {}.'.format(numeral_to_add, progression_str)
+            generation_method += __generation_method
+            progression_chords.append(chord)
+            progression_chord_names.append(chord_name)
+            lines_to_log.append('Added {} ( {} ). Generation pathway: \n{}'.format(chord_name[0], numeral_to_add, generation_method))
+            prev_chord = chord
+        return progression_chords, progression_chord_names, lines_to_log
+    
     def generate_chords(self):
         result_chord_progression = []
         result_chord_names = []
@@ -353,43 +478,19 @@ class Generator:
             
             if use_chord_progression_from_library and len(allowed_progressions) > 0:
                 progression = random.choice(allowed_progressions)
-                progression_str = pretty_print_progression(progression['roman_numerals'])
-                progression_chords = []
-                progression_chord_names = []
-                # Log at the end only if everything is successful
-                if len(progression['name']) > 0:
-                    lines_to_log = ['Decided to incorporate {}. ({})'.format(progression_str, progression['name'])]
-                else:
-                    lines_to_log = ['Decided to incorporate {} progression.'.format(progression_str)]
-                failure = False
-
-                # If the first chosen progression happens to start on the same roman numeral as the previous
-                # chord, lets skip that chord.
-                remaining_numerals = progression['roman_numerals']
-                if remaining_numerals[0] == previous_chord_degree:
-                    remaining_numerals = remaining_numerals[1:]
-                    lines_to_log += ["The previous chord was a {}, so we'll start the progression from {}.".format(previous_chord_degree, remaining_numerals[0])]
-
-                for numeral_to_add in remaining_numerals:
-                    chord, chord_name, __generation_method = self.build_chord_from_roman_numeral(numeral_to_add)
-                    if chord == -1:
-                        print('Failed to build chord on ', numeral_to_add)
-                        failure = True
-                        break
-                    generation_method = '\t- Using {} to satisfy the {}.'.format(numeral_to_add, progression_str)
-                    generation_method += __generation_method
-                    progression_chords.append(chord)
-                    progression_chord_names.append(chord_name)
-                    lines_to_log.append('Added {} ( {} ). Generation pathway: \n{}'.format(chord_name[0], numeral_to_add, generation_method))
-                if failure:
+                progression_chords, progression_chord_names, lines_to_log = self.materialize_chord_progression(progression, previous_chord, previous_chord_degree)
+                if progression_chords is None:
                     continue
+                
                 result_chord_progression += progression_chords
                 result_chord_names += progression_chord_names
                 previous_chord = result_chord_progression[-1]
                 previous_chord_name = result_chord_names[-1]
                 previous_chord_degree = progression['roman_numerals'][-1]
+                
                 for line in lines_to_log:
                     ClientLogger.log(line)
+                progression_str = pretty_print_progression(progression['roman_numerals'])
                 ClientLogger.log('{} progression complete.'.format(progression_str))
             else:
                 chord, chord_name, chord_degree, generation_method = self.generate_next_chord(previous_chord, previous_chord_degree, previous_chord_name)

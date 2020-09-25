@@ -6,6 +6,12 @@ chord_charts = {
     # 'dhmaj': [] # TODO: fill this in
 }
 
+roman_lower = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']
+roman_upper = list(map(lambda x: x.upper(), roman_lower))
+roman_dim = list(map(lambda x: x + '\xB0', roman_lower))
+roman_aug = list(map(lambda x: x + '+', roman_upper))
+all_roman = roman_lower + roman_upper + roman_dim + roman_aug
+
 # When the chord leading constraint is applied, if a chord has no member
 # in this dictionary, it may lead to any chord.
 # Traditionally, V -> I is the only option for V in a major chord leading chart.

@@ -246,10 +246,18 @@ span.note-label[data-note='C'] {
     font-size:12px;
 }
 
+.generation-modal hr {
+    margin: 10px 0;
+}
+
 .form-label {
     margin-bottom:3px;
     height:30px;
     padding-top:5px;
+}
+
+select.form-label {
+    margin-top:8px !important;
 }
 
 /* .form-label-text {

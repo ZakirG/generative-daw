@@ -18,6 +18,8 @@ export class ConfigDataService {
     constantsURL: string;
     notes: any;
     playOffsetPerNoteDueToRoll : number;
+    toplineContour : any;
+    toplineContours : any;
     
     keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -27,6 +29,16 @@ export class ConfigDataService {
         
         this.key = this.keys[0];
         this.scale = [];
+        this.toplineContours = [
+          {'name': 'no preference', 'code': 'any'},
+          {'name': 'static', 'code': 'static'},
+          {'name': 'anything but static', 'code': 'nonstatic'},
+          {'name': 'upward', 'code': 'up'},
+          {'name': 'downward', 'code': 'down'},
+          {'name': 'up and then down', 'code': 'updown'},
+          {'name': 'down and then up', 'code': 'downup'}
+        ];
+        this.toplineContour = this.toplineContours[6];
         this.tempo = 60;
         this.inPlayState = false;
         this.timeStateLength = 8;

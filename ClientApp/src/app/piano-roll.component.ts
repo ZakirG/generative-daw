@@ -31,6 +31,13 @@ export class PianoRollComponent {
     chanceToAllowNonDiatonicChord = 0.001;
     chanceToAllowBorrowedChord = 0.001;
     chanceToAllowAlteredDominantChord = 0.7;
+
+    maxToplineDistance = 3;
+    // A ii-V-I voiced using three-note voicings changes two notes between ii and V
+    noteChangesLowerBound = 2;
+    noteChangesUpperBound = 5;
+    toplineContour: any;
+    
     notes: Array<any>;
     _ref: any;
 
@@ -49,6 +56,7 @@ export class PianoRollComponent {
         this.initializeEmptyGridState();
         this.scale = this.configDataService.scale;
         this.key = this.configDataService.key;
+        this.toplineContour = this.configDataService.toplineContour;
     }
 
     initializeEmptyGridState() {
