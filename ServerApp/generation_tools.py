@@ -21,9 +21,11 @@ class Generator:
         self.octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
         self.allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
         self.parent_scale_allowed_notes = self.allowed_notes
+        self.parent_scale_code = self.scale
+        self.parent_scale_allowed_notes = self.allowed_notes
         if len(constants['scales'][self.scale]['intervals']) < 7:
             self.parent_scale_code = constants['scales'][self.scale]['parent_scale']
-            self.parent_scale_allowed_notes = get_allowed_notes(self.key, parent_scale_code, [3])
+            self.parent_scale_allowed_notes = get_allowed_notes(self.key, self.parent_scale_code, [3])
 
         if generation_type == 'chords':
             self.chance_to_use_chord_leading=content['chanceToUseChordLeadingChart']
@@ -37,7 +39,7 @@ class Generator:
             self.chance_to_use_common_progression = content['chanceToUseCommonProgression']
             # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
             # This result is specific to the scale of interest. But not its key.
-            self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale)
+            self.labeled_voicings = label_voicings_by_roman_numeral(self.key, self.scale, self.octave_range)
             # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
             upper_bd = min(self.chord_size_upper_bound, len(self.allowed_notes))
             self.allowed_chord_sizes = range(self.chord_size_lower_bound, upper_bd + 1)
@@ -153,9 +155,9 @@ class Generator:
         elif '+' in chosen_target_degree and chosen_target_degree.isupper():
             allowed_qualities = ['augmented']
         elif chosen_target_degree.isupper():
-            allowed_qualities = ['major', 'dominant-7']
+            allowed_qualities = ['major', 'dominant-7', 'sus']
         else:
-            allowed_qualities = ['minor']
+            allowed_qualities = ['minor', 'sus']
         # elif chosen_target_degree == 'v' and self.chance_to_allow_non_diatonic_chord > 0:
         #     # V Dominant 7 chords are sometimes borrowed for use in a minor context
         #     # Contains an accidental, from the harmonic minor
@@ -345,7 +347,7 @@ class Generator:
             use_chord_progression_from_library = decide_will_event_occur(self.chance_to_use_common_progression)
             # Which chord progressions fit in the remaining space?
             allowed_progressions = []
-            for progression in good_chord_progressions[self.scale_name]:
+            for progression in good_chord_progressions[self.parent_scale_code]:
                 if len(progression['roman_numerals']) + len(result_chord_progression) < self.length:
                     allowed_progressions.append(progression)
             

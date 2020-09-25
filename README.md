@@ -8,13 +8,14 @@ Built with Flask, Angular 8, and Python 3. Tested with Jasmine. This project is 
 
 GenerativeDAW is a digital audio workstation webapp that provides generative composition tools informed by music theory.
 
-In contrast with similar generative tools out there, this application does not apply machine learning algorithms to generate music. Instead, constraints from Western classical and jazz theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
+In contrast with other generative composition tools, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical and jazz theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
 
 
 #### Music generation features:
 - Generates melodies and chord progressions in a given key, scale, and octave
-- Configurable chance to use a random chord voicing from the included library of tasteful voicings
-- Configurable chance to use a chord leading chart to select the next chord in progression
+- Incorporate popular chord progressions into compositions
+- Incorporate tasteful voicings from the included voicings list
+- Can use chord leading charts to select follow-up chords
 - Configure probabilities for the inclusion of non-diatonic chords, borrowed chords, altered dominant chords
 - Logging panel in UI provides step-by-step explanations of the result generation method
 
