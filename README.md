@@ -2,7 +2,7 @@
 
 GenerativeDAW is an automated music composition tool.
 
-Built with Flask, Angular 8, and Python 3. Tested with Jasmine. This project is in pre-release.
+Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 
 ## Overview
 
