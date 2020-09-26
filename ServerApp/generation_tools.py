@@ -51,7 +51,22 @@ class Generator:
             self.note_changes_lower_bound = content["noteChangesLowerBound"]
             self.note_changes_upper_bound= content["noteChangesUpperBound"]
             self.topline_contour = content["toplineContour"]
+        
+        # We measure "beats" in whole notes. Each chord is a whole note.
+        self.current_beat = 0
+        # On each beat, the chord topline will need to respect a height constraint relative to the
+        # previous chord.
+        self.beats_to_contour_directions = music_theory.get_contour_directions_per_beat(self.topline_contour, self.length)
  
+    def get_current_topline_direction_constraint():
+        """
+        The topline contour is a shape stretching over the progression time length.
+        To achieve the user-provided topline contour,
+        we must enforce a relative height constraint when choosing a chord relative to
+        the previous chord.
+        """
+        pass
+
     def generate_melody(self):
         result = []
         previous_note = None
@@ -467,7 +482,12 @@ class Generator:
         previous_chord = []
         previous_chord_degree = '?'
         previous_chord_name = '', ''
+        print('Topline contour: ', self.topline_contour)
+        print("self.beats_to_contour_directions: ", self.beats_to_contour_directions)
         while len(result_chord_progression) < self.length:
+            # We measure "beats" in whole notes. Each chord is a whole note.
+            self.current_beat = len(result_chord_progression)
+
             # Perform weighted coin toss to use a pre-selected chord progression
             use_chord_progression_from_library = decide_will_event_occur(self.chance_to_use_common_progression)
             # Which chord progressions fit in the remaining space?

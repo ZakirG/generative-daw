@@ -340,6 +340,71 @@ def calculate_number_of_note_changes(chord_a, chord_b):
         
     return max(additions, deletions)
 
+def get_contour_directions_per_beat(topline_contour, number_of_chords_in_progression):
+    """
+    On each beat, the chord topline will need to respect a height constraint relative to the
+    previous chord.
+    
+    We return an array of length "number_of_chords_in_progression" that contains
+    strings indicating whether the topline for that chord should be 
+    "higher", "lower", "strictly higher", "strictly lower", "same", "not same", or "any".
+    
+    The "strictly" indicators are reserved for ramp forms, where the ramp form is
+    not actualized unelss there is a perceivable dip / jump.
+
+    Possible topline contours:
+    {'name': 'no preference', 'code': 'any'},
+    {'name': 'static', 'code': 'static'},
+    {'name': 'anything but static', 'code': 'nonstatic'},
+    {'name': 'upward', 'code': 'up'},
+    {'name': 'strictly upward', 'code': 'strictup'},
+    {'name': 'downward', 'code': 'down'},
+    {'name': 'strictly downward', 'code': 'strict down'},
+    {'name': 'up and then down', 'code': 'updown'},
+    {'name': 'down and then up', 'code': 'downup'}
+
+    # TODO: add support for "ramp" forms.
+    """
+    contour_code = topline_contour["code"]
+
+    if contour_code == 'any':
+        return ["any" for x in range(number_of_chords_in_progression) ]
+
+    if contour_code == 'static':
+        return ["any"] + ["same" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'nonstatic':
+        return ["any"] + ["not same" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'up':
+        return ["any"] + ["higher" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'strictup':
+        return ["any"] + ["strictly higher" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'down':
+        return ["any"] + ["lower" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'strictdown':
+        return ["any"] + ["strictly lower" for x in range(number_of_chords_in_progression - 1) ]
+    
+    midpoint = number_of_chords_in_progression // 2
+    
+    if contour_code == 'updown':
+        relative_chord_heights = ["any"]
+        relative_chord_heights += ["higher" for x in range(0, midpoint - 1)  ]
+        relative_chord_heights += ["lower" for x in range(midpoint, number_of_chords_in_progression)  ]
+        return relative_chord_heights
+    
+    if contour_code == 'downup':
+        relative_chord_heights = ["any"]
+        relative_chord_heights += ["lower" for x in range(0, midpoint - 1)  ]
+        relative_chord_heights += ["higher" for x in range(midpoint, number_of_chords_in_progression)  ]
+        return relative_chord_heights
+
+    raise ValueError('Unknown contour code: ', contour_code)
+    return []
+
 
 def label_voicings_with_metadata(key, scale, octave_range):
     """

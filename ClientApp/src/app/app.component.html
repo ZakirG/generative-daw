@@ -71,7 +71,7 @@
     <div class='logs-wrapper' *ngIf='showLogs'>
         <div class='panel-header'>
             <span class='panel-title'>Logging Outputs</span>
-            <button class='glyphicon-button' id='logs-clear-button' (click)="appLogs = []">
+            <button class='glyphicon-button' id='logs-clear-button' (click)="this.configDataService.appLogs = []">
                 <span class="glyphicon glyphicon-trash"></span>
             </button>
             <button class='glyphicon-button' id='logs-close-button' (click)="showLogs = false">
@@ -80,7 +80,7 @@
         </div>
         <div class='panel-header-spacer'></div>
         <div class='panel-body'>
-            <span class='app-log-line' *ngFor="let line of appLogs">
+            <span class='app-log-line' *ngFor="let line of this.configDataService.appLogs">
                 {{ line }}
             </span>
         </div>

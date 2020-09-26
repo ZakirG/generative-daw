@@ -29,8 +29,6 @@ export class AppComponent {
     pageLoaded = false;
     pageReady = false;
     showLogs = false;
-    logSeparator = '----------';
-    appLogs = ['Welcome to GenerativeDAW =)', this.logSeparator];
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
@@ -113,9 +111,13 @@ export class AppComponent {
         this.updateDawState();
     }
 
+    registerTriggerQuickGenerate() {
+        this.togglePlayState();
+    }
+    
     registerNewLogs(event) {
-        this.appLogs.push(...event['logs']);
-        this.appLogs.push(this.logSeparator)
+        this.configDataService.appLogs.push(...event['logs']);
+        this.configDataService.appLogs.push(this.configDataService.logSeparator)
     }
 
     registerTrackChange(event) {
@@ -237,6 +239,9 @@ export class AppComponent {
         newTrack.instance.trackChange.subscribe((event) => {
             this.registerTrackChange(event);
         });
+        // newTrack.instance.triggerQuickGenerate.subscribe((event) => {
+        //     this.registerTriggerQuickGenerate();
+        // });
         newTrack.instance.initializeEmptyGridState();
         this.tracks.push(newTrack.instance);
     }
@@ -251,6 +256,9 @@ export class AppComponent {
         this.tracks[trackNumber].thisTrackIsSelected = true;
         pianoRoll.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
+        });
+        pianoRoll.instance.triggerQuickGenerate.subscribe((event) => {
+            this.registerTriggerQuickGenerate();
         });
         pianoRoll.instance.newLogs.subscribe((event) => {
             this.registerNewLogs(event);
@@ -311,9 +319,9 @@ export class AppComponent {
     }
 
     exportToMidiWithLog() {
-        var logs = this.appLogs.slice();
+        var logs = this.configDataService.appLogs.slice();
         logs.pop();
-        let finalSeparator = logs.lastIndexOf(this.logSeparator);
+        let finalSeparator = logs.lastIndexOf(this.configDataService.logSeparator);
         let lastGenerationLog = logs.slice(finalSeparator + 1).join("\n");
 
         var timestamp = this.niceDateTimeStamp();

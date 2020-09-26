@@ -25,7 +25,7 @@ export class PianoRollComponent {
     chordSizeUpperBound = 7;
     disallowRepeats = true;
     chanceToUseChordLeadingChart = 0.7;
-    chanceToUseCommonVoicing = 0.95;
+    chanceToUseCommonVoicing = 0.75;
     chanceToUseCommonProgression = 0.3;
     VMustBeDominant7 = false;
     chanceToAllowNonDiatonicChord = 0.001;
@@ -48,6 +48,7 @@ export class PianoRollComponent {
 
     @Output() noteDrawn = new EventEmitter<any>();
     @Output() newLogs = new EventEmitter<any>();
+    @Output() triggerQuickGenerate = new EventEmitter<any>();
 
     @Output()
     trackChange = new EventEmitter<any>();
@@ -121,16 +122,27 @@ export class PianoRollComponent {
         this._ref.destroy();
     }
 
-    generate(generationOptions) {
+    generate(generationOptions, isQuickGenerate) {
         var generatedNotes = [];
         generationOptions.length = this.timeStateLength;
-        this.generationService.generate(generationOptions).subscribe((data) => {
+        return this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
             let logs = data['logs']
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
+            
+            if(isQuickGenerate) {
+                this.triggerQuickGenerate.emit({
+                    'event' : 'triggerQuickGenerate'
+                });
+            }
         });
+    }
+
+    quickGenerate(formValue) {
+        this.configDataService.appLogs = [];
+        this.generate(formValue, true);
     }
 
     renderNotes(notesToRender) {
