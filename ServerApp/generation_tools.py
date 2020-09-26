@@ -9,12 +9,15 @@ from music_theory import determine_chord_name, get_allowed_notes, \
     transpose_note_n_semitones, build_chord_from_voicing, label_voicings_with_metadata, \
     roman_numeral_to_note, chords_are_equal
 import sys, traceback
+import json
 ClientLogger = ClientLogger()
 
 class Generator:
     def __init__(self, content):
         generation_type = content['generationType']
-
+        self.all_settings = ""
+        for x in content.keys():
+            self.all_settings += "\n\t" + x + ": " + str(content[x])
         self.key = content['key'].replace('#', 's').lower()
         self.scale = content['scale']
         self.scale_name = constants['scales'][self.scale]['name']
@@ -477,6 +480,7 @@ class Generator:
         return progression_chords, progression_chord_names, lines_to_log
     
     def generate_chords(self):
+        ClientLogger.log('Generating new chord progression in {} {}.'.format(self.key.upper(), self.scale_name))
         result_chord_progression = []
         result_chord_names = []
         previous_chord = []
@@ -484,6 +488,7 @@ class Generator:
         previous_chord_name = '', ''
         print('Topline contour: ', self.topline_contour)
         print("self.beats_to_contour_directions: ", self.beats_to_contour_directions)
+        
         while len(result_chord_progression) < self.length:
             # We measure "beats" in whole notes. Each chord is a whole note.
             self.current_beat = len(result_chord_progression)
@@ -495,6 +500,7 @@ class Generator:
             for progression in good_chord_progressions[self.parent_scale_code]:
                 if len(progression['roman_numerals']) + len(result_chord_progression) < self.length:
                     allowed_progressions.append(progression)
+            
             
             if use_chord_progression_from_library and len(allowed_progressions) > 0:
                 progression = random.choice(allowed_progressions)
@@ -523,4 +529,6 @@ class Generator:
                 
                 ClientLogger.log('Added {} ( {} ). Generation pathway: \n{}'.format(previous_chord_name[0], previous_chord_degree, generation_method))
         
+        ClientLogger.log('~~~')
+        ClientLogger.log('Generation settings: {}'.format(self.all_settings))
         return result_chord_progression, result_chord_names

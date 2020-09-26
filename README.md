@@ -73,10 +73,3 @@ A tab will automatically open in your default web browser at localhost:4200.
 for their examples on audio manipulation in Angular. Code snippets of theirs are used in this application.
 
 This project's interface is based on Logic Pro X.
-
-#### Discussion
-"People respond favorably to music that is well-structured." - The Jazz Piano Book by Mark Levine (97)
-
-This app bakes ideas from melody theory, classical chord approaches, and jazz theory into a set of configurable music generation algorithms. For the most part, these algorithms resemble processes that I use as a composer -- the process of selecting a key, scale, set of chord voicings of interest, chord progression form, selecting melody notes from the chords, and other techniques. As a result, the music that this application outputs is highly structured, and often resembles the set of pieces that a human reading a textbook on such theory might compose.
-
-Much of the composition process I use as a human is automatable -- picking a voicing to use, translating chord numerals to notes, testing out chord progressions that apply pop progressions in a given scale domain. As a piano player, recalling voicings of interest and transposing them to the root of interest while creating a chord progression is a process that often feels less about taste and more about memorization. I designed this tool with that problem in mind, and I'm surprised with the quality of the compositions that this program has been creating for me for so far. I hope to grow the codebase as I learn new composition techniques from contemporary music.

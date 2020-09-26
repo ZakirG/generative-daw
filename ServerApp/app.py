@@ -44,8 +44,6 @@ def generate_melody():
 @app.route('/generate/chords', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
 def generate_chords():
-    ClientLogger.log('Generating new chord progression...')
-
     content = request.get_json()
     chord_generator = Generator(content)
     result_chords, result_chord_names = chord_generator.generate_chords()
