@@ -27,10 +27,16 @@ export class PianoRollComponent {
     chanceToUseChordLeadingChart = 0.7;
     chanceToUseCommonVoicing = 0.95;
     chanceToUseCommonProgression = 0.3;
-    VMustBeDominant7 = false;
     chanceToAllowNonDiatonicChord = 0.001;
     chanceToAllowBorrowedChord = 0.001;
     chanceToAllowAlteredDominantChord = 0.7;
+
+    maxToplineDistance = 3;
+    // A ii-V-I voiced using three-note voicings changes two notes between ii and V
+    noteChangesLowerBound = 2;
+    noteChangesUpperBound = 5;
+    toplineContour: any;
+    
     notes: Array<any>;
     _ref: any;
 
@@ -41,6 +47,7 @@ export class PianoRollComponent {
 
     @Output() noteDrawn = new EventEmitter<any>();
     @Output() newLogs = new EventEmitter<any>();
+    @Output() triggerQuickGenerate = new EventEmitter<any>();
 
     @Output()
     trackChange = new EventEmitter<any>();
@@ -49,6 +56,7 @@ export class PianoRollComponent {
         this.initializeEmptyGridState();
         this.scale = this.configDataService.scale;
         this.key = this.configDataService.key;
+        this.toplineContour = this.configDataService.toplineContour;
     }
 
     initializeEmptyGridState() {
@@ -113,16 +121,27 @@ export class PianoRollComponent {
         this._ref.destroy();
     }
 
-    generate(generationOptions) {
+    generate(generationOptions, isQuickGenerate) {
         var generatedNotes = [];
         generationOptions.length = this.timeStateLength;
-        this.generationService.generate(generationOptions).subscribe((data) => {
+        return this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
             let logs = data['logs']
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
+            
+            if(isQuickGenerate) {
+                this.triggerQuickGenerate.emit({
+                    'event' : 'triggerQuickGenerate'
+                });
+            }
         });
+    }
+
+    quickGenerate(formValue) {
+        this.configDataService.appLogs = [];
+        this.generate(formValue, true);
     }
 
     renderNotes(notesToRender) {

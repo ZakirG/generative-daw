@@ -1,8 +1,23 @@
 from midiutil import MIDIFile
 from audiolazy import str2midi
 
+def note_to_numeral(note):
+    """
+    This function takes my internal note data structure.
+    {'note': 'c', 'octave': 4}
+    """
+    letter = note['note'].strip()[0].upper()
+    octave = note['octave']
+    if len(note['note']) == 2:
+        letter = note['note'].strip().replace('s','#')
+        letter = letter[0].upper() + letter[1:]
+    return str2midi(letter+str(octave))
+
 def note_name_to_numeral(note_name):
-    letter = note_name.strip()[0]
+    """
+    This function takes a data structure different from my note data structure
+    """
+    letter = note_name.strip()[0].upper()
     octave = note_name.strip()[-1]
     if len(note_name) == 3:
         letter = note_name.strip()[0:2].replace('s','#').upper()

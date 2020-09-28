@@ -1,7 +1,9 @@
 from constants import constants
+import chord_knowledge
 from chord_knowledge import chord_charts, good_voicings
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set
 import music21
+import midi_tools
 from music21 import key as music21_key
 from music21 import chord as music21_chords
 import sys, traceback
@@ -302,19 +304,119 @@ def name_chords_in_tracks(tracks, key, scale):
     
     return chord_names_by_tracks, chord_degrees_by_tracks   
 
-def label_voicings_by_roman_numeral(key, scale, octave_range):
+def chord_to_topline_int(chord):
     """
-    Labels chord voicings with the roman numeral chord roots
-    that allow those voicings to be played diatonically in the global key.
+    Covert chord topline to an integer for the purpose of comparing
+    topline height of adjacent chords.
+    We just convert MIDI numeral here, as it has comparison built-in, assigning
+    higher numerals to higher notes.
+    """
+    as_numerals = []
+    for note in chord:
+        numeral = midi_tools.note_to_numeral(note)
+        as_numerals.append(numeral)
+    
+    return max(as_numerals)
 
+def calculate_topline_distance(chord_a, chord_b):
+    height_a = chord_to_topline_int(chord_a)
+    height_b = chord_to_topline_int(chord_b)
+    return abs(height_a - height_b)
+
+def calculate_number_of_note_changes(chord_a, chord_b):
+    to_int = lambda x: midi_tools.note_to_numeral(x)
+    midi_int_a = map(to_int, chord_a)
+    midi_int_b = map(to_int, chord_b)
+
+    deletions = 0
+    for numeral_a in midi_int_a:
+        if numeral_a not in midi_int_b:
+            deletions += 1
+    
+    additions = 0
+    for numeral_b in midi_int_b:
+        if numeral_b not in midi_int_a:
+            additions += 1
+        
+    return max(additions, deletions)
+
+def get_contour_directions_per_beat(topline_contour, number_of_chords_in_progression):
+    """
+    On each beat, the chord topline will need to respect a height constraint relative to the
+    previous chord.
+    
+    We return an array of length "number_of_chords_in_progression" that contains
+    strings indicating whether the topline for that chord should be 
+    "higher", "lower", "strictly higher", "strictly lower", "same", "not same", or "any".
+    
+    The "strictly" indicators are reserved for ramp forms, where the ramp form is
+    not actualized unelss there is a perceivable dip / jump.
+
+    Possible topline contours:
+    {'name': 'no preference', 'code': 'any'},
+    {'name': 'static', 'code': 'static'},
+    {'name': 'anything but static', 'code': 'nonstatic'},
+    {'name': 'upward', 'code': 'up'},
+    {'name': 'strictly upward', 'code': 'strictup'},
+    {'name': 'downward', 'code': 'down'},
+    {'name': 'strictly downward', 'code': 'strict down'},
+    {'name': 'up and then down', 'code': 'updown'},
+    {'name': 'down and then up', 'code': 'downup'}
+
+    # TODO: add support for "ramp" forms.
+    """
+    contour_code = topline_contour["code"]
+
+    if contour_code == 'any':
+        return ["any" for x in range(number_of_chords_in_progression) ]
+
+    if contour_code == 'static':
+        return ["any"] + ["same" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'nonstatic':
+        return ["any"] + ["not same" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'up':
+        return ["any"] + ["higher" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'strictup':
+        return ["any"] + ["strictly higher" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'down':
+        return ["any"] + ["lower" for x in range(number_of_chords_in_progression - 1) ]
+    
+    if contour_code == 'strictdown':
+        return ["any"] + ["strictly lower" for x in range(number_of_chords_in_progression - 1) ]
+    
+    midpoint = number_of_chords_in_progression // 2
+    
+    if contour_code == 'updown':
+        relative_chord_heights = ["any"]
+        relative_chord_heights += ["higher" for x in range(0, midpoint - 1)  ]
+        relative_chord_heights += ["lower" for x in range(midpoint, number_of_chords_in_progression)  ]
+        return relative_chord_heights
+    
+    if contour_code == 'downup':
+        relative_chord_heights = ["any"]
+        relative_chord_heights += ["lower" for x in range(0, midpoint - 1)  ]
+        relative_chord_heights += ["higher" for x in range(midpoint, number_of_chords_in_progression)  ]
+        return relative_chord_heights
+
+    raise ValueError('Unknown contour code: ', contour_code)
+    return []
+
+
+def label_voicings_with_metadata(key, scale, octave_range):
+    """
     The return value has the same structure as good_voicings, but with 
-    an allowed_roman_numerals property on each voicing. The allowed roman numerals
-    are the ones that don't cause accidentals.
+    an diatonic_roman_numerals property and a topline_position property on each voicing.
 
     You can technically do this in one pass without the key by 
     evaluating intervals alone, but I'm too lazy to write that algorithm.
 
-    A lovely function. As a musician, this is so useful to me.
+    A lovely function. As a musician, this is so useful to me. We perform metadata calculations
+    on each chord voicing to better know whether to use it in a musical context, thereby constraining
+    the solution space of randomized compositions.
     """
     
     labeled_result = {}
@@ -324,6 +426,8 @@ def label_voicings_by_roman_numeral(key, scale, octave_range):
     # Flatten list with list comprehension. The scale breakdowns are irrelevant since we're 
     # gonna filter out accidentals anyway
     voicings_list = [ voicing for voicing_group in voicings_list for voicing in voicing_group ]
+
+    print('The voicings library has {} entries.'.format(len(voicings_list)))
 
     allowed_notes = get_key_scale_letters(key, scale)
     full_allowed_notes = allowed_notes
@@ -337,8 +441,13 @@ def label_voicings_by_roman_numeral(key, scale, octave_range):
         voicing_group = good_voicings[voicing_group_key]
         voicing_group_copy = []
         for voicing in voicing_group:
-            allowed_roman_numerals_for_this_voicing = []
-            for roman_numeral in chord_charts[scale]:
+            # We're adding useful metadata to this chord voicing.
+            diatonic_roman_numerals_for_this_voicing = []
+            # In integer form, what's the highest note in the voicing of this chord on a given scale degree?
+            roman_numerals_to_topline_positions = {}
+            # Here we iterate over a full list of possible chord roman numerals, including non-diatonic ones
+            # so as to calculate metadata
+            for roman_numeral in chord_knowledge.all_roman:
                 chord_root = roman_numeral_to_note(roman_numeral, full_allowed_notes)
                 if chord_root == -1:
                     continue
@@ -358,12 +467,17 @@ def label_voicings_by_roman_numeral(key, scale, octave_range):
                         it_contains_accidentals = True
                         break
                 if not it_contains_accidentals and it_fits_in_the_octave_range:
-                    allowed_roman_numerals_for_this_voicing.append(roman_numeral)
+                    diatonic_roman_numerals_for_this_voicing.append(roman_numeral)
+                
+                roman_numerals_to_topline_positions[roman_numeral] = chord_to_topline_int(chord)
             
             voicing_copy = voicing.copy()
-            voicing_copy['allowed_roman_numerals'] = allowed_roman_numerals_for_this_voicing
+            voicing_copy['diatonic_roman_numerals'] = diatonic_roman_numerals_for_this_voicing
+
+            
+            voicing_copy['roman_numerals_to_topline_positions'] = roman_numerals_to_topline_positions
+
             voicing_group_copy.append(voicing_copy)
         
         labeled_result[voicing_group_key] = voicing_group_copy
     return labeled_result
-
