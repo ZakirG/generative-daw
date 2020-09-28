@@ -51,15 +51,15 @@ class Generator:
             if upper_bd == self.chord_size_lower_bound:
                 self.allowed_chord_sizes = [upper_bd]
             self.max_topline_distance = content["maxToplineDistance"]
-            self.note_changes_lower_bound = content["noteChangesLowerBound"]
-            self.note_changes_upper_bound= content["noteChangesUpperBound"]
-            self.topline_contour = content["toplineContour"]
+            # self.note_changes_lower_bound = content["noteChangesLowerBound"]
+            # self.note_changes_upper_bound= content["noteChangesUpperBound"]
+            # self.topline_contour = content["toplineContour"]
         
         # We measure "beats" in whole notes. Each chord is a whole note.
         self.current_beat = 0
         # On each beat, the chord topline will need to respect a height constraint relative to the
         # previous chord.
-        self.beats_to_contour_directions = music_theory.get_contour_directions_per_beat(self.topline_contour, self.length)
+        # self.beats_to_contour_directions = music_theory.get_contour_directions_per_beat(self.topline_contour, self.length)
  
     def get_current_topline_direction_constraint():
         """
@@ -486,8 +486,8 @@ class Generator:
         previous_chord = []
         previous_chord_degree = '?'
         previous_chord_name = '', ''
-        print('Topline contour: ', self.topline_contour)
-        print("self.beats_to_contour_directions: ", self.beats_to_contour_directions)
+        # print('Topline contour: ', self.topline_contour)
+        # print("self.beats_to_contour_directions: ", self.beats_to_contour_directions)
         
         while len(result_chord_progression) < self.length:
             # We measure "beats" in whole notes. Each chord is a whole note.
