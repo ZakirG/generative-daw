@@ -25,13 +25,13 @@ export class PianoRollComponent {
     chordSizeUpperBound = 7;
     disallowRepeats = true;
     chanceToUseChordLeadingChart = 0.7;
-    chanceToUseCommonVoicing = 0.8;
+    chanceToUseCommonVoicing = 0.95;
     chanceToUseCommonProgression = 0.3;
     chanceToAllowNonDiatonicChord = 0.001;
     chanceToAllowBorrowedChord = 0.001;
     chanceToAllowAlteredDominantChord = 0.7;
 
-    maxToplineDistance = 4;
+    maxToplineDistance = 3;
     // A ii-V-I voiced using three-note voicings changes two notes between ii and V
     noteChangesLowerBound = 2;
     noteChangesUpperBound = 5;
