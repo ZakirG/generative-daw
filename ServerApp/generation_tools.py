@@ -311,14 +311,14 @@ class Generator:
                 recalculated_degree = recalculated_degree.lower()
             chord_roman_name = recalculated_degree + ' ' + chosen_voicing['name']
             
-            generation_method = '\n\t- There are {} applicable voicings for {} that meet the constraints.'.format(len(applicable_voicings), chosen_target_degree)
+            generation_method = ''
             if chosen_voicing['is_borrowed']:
                 generation_method += "\n\t- Decided to allow a borrowed chord."
             elif chosen_voicing['is_alt_dom']:
                 generation_method += "\n\t- Decided to allow a non-diatonic altered dominant chord."
             elif chosen_voicing['is_non_diatonic']:
                 generation_method += "\n\t- Decided to allow a non-diatonic chord."
-            generation_method += "\n\t- Decided to voice {} as a {}.".format(chosen_target_degree, chosen_voicing['name'])
+            generation_method += "\n\t- Chose to voice {} as a {} from {} applicable voicings.".format(chosen_target_degree, chosen_voicing['name'], len(applicable_voicings))
             return built_chord, [chord_letter_name, chord_roman_name], generation_method
         return -1, -1, -1
 
