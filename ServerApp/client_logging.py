@@ -13,7 +13,6 @@ class ClientLogger:
             ClientLogger.instance = ClientLogger.__ClientLogger()
 
     def log(self, message):
-        # print(message)
         self.instance.request_logs.append(message)
     
     def get_logs(self):

@@ -458,14 +458,15 @@ def non_topline_note_meets_topline_constraints(current_topline_direction, non_to
 def label_voicings_with_metadata(key, scale, octave_range):
     """
     The return value has the same structure as good_voicings, but with 
-    an diatonic_roman_numerals property and a topline_position property on each voicing.
-
-    You can technically do this in one pass without the key by 
-    evaluating intervals alone, but I'm too lazy to write that algorithm.
+    added metadata on each voicing.
 
     A lovely function. As a musician, this is so useful to me. We perform metadata calculations
     on each chord voicing to better know whether to use it in a musical context, thereby constraining
-    the solution space of randomized compositions.
+    the solution space of randomized compositions. Having this data alone is useful in itself, and 
+    the subject of many guitar tab encyclopedias. But being able to access it automatically in the
+    process of filtering voicings that match a musical context goes beyond any encyclopedia.
+
+    The result of this function is used by Generator.voicing_on_numeral_passes_constraints()
     """
     
     labeled_result = {}
@@ -490,8 +491,6 @@ def label_voicings_with_metadata(key, scale, octave_range):
         voicing_group = good_voicings[voicing_group_key]
         voicing_group_copy = []
         for voicing in voicing_group:
-            # We're adding useful metadata to this chord voicing.
-            diatonic_roman_numerals_for_this_voicing = []
             roman_numerals_to_metadata = {}
             # Here we iterate over a full list of possible chord roman numerals, including non-diatonic ones
             # so as to calculate metadata
@@ -512,8 +511,6 @@ def label_voicings_with_metadata(key, scale, octave_range):
                             found_equivalent = True
                     if not found_equivalent:
                         it_contains_accidentals = True
-                if not it_contains_accidentals and it_fits_in_the_octave_range:
-                    diatonic_roman_numerals_for_this_voicing.append(roman_numeral)
                 
                 roman_numerals_to_metadata[roman_numeral] = { 
                     'topline_position': chord_to_topline_int(chord),
@@ -522,7 +519,6 @@ def label_voicings_with_metadata(key, scale, octave_range):
                 }
             
             voicing_copy = voicing.copy()
-            voicing_copy['diatonic_roman_numerals'] = diatonic_roman_numerals_for_this_voicing
             voicing_copy['roman_numerals_to_metadata'] = roman_numerals_to_metadata
 
             voicing_group_copy.append(voicing_copy)
