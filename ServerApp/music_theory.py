@@ -346,22 +346,7 @@ def get_contour_directions_per_beat(topline_contour, number_of_chords_in_progres
     previous chord.
     
     We return an array of length "number_of_chords_in_progression" that contains
-    strings indicating whether the topline for that chord should be 
-    "higher", "lower", "strictly higher", "strictly lower", "same", "not same", or "any".
-    
-    The "strictly" indicators are reserved for ramp forms, where the ramp form is
-    not actualized unelss there is a perceivable dip / jump.
-
-    Possible topline contours:
-    {'name': 'no preference', 'code': 'any'},
-    {'name': 'static', 'code': 'static'},
-    {'name': 'anything but static', 'code': 'nonstatic'},
-    {'name': 'upward', 'code': 'up'},
-    {'name': 'strictly upward', 'code': 'strictup'},
-    {'name': 'downward', 'code': 'down'},
-    {'name': 'strictly downward', 'code': 'strict down'},
-    {'name': 'up and then down', 'code': 'updown'},
-    {'name': 'down and then up', 'code': 'downup'}
+    directions for the next topline note to go in.
 
     # TODO: add support for "ramp" forms.
     """
@@ -371,52 +356,117 @@ def get_contour_directions_per_beat(topline_contour, number_of_chords_in_progres
         return ["any" for x in range(number_of_chords_in_progression) ]
 
     if contour_code == 'static':
-        return ["any"] + ["same" for x in range(number_of_chords_in_progression - 1) ]
+        return ["any"] + ["equal" for x in range(number_of_chords_in_progression - 1) ]
     
     if contour_code == 'nonstatic':
-        return ["any"] + ["not same" for x in range(number_of_chords_in_progression - 1) ]
+        return ["any"] + ["unequal" for x in range(number_of_chords_in_progression - 1) ]
     
     if contour_code == 'up':
-        return ["any"] + ["higher" for x in range(number_of_chords_in_progression - 1) ]
+        return ["any"] + ["up" for x in range(number_of_chords_in_progression - 1) ]
     
     if contour_code == 'strictup':
-        return ["any"] + ["strictly higher" for x in range(number_of_chords_in_progression - 1) ]
+        return ["any"] + ["strictup" for x in range(number_of_chords_in_progression - 1) ]
     
     if contour_code == 'down':
-        return ["any"] + ["lower" for x in range(number_of_chords_in_progression - 1) ]
+        return ["any"] + ["down" for x in range(number_of_chords_in_progression - 1) ]
     
     if contour_code == 'strictdown':
-        return ["any"] + ["strictly lower" for x in range(number_of_chords_in_progression - 1) ]
+        return ["any"] + ["strictdown" for x in range(number_of_chords_in_progression - 1) ]
     
     midpoint = number_of_chords_in_progression // 2
     
     if contour_code == 'updown':
         relative_chord_heights = ["any"]
-        relative_chord_heights += ["higher" for x in range(0, midpoint - 1)  ]
-        relative_chord_heights += ["lower" for x in range(midpoint, number_of_chords_in_progression)  ]
+        relative_chord_heights += ["up" for x in range(0, midpoint - 1)  ]
+        relative_chord_heights += ["down" for x in range(midpoint, number_of_chords_in_progression)  ]
         return relative_chord_heights
     
     if contour_code == 'downup':
         relative_chord_heights = ["any"]
-        relative_chord_heights += ["lower" for x in range(0, midpoint - 1)  ]
-        relative_chord_heights += ["higher" for x in range(midpoint, number_of_chords_in_progression)  ]
+        relative_chord_heights += ["down" for x in range(0, midpoint - 1)  ]
+        relative_chord_heights += ["up" for x in range(midpoint, number_of_chords_in_progression)  ]
         return relative_chord_heights
 
     raise ValueError('Unknown contour code: ', contour_code)
     return []
 
+def chord_passes_topline_contour_constraint(current_topline_direction, candidate_topline_position, previous_chord_topline_position):
+    if current_topline_direction == "any" or previous_chord_topline_position is None:
+        return True
+    if current_topline_direction == "equal" and candidate_topline_position != previous_chord_topline_position:
+        return False
+    if current_topline_direction == "unequal" and candidate_topline_position == previous_chord_topline_position:
+        return False
+    if current_topline_direction == "strictup" and candidate_topline_position <= previous_chord_topline_position:
+        return False
+    if current_topline_direction == "strictdown" and candidate_topline_position >= previous_chord_topline_position:
+        return False
+    if current_topline_direction == "up" and candidate_topline_position < previous_chord_topline_position:
+        return False
+    if current_topline_direction == "down" and candidate_topline_position > previous_chord_topline_position:
+        return False
+    return True
+
+def non_topline_note_passes_topline_distance_constraint(note, previous_chord_topline_position, max_topline_distance):
+    note_position = note
+    if not isinstance(note, int):
+        note_position = midi_tools.note_to_numeral(note)
+    return note_position - previous_chord_topline_position <= max_topline_distance
+
+def topline_note_passes_topline_distance_constraint(note, previous_chord_topline_position, max_topline_distance):
+    note_position = note
+    if not isinstance(note, int):
+        note_position = midi_tools.note_to_numeral(note)
+    return abs(note_position - previous_chord_topline_position) <= max_topline_distance
+
+def topline_note_passes_topline_constraints(current_topline_direction, candidate_note, previous_chord_topline_position, max_topline_distance):
+    if previous_chord_topline_position is None:
+        return True
+    
+    candidate_topline_note_position = candidate_note
+    if not isinstance(candidate_topline_note_position, int):
+        candidate_topline_note_position = midi_tools.note_to_numeral(candidate_topline_note_position)
+    passes_topline_distance_constraint = topline_note_passes_topline_distance_constraint(candidate_topline_note_position, previous_chord_topline_position, max_topline_distance)
+    
+    if current_topline_direction == "any":
+        passes_contour_constraint = True
+    else:
+        passes_contour_constraint = chord_passes_topline_contour_constraint(current_topline_direction, candidate_topline_note_position, previous_chord_topline_position)
+    return passes_topline_distance_constraint and passes_contour_constraint
+
+def non_topline_note_meets_topline_constraints(current_topline_direction, non_topline_note, previous_chord_topline_position, max_topline_distance):
+    """
+    If the contour is "down" and the topline distance is 3 semitones, any non-topline note above the
+    previous chord's topline will be rejected.
+    If the contour is "strictdown" and the topline distance is 3 semitones, any non-topline note above the
+    previous chord's topline will be rejected.
+    """
+    if previous_chord_topline_position is None:
+        return True
+    note_position = non_topline_note
+    if not isinstance(non_topline_note, int):
+        note_position = midi_tools.note_to_numeral(non_topline_note)
+    passes_topline_distance_constraint = non_topline_note_passes_topline_distance_constraint(note_position, previous_chord_topline_position, max_topline_distance)
+    if current_topline_direction == "strictdown" and note_position >= previous_chord_topline_position:
+        return False
+    if current_topline_direction == "down" and note_position > previous_chord_topline_position:
+        return False
+    if current_topline_direction == "equal" and note_position > previous_chord_topline_position:
+        return False
+    return passes_topline_distance_constraint
 
 def label_voicings_with_metadata(key, scale, octave_range):
     """
     The return value has the same structure as good_voicings, but with 
-    an diatonic_roman_numerals property and a topline_position property on each voicing.
-
-    You can technically do this in one pass without the key by 
-    evaluating intervals alone, but I'm too lazy to write that algorithm.
+    added metadata on each voicing.
 
     A lovely function. As a musician, this is so useful to me. We perform metadata calculations
     on each chord voicing to better know whether to use it in a musical context, thereby constraining
-    the solution space of randomized compositions.
+    the solution space of randomized compositions. Having this data alone is useful in itself, and 
+    the subject of many guitar tab encyclopedias. But being able to access it automatically in the
+    process of filtering voicings that match a musical context goes beyond any encyclopedia.
+
+    The result of this function is used by Generator.voicing_on_numeral_passes_constraints()
     """
     
     labeled_result = {}
@@ -441,10 +491,7 @@ def label_voicings_with_metadata(key, scale, octave_range):
         voicing_group = good_voicings[voicing_group_key]
         voicing_group_copy = []
         for voicing in voicing_group:
-            # We're adding useful metadata to this chord voicing.
-            diatonic_roman_numerals_for_this_voicing = []
-            # In integer form, what's the highest note in the voicing of this chord on a given scale degree?
-            roman_numerals_to_topline_positions = {}
+            roman_numerals_to_metadata = {}
             # Here we iterate over a full list of possible chord roman numerals, including non-diatonic ones
             # so as to calculate metadata
             for roman_numeral in chord_knowledge.all_roman:
@@ -457,7 +504,6 @@ def label_voicings_with_metadata(key, scale, octave_range):
                 for chord_note in chord:
                     if chord_note['octave'] not in octave_range:
                         it_fits_in_the_octave_range = False
-                        break
                     found_equivalent = False
                     for scale_note in allowed_notes:
                         are_equivalent = are_notes_enharmonically_equivalent(scale_note, chord_note['note'])
@@ -465,19 +511,18 @@ def label_voicings_with_metadata(key, scale, octave_range):
                             found_equivalent = True
                     if not found_equivalent:
                         it_contains_accidentals = True
-                        break
-                if not it_contains_accidentals and it_fits_in_the_octave_range:
-                    diatonic_roman_numerals_for_this_voicing.append(roman_numeral)
                 
-                roman_numerals_to_topline_positions[roman_numeral] = chord_to_topline_int(chord)
+                roman_numerals_to_metadata[roman_numeral] = { 
+                    'topline_position': chord_to_topline_int(chord),
+                    'it_fits_in_the_octave_range': it_fits_in_the_octave_range,
+                    'it_contains_accidentals': it_contains_accidentals
+                }
             
             voicing_copy = voicing.copy()
-            voicing_copy['diatonic_roman_numerals'] = diatonic_roman_numerals_for_this_voicing
-
-            
-            voicing_copy['roman_numerals_to_topline_positions'] = roman_numerals_to_topline_positions
+            voicing_copy['roman_numerals_to_metadata'] = roman_numerals_to_metadata
 
             voicing_group_copy.append(voicing_copy)
         
         labeled_result[voicing_group_key] = voicing_group_copy
     return labeled_result
+
