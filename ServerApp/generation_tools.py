@@ -22,7 +22,7 @@ class Generator:
         self.key = content['key'].replace('#', 's').lower()
         self.scale = content['scale']
         self.scale_name = constants['scales'][self.scale]['name']
-        self.length = content['length']
+        self.length = content['timeStateLength']
         self.disallow_repeats = content['disallowRepeats']
         self.octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
         self.allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)

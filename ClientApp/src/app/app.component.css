@@ -175,15 +175,20 @@ input[type=number] {
 }
 
 #tempo-label {
-    left:14px;
+    left:15px;
 }
 
 #scale-label {
     left:65px;
 }
 
+#time-state-length-label {
+    left:7px;
+    position:
+}
+
 #key-label {
-    left:16px;
+    left:15px;
 }
 
 .control-panel {
