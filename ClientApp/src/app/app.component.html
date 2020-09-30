@@ -25,7 +25,7 @@
                 Generative<b>DAW</b>
             </span>
         </div>
-        <div class="col-7 text-left">
+        <div class="col-6 text-left">
             <form [formGroup]='controlPanelForm' id='control-panel-form' (change)='updateConfigState()' style='display:inline-block'>
                 <div class='control-panel'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
@@ -57,7 +57,13 @@
                 </div>
             </form>
         </div>
-        <div class="col-1 tex-left">
+        <div class="col-2 text-left" id="glyph-controls">
+            <!-- <button class="action-button" type="button" id="cycle-mode-button">
+                CYCLE MODE <span class='glyphicon glyphicon-refresh'></span>
+            </button> -->
+            <button [ngClass]="{ 'glyphicon-button' : true, 'glyphicon-active': inCycleMode } " id="repeat-button" (click)="toggleCycleMode()">
+                <img src="/assets/icons/repeat.svg"/>
+            </button>
             <button class="glyphicon-button" id="logs-button" (click)="showLogs = !showLogs">
                 <span class='glyphicon glyphicon-inbox'></span>
             </button>

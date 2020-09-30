@@ -145,29 +145,29 @@
                                     </label>
                                 </div>
                             </div>
-                            <!-- <div class='row'>
+                            <div class='row'>
                                 <div class='col-6'>
-                                    <label class='form-label form-label-text' style='display:block;;margin-top:10px;' *ngIf="generationType == 'chords'" >
+                                    <!-- <label class='form-label form-label-text' style='display:block;;margin-top:10px;' *ngIf="generationType == 'chords'" >
                                         Note-change voice leading constraint: the # of notes that change between chords must be between
-                                    </label>
+                                    </label> -->
                                     <label class='form-label form-label-text' style='display:block;;margin-top:10px;' *ngIf="generationType == 'chords'" >
                                         The contour of the chord progression's topline should be
                                     </label>
                                 </div>
                                 <div class='col-6'>
-                                    <label class='form-label' style='display:inline-block;margin-top:10px;' *ngIf="generationType == 'chords'">
+                                    <!-- <label class='form-label' style='display:inline-block;margin-top:10px;' *ngIf="generationType == 'chords'">
                                         <input class='form-control' [(ngModel)]="noteChangesLowerBound" type="number" name="noteChangesLowerBound" style='width:70px; display:inline-block' >
                                         and
                                         <input class='form-control' [(ngModel)]="noteChangesUpperBound" type="number" name="noteChangesUpperBound" style='width:70px; display:inline-block' >
                                         semitones
-                                    </label>
+                                    </label> -->
                                     <select name="toplineContour" style="text-align-last:center;width:190px; display:inline-block" class='form-control form-label' [ngModel]="configDataService.toplineContour">
                                         <option *ngFor="let contour of configDataService.toplineContours" [ngValue]="contour">
                                             {{ contour.name }}
                                         </option>
                                     </select>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
 
                     </form>

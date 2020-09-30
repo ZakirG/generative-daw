@@ -11,7 +11,7 @@ const interact = require('interactjs');
     selector:    'piano-roll',
     templateUrl: './piano-roll.component.html',
     providers:  [ ],
-    styleUrls: ['./piano-roll.component.css']
+    styleUrls: ['./piano-roll.component.css', './app.component.css']
 })
 
 export class PianoRollComponent {
@@ -33,8 +33,8 @@ export class PianoRollComponent {
 
     maxToplineDistance = 3;
     // A ii-V-I voiced using three-note voicings changes two notes between ii and V
-    noteChangesLowerBound = 2;
-    noteChangesUpperBound = 5;
+    // noteChangesLowerBound = 2;
+    // noteChangesUpperBound = 5;
     toplineContour: any;
     
     notes: Array<any>;
