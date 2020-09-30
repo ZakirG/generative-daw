@@ -20,9 +20,11 @@ This app applies algorithmic composition processes suggested by classical and ja
 
 #### General features:
 - Add tracks and edit notes in a resizable piano roll window
-- Chord can be rolled bottom-up during playback with a configurable note roll offset
+- Quick Generate button that reruns the last-applied generation settings and plays a new generated composition
+- Chords can be rolled bottom-up during playback with a configurable note roll offset
 - Export application state to a MIDI file and optionally download its generation log
-- UI automatically labels chords with names and scale degrees
+- UI automatically calculates and labels chords with their names and scale degrees
+- Cycle mode toggle button for looped playback
 
 
 <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> 
