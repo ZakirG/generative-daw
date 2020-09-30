@@ -6,7 +6,7 @@ Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 
 ## Overview
 
-This app applies algorithmic composition processes suggested by classical and jazz lineages to create compositions matching user-applied constraints. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL for sound designing and songwriting. In contrast with other generative composition tools, this application does not apply machine learning. It is meant to be used as an assisitive composition tool that does the heavy lifting of composition.
+This app applies algorithmic composition processes suggested by classical and jazz lineages to create compositions matching user-applied constraints. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL for sound designing and songwriting. In contrast with other generative composition tools, this application does not apply machine learning. It is meant to be used as an assisitive composition tool by musicians.
 
 
 #### Music generation features:
@@ -19,10 +19,10 @@ This app applies algorithmic composition processes suggested by classical and ja
 - Logging panel in UI provides step-by-step explanations of the result generation method
 
 #### General features:
-- Add tracks and edit notes in a resizable piano roll window
-- Quick Generate button that reruns the last-applied generation settings and plays a new generated composition
-- Chords can be rolled bottom-up during playback with a configurable note roll offset
 - Export application state to a MIDI file and optionally download its generation log
+- Quickly generate compositions with the Quick Generate bbutton that reruns the last-applied settings and clicks play
+- Add tracks and edit notes in a resizable piano roll window
+- Chords can be rolled bottom-up during playback with a configurable note roll offset
 - UI automatically calculates and labels chords with their names and scale degrees
 - Cycle mode toggle button for looped playback
 
