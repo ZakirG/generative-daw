@@ -57,7 +57,8 @@ export class AppComponent {
         this.controlPanelForm = new FormGroup({
             scale: new FormControl(this.configDataService.scale),
             key: new FormControl(this.configDataService.key),
-            tempo: new FormControl(this.configDataService.tempo)
+            tempo: new FormControl(this.configDataService.tempo),
+            timeStateLength: new FormControl(this.configDataService.timeStateLength)
         });
         
         this.http.get(this.constantsURL).subscribe((data) => {
@@ -78,6 +79,7 @@ export class AppComponent {
         this.configDataService.tempo = this.controlPanelForm.value.tempo;
         this.configDataService.scale = this.controlPanelForm.value.scale;
         this.configDataService.key = this.controlPanelForm.value.key;
+        this.configDataService.timeStateLength = this.controlPanelForm.value.timeStateLength;
     }
 
     toggleCycleMode() {
@@ -196,15 +198,18 @@ export class AppComponent {
         }
 
         var root = this;
-        setTimeout(function(){
-            root.configDataService.inPlayState = false;
-        }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) );
     
         if(this.inCycleMode) {
             var pendingTimeout = setTimeout(function(){
+                root.configDataService.inPlayState = false;
                 root.togglePlayState();
-            }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) + 0.0 );
+            }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) );
             this.pendingTimeouts.push(pendingTimeout);
+        }
+        else {
+            setTimeout(function(){
+                root.configDataService.inPlayState = false;
+            }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) );
         }
     }
 

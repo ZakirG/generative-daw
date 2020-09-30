@@ -6,7 +6,7 @@ Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 
 ## Overview
 
-In contrast with other generative composition tools, this application does not apply machine learning algorithms to generate music. Instead, constraints from classical and jazz theory are applied to create randomized compositions that are inherently more musically sensible. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL.
+This app applies algorithmic composition processes suggested by classical and jazz theory to create compositions matching user-applied constraints. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL for sound designing and songwriting. In contrast with other generative composition tools, this application does not apply machine learning algorithms to generate music.
 
 
 #### Music generation features:

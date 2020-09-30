@@ -123,7 +123,6 @@ export class PianoRollComponent {
 
     generate(generationOptions, isQuickGenerate) {
         var generatedNotes = [];
-        generationOptions.length = this.timeStateLength;
         return this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
             let logs = data['logs']
