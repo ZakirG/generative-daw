@@ -24,8 +24,8 @@ This app applies algorithmic composition processes suggested by classical and ja
 - UI automatically labels chords with names and scale degrees
 
 
-<!-- <img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/>  -->
-
+<img src="./screenshots/desktopScreenshot.png" alt="App Screenshot on Desktop" width="850"/> 
+---
 <img src="./screenshots/desktopScreenshot2.png" alt="App Screenshot on Desktop" width="850"/>
 
 ## Installation
