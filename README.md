@@ -10,12 +10,12 @@ This app applies algorithmic composition processes suggested by classical and ja
 
 
 #### Music generation features:
-- Generates melodies and chord progressions in a given key, scale, and octave
-- Configurably incorporates popular chord progressions into compositions
-- Configurably incorporates tasteful voicings from the built-in voicings library
+- Generate melodies and chord progressions in a given key, scale, and octave
+- Configurably incorporate tasteful chord voicings from the built-in voicings library
+- Configurably incorporate popular chord progressions into compositions
 - Specify the contour shape of a chord progression's topline (static, downward, up and then down...)
-- Configure probability to use a parent scale's chord leading chart to select follow-up chords
 - Configure probabilities for the inclusion of non-diatonic, borrowed, altered dominant chords
+- Configure probability to use the classical chord leading chart to select follow-up chords
 - Logging panel in UI provides step-by-step explanations of the result generation method
 
 #### General features:
