@@ -76,7 +76,7 @@ for their examples on audio manipulation in Angular. Code snippets of theirs are
 This project's interface is based on Logic Pro X.
 
 ---
-An example output of the application:
+An example output of the application taken from the the logging panel in the UI:
 ```
 Generating new chord progression in C major.
 Decided to incorporate I, vi, IV, V. (The 50s progression)
