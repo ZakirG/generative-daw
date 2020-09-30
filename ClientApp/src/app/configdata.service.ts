@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class ConfigDataService {
     inPlayState : boolean;
     timeStateLength : number;
+    viewStateLength: number;
     constants: any;
     tempo : number;
     key : string;
@@ -43,9 +44,10 @@ export class ConfigDataService {
         this.toplineContour = this.toplineContours[0];
         this.tempo = 60;
         this.inPlayState = false;
-        this.timeStateLength = 8;
+        this.timeStateLength = 4;
+        this.viewStateLength = 8
         this.dawState = {};
-        this.stateWidth = (100 / this.timeStateLength)  + '%';
+        this.stateWidth = (100 / this.viewStateLength)  + '%';
         this.dawState.chord_names = [[]];
         this.dawState.chord_degrees = [[]];
         this.playOffsetPerNoteDueToRoll = 0.01;

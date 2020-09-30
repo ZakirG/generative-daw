@@ -15,9 +15,9 @@ const interact = require('interactjs');
 })
 
 export class PianoRollComponent {
-    timeStateLength = 8;
     gridState = [];
     conformToKeyScale = true;
+    timeStateLength = 8;
     generationType = 'chords';
     octaveUpperBound = 4;
     octaveLowerBound = 3;
