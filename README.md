@@ -61,13 +61,6 @@ A tab will automatically open in your default web browser at localhost:4200.
 - The frontend layout makes use of Bootstrap 4, glyphicons from Bootstrap 3, and CSS3
 - Client-side tests use the Jasmine framework and Karma test runner
 
-#### Possible future development:
-- Chord generation informed by voice leading principles
-- Melody generation informed by stable/unstable tone analysis, structural tone/embellishment principles
-- Rhythm generation informed by selections of culturally specific macro-rhythms (clave 3/2, clave 2/3, reggaeton bounce, trap rhythms, ...)
-- Unit tests for the Flask/Python backend
-- Draggable and resizable piano roll notes with http://interactjs.io/
-
 
 #### Resources:
 - Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
