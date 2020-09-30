@@ -12,10 +12,10 @@ This app applies algorithmic composition processes suggested by classical and ja
 #### Music generation features:
 - Generates melodies and chord progressions in a given key, scale, and octave
 - Configurably incorporates popular chord progressions into compositions
-- Configurably incorporates tasteful voicings from the included voicings list
+- Configurably incorporates tasteful voicings from the built-in voicings library
 - Specify the contour shape of a chord progression's topline (static, downward, up and then down...)
-- Can use built-in chord leading charts to select follow-up chords
-- Configure probabilities for the inclusion of non-diatonic chords, borrowed chords, altered dominant chords
+- Configure probability to use a parent scale's chord leading chart to select follow-up chords
+- Configure probabilities for the inclusion of non-diatonic, borrowed, altered dominant chords
 - Logging panel in UI provides step-by-step explanations of the result generation method
 
 #### General features:
@@ -74,3 +74,54 @@ A tab will automatically open in your default web browser at localhost:4200.
 for their examples on audio manipulation in Angular. Code snippets of theirs are used in this application.
 
 This project's interface is based on Logic Pro X.
+
+---
+An example output of the application:
+```
+Generating new chord progression in C major.
+Decided to incorporate I, vi, IV, V. (The 50s progression)
+Added C sus2 ( I ). Generation pathway: 
+	- Using I to satisfy the I, vi, IV, V.
+	- Chose to voice I as a sus2 from 30 applicable voicings.
+Added A min triad ( vi ). Generation pathway: 
+	- Using vi to satisfy the I, vi, IV, V.
+	- Built vi by picking chord tones at random.
+Added F major second inversion ( IV ). Generation pathway: 
+	- Using IV to satisfy the I, vi, IV, V.
+	- Chose to voice IV as a major second inversion from 2 applicable voicings.
+Added G major second inversion ( V ). Generation pathway: 
+	- Using V to satisfy the I, vi, IV, V.
+	- Chose to voice V as a major second inversion from 1 applicable voicings.
+I, vi, IV, V progression complete.
+Added C add 9 ( I ). Generation pathway: 
+	- Used major chord leading chart suggestion V -> I. 
+	- Chose to voice I as a add 9 from 10 applicable voicings.
+Added A sus4 ( vi ). Generation pathway: 
+	- Picked scale degree vi randomly.
+	- Chose to voice vi as a sus4 from 4 applicable voicings.
+Added C whole tone trichord ( i ). Generation pathway: 
+	- Used major chord leading chart suggestion vi -> I. 
+	- Built I by picking chord tones at random.
+Added A minor 7/11 (close voicing) ( vi ). Generation pathway: 
+	- Picked scale degree vi randomly.
+	- Chose to voice vi as a minor 7/11 (close voicing) from 7 applicable voicings.
+~~~
+Generation settings: 
+	key: C
+	scale: maj
+	octaveLowerBound: 3
+	octaveUpperBound: 4
+	generationType: chords
+	disallowRepeats: True
+	toplineContour: {'name': 'no preference', 'code': 'any'}
+	chordSizeLowerBound: 3
+	chordSizeUpperBound: 7
+	chanceToUseCommonVoicing: 0.95
+	chanceToAllowNonDiatonicChord: 0.001
+	chanceToAllowAlteredDominantChord: 0.7
+	chanceToAllowBorrowedChord: 0.001
+	chanceToUseChordLeadingChart: 0.7
+	chanceToUseCommonProgression: 0.3
+	maxToplineDistance: 3
+	length: 8
+```
