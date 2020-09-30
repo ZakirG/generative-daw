@@ -271,8 +271,8 @@ def build_chord_from_voicing(voicing, chord_root, roman_numeral, octave_range):
     else:
         start_degree = int(start_degree_as_str)
  
-    # Scale degrees are 1-indexed, while lists are zero-indexed
-    start_note = key_scale_notes[start_degree - 1]
+    # TODO: this line has bias towards lower octaves. consider fixing that to better support large octave ranges.
+    start_note = key_scale_notes[start_degree - 1] # Scale degrees are 1-indexed, while lists are zero-indexed
     chord = [start_note]
     prev_note = start_note
     for interval in voicing['intervals']:

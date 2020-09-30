@@ -25,6 +25,8 @@ export class AppComponent {
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
     constants: any;
+    inCycleMode = true;
+    pendingTimeouts = [];
     
     pageLoaded = false;
     pageReady = false;
@@ -76,6 +78,10 @@ export class AppComponent {
         this.configDataService.tempo = this.controlPanelForm.value.tempo;
         this.configDataService.scale = this.controlPanelForm.value.scale;
         this.configDataService.key = this.controlPanelForm.value.key;
+    }
+
+    toggleCycleMode() {
+        this.inCycleMode = !this.inCycleMode;
     }
 
     ngAfterViewInit() {
@@ -142,6 +148,9 @@ export class AppComponent {
 
     togglePlayState() {
         if(this.configDataService.inPlayState) {
+            for(let i = 0; i < this.pendingTimeouts.length; i++) {
+                clearTimeout(this.pendingTimeouts[i]);
+            }
             this.configDataService.inPlayState = false;
             for (var i = 0; i < this.queuedSounds.length; i++) {
                 this.queuedSounds[i].stop(0);
@@ -186,12 +195,17 @@ export class AppComponent {
             }
         }
 
-
-
         var root = this;
         setTimeout(function(){
             root.configDataService.inPlayState = false;
         }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) );
+    
+        if(this.inCycleMode) {
+            var pendingTimeout = setTimeout(function(){
+                root.togglePlayState();
+            }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) + 0.0 );
+            this.pendingTimeouts.push(pendingTimeout);
+        }
     }
 
     playNote(noteName : string, noteOctave : number, time : number) {

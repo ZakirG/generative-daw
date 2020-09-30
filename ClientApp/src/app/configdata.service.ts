@@ -36,13 +36,11 @@ export class ConfigDataService {
           {'name': 'static', 'code': 'static'},
           {'name': 'anything but static', 'code': 'nonstatic'},
           {'name': 'upward', 'code': 'up'},
-          {'name': 'strictly upward', 'code': 'strictup'},
           {'name': 'downward', 'code': 'down'},
-          {'name': 'strictly downward', 'code': 'strict down'},
           {'name': 'up and then down', 'code': 'updown'},
           {'name': 'down and then up', 'code': 'downup'}
         ];
-        this.toplineContour = this.toplineContours[4];
+        this.toplineContour = this.toplineContours[0];
         this.tempo = 60;
         this.inPlayState = false;
         this.timeStateLength = 8;
