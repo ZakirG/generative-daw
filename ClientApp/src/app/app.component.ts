@@ -288,7 +288,7 @@ export class AppComponent {
         this.pianoRoll = pianoRoll.instance;
     }
 
-    updateDawState() {
+    updateDawState(callback=null) {
         var dawState = {};
 
         var minimizedTracks = [];
@@ -303,8 +303,11 @@ export class AppComponent {
         dawState['key'] = this.configDataService.key;
         dawState['tempo'] = this.configDataService.tempo;
 
-        this.dawStateService.updateDawState(dawState).subscribe((data) => {
+        return this.dawStateService.updateDawState(dawState).subscribe((data) => {
             this.configDataService.dawState = data;
+            if (typeof callback !== 'undefined' && callback !== null) {
+                callback.apply(this);
+            }
         });
     }
 
@@ -315,12 +318,6 @@ export class AppComponent {
         anchor.download = filename;
         anchor.href = url;
         anchor.click();
-    }
-
-    exportToMidi() {
-        this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
-            this.downloadFile(data, 'audio/midi', 'autocomposer-export.midi');
-        });
     }
 
     niceDateTimeStamp() {
@@ -337,7 +334,18 @@ export class AppComponent {
         return dateString + '-' + time;
     }
 
-    exportToMidiWithLog() {
+    exportMidiFile() {
+        var timestamp = this.niceDateTimeStamp();
+        this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
+            this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
+        });
+    }
+
+    exportToMidi() {
+        this.updateDawState(this.exportMidiFile);
+    }
+
+    exportMidiAndLog() {
         var logs = this.configDataService.appLogs.slice();
         logs.pop();
         let finalSeparator = logs.lastIndexOf(this.configDataService.logSeparator);
@@ -348,5 +356,9 @@ export class AppComponent {
             this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
             this.downloadFile(lastGenerationLog, 'text/plain;charset=utf-8', 'composition-' + timestamp + '.txt');
         });
+    }
+
+    exportToMidiWithLog() {
+        this.updateDawState(this.exportMidiAndLog);
     }
 }
