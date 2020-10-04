@@ -17,7 +17,6 @@ const interact = require('interactjs');
 export class PianoRollComponent {
     gridState = [];
     conformToKeyScale = true;
-    timeStateLength = 8;
     generationType = 'chords';
     octaveUpperBound = 4;
     octaveLowerBound = 3;
@@ -53,29 +52,10 @@ export class PianoRollComponent {
     trackChange = new EventEmitter<any>();
 
     constructor(public generationService: GenerationService, public configDataService: ConfigDataService) {
-        this.initializeEmptyGridState();
+        this.gridState = this.configDataService.initializeEmptyGridState();
         this.scale = this.configDataService.scale;
         this.key = this.configDataService.key;
         this.toplineContour = this.configDataService.toplineContour;
-    }
-
-    initializeEmptyGridState() {
-        var stateWidth = (100 / this.timeStateLength) + "%";
-
-        this.notes = this.configDataService.notes;
-
-        this.gridState = [];
-        for (let note of this.notes) {
-            var noteRow = {
-                'color' : note.color,
-                'octave' : note.octave,
-                'note' : note.note,
-                'timeStates' : Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0),
-                'stateWidth' : stateWidth,
-                'id' : note.note + note.octave
-            };
-            this.gridState.push(noteRow);
-        }
     }
 
     ngOnInit() {
@@ -105,7 +85,7 @@ export class PianoRollComponent {
 
     clearPianoRoll() {
         for (var i = 0; i < this.gridState.length; i++) {
-            this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
+            this.gridState[i]['timeStates'] = this.configDataService.makeEmptyTimeState();
         }
         this.noteDrawn.emit({'event': 'clear', 'track' : this.trackNumber});
     }

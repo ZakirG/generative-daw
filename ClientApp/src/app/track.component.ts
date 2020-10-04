@@ -16,7 +16,6 @@ export class TrackComponent {
     @Input() scale: Object;
     @Input() pianoRollOpen: boolean;
     @Input() gridState: any;
-    @Input() timeStateLength: number;
     @Input() notes: Array<any>;
     @Input() thisTrackIsSelected: boolean;
     _ref: any;
@@ -30,28 +29,9 @@ export class TrackComponent {
 
     constructor(public configDataService: ConfigDataService) { }
 
-    initializeEmptyGridState() {
-        var stateWidth = (100 / this.timeStateLength) + "%";
-
-        this.notes =this.configDataService.notes;
-
-        this.gridState = [];
-        for (let note of this.notes) {
-            var noteRow = {
-                'color' : note.color,
-                'octave' : note.octave,
-                'note' : note.note,
-                'timeStates' : Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0),
-                'stateWidth' : stateWidth,
-                'id' : note.note + note.octave
-            };
-            this.gridState.push(noteRow);
-        }
-    }
-
     clearPianoRoll() {
         for (var i = 0; i < this.gridState.length; i++) {
-            this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
+            this.gridState[i]['timeStates'] = this.configDataService.makeEmptyTimeState();
         }
     }
 

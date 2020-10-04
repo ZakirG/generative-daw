@@ -6,7 +6,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ConfigDataService {
     inPlayState : boolean;
-    timeStateLength : number;
+    numBeatsInProject : number;
+    numSubdivisionsPerBeat : number;
+    numDivisions : number;
     viewStateLength: number;
     constants: any;
     tempo : number;
@@ -44,10 +46,11 @@ export class ConfigDataService {
         this.toplineContour = this.toplineContours[0];
         this.tempo = 60;
         this.inPlayState = false;
-        this.timeStateLength = 4;
-        this.viewStateLength = 8
+        this.numBeatsInProject = 8;
+        this.numSubdivisionsPerBeat = 8;
+        this.numDivisions = this.numBeatsInProject * this.numSubdivisionsPerBeat;
         this.dawState = {};
-        this.stateWidth = (100 / this.viewStateLength)  + '%';
+        this.stateWidth = (100 / this.numDivisions)  + '%';
         this.dawState.chord_names = [[]];
         this.dawState.chord_degrees = [[]];
         this.playOffsetPerNoteDueToRoll = 0.01;
@@ -74,5 +77,27 @@ export class ConfigDataService {
           this.notes = this.notes.concat(octaveArray);
       }
     }
+
+    initializeEmptyGridState() {
+      var emptyTimeState = this.makeEmptyTimeState();
+
+      let gridState = [];
+      for (let note of this.notes) {
+          var noteRow = {
+              'color' : note.color,
+              'octave' : note.octave,
+              'note' : note.note,
+              'timeStates' : emptyTimeState.slice(),
+              'stateWidth' : this.stateWidth,
+              'id' : note.note + note.octave
+          };
+          gridState.push(noteRow);
+      }
+      return gridState;
+  }
+
+  makeEmptyTimeState() {
+    return Array.apply(null, Array(this.numDivisions)).map(Number.prototype.valueOf,0);
+  }
 }
 

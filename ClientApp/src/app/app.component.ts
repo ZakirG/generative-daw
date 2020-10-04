@@ -40,7 +40,12 @@ export class AppComponent {
         public generationService: GenerationService,
         public dawStateService: DawStateService,
         public resolver: ComponentFactoryResolver,
-        private http: HttpClient) { }
+        private http: HttpClient) {
+            this.tracks = [];
+            this.notes = [];
+            this.audioBuffers = {};
+            this.queuedSounds = [];
+        }
 
     public setTitle( newTitle: string) {
         this.titleService.setTitle( newTitle );
@@ -49,16 +54,12 @@ export class AppComponent {
     ngOnInit() {
         this.setTitle('GenerativeDAW');
         this.audioContext = new AudioContext();
-        this.tracks = [];
-        this.notes = [];
-        this.audioBuffers = {};
-        this.queuedSounds = [];
 
         this.controlPanelForm = new FormGroup({
             scale: new FormControl(this.configDataService.scale),
             key: new FormControl(this.configDataService.key),
             tempo: new FormControl(this.configDataService.tempo),
-            timeStateLength: new FormControl(this.configDataService.timeStateLength)
+            numBeatsInProject: new FormControl(this.configDataService.numBeatsInProject)
         });
         
         this.http.get(this.constantsURL).subscribe((data) => {
@@ -79,7 +80,7 @@ export class AppComponent {
         this.configDataService.tempo = this.controlPanelForm.value.tempo;
         this.configDataService.scale = this.controlPanelForm.value.scale;
         this.configDataService.key = this.controlPanelForm.value.key;
-        this.configDataService.timeStateLength = this.controlPanelForm.value.timeStateLength;
+        this.configDataService.numBeatsInProject = this.controlPanelForm.value.numBeatsInProject;
     }
 
     toggleCycleMode() {
@@ -87,7 +88,7 @@ export class AppComponent {
     }
 
     ngAfterViewInit() {
-        this.notes = this.tracks[0].notes;
+        this.notes = this.configDataService.notes;
 
         for (let note of this.notes) {
             let bufferName = note.note + note.octave;
@@ -168,12 +169,12 @@ export class AppComponent {
 
         if(!rollChords) {
             for (var noteIndex = 0; noteIndex < this.notes.length; noteIndex++) {
-                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.timeStateLength; timeStateIndex++) {
+                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.numDivisions; timeStateIndex++) {
                     for (let track of this.tracks) {
                         var note = track.gridState[noteIndex];
                         if(note['timeStates'][timeStateIndex]) {
                             // beat number * seconds per beat
-                            var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo);
+                            var timeToPlay = (timeStateIndex / this.configDataService.numSubdivisionsPerBeat) * (60 / this.configDataService.tempo);
                             this.playNote(note.note, note.octave, timeToPlay);
                         }
                     }
@@ -182,13 +183,13 @@ export class AppComponent {
         } else {
             // Build chords
             for (let track of this.tracks) {
-                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.timeStateLength; timeStateIndex++) {
+                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.numDivisions; timeStateIndex++) {
                     let playOffsetDueToRoll = 0;
                     for (var noteIndex = this.notes.length - 1; noteIndex >= 0;  noteIndex--) {
                         var note = track.gridState[noteIndex];
                         if(note['timeStates'][timeStateIndex]) {
                             // beat number * seconds per beat
-                            var timeToPlay = timeStateIndex * (60 / this.configDataService.tempo) + playOffsetDueToRoll;
+                            var timeToPlay = (timeStateIndex / this.configDataService.numSubdivisionsPerBeat) * (60 / this.configDataService.tempo) + playOffsetDueToRoll;
                             this.playNote(note.note, note.octave, timeToPlay);
                             playOffsetDueToRoll += this.configDataService.playOffsetPerNoteDueToRoll
                         }
@@ -203,13 +204,13 @@ export class AppComponent {
             var pendingTimeout = setTimeout(function(){
                 root.configDataService.inPlayState = false;
                 root.togglePlayState();
-            }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) );
+            }, 1000 * root.configDataService.numBeatsInProject * (60 / root.configDataService.tempo) );
             this.pendingTimeouts.push(pendingTimeout);
         }
         else {
             setTimeout(function(){
                 root.configDataService.inPlayState = false;
-            }, 1000 * root.configDataService.timeStateLength * (60 / root.configDataService.tempo) );
+            }, 1000 * root.configDataService.numBeatsInProject * (60 / root.configDataService.tempo) );
         }
     }
 
@@ -251,7 +252,7 @@ export class AppComponent {
         newTrack.instance.key = this.configDataService.key;
         newTrack.instance.scale = this.configDataService.scale.name;
         newTrack.instance.trackNumber = this.tracks.length;
-        newTrack.instance.timeStateLength = 8 // this.configDataService.timeStateLength;
+        newTrack.instance.numBeatsInProject = this.configDataService.numBeatsInProject;
         newTrack.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
         });
@@ -261,7 +262,7 @@ export class AppComponent {
         // newTrack.instance.triggerQuickGenerate.subscribe((event) => {
         //     this.registerTriggerQuickGenerate();
         // });
-        newTrack.instance.initializeEmptyGridState();
+        newTrack.instance.gridState = this.configDataService.initializeEmptyGridState();
         this.tracks.push(newTrack.instance);
     }
 

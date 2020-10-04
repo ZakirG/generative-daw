@@ -1,184 +1,222 @@
-<div class="modal fade generation-modal" [id]="'generationModal' + trackNumber" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Configure generation</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+<div class="modal fade generation-modal" [id]="'generationModal' + trackNumber" tabindex="-1" role="dialog"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Configure generation</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #generationForm="ngForm">
+                    <div class='row'>
+                        <div class='col-4'>
+                            <label class="form-label form-label-text">
+                                Generate notes in
+                            </label>
+                            <label class='form-label form-label-text' style='display:inline-block;'>
+                                Allowed octaves
+                            </label>
+                        </div>
+                        <div class='col-8 text-right'>
+                            <select name="key" style="text-align-last:center;width:70px;display:inline-block"
+                                class='form-control' [ngModel]="configDataService.key">
+                                <option *ngFor="let key of configDataService.keys" [ngValue]="key">
+                                    {{ key }}
+                                </option>
+                            </select>
+                            <select name="scale" style="text-align-last:center;width:190px; display:inline-block"
+                                class='form-control' [ngModel]="configDataService.scale">
+                                <option *ngFor="let scale of configDataService.scales" [ngValue]="scale">
+                                    {{ scale.name }}
+                                </option>
+                            </select>
+                            <label class='form-label' style='display:inline-block'>
+                                <input class='form-control' style='width:70px; display:inline-block'
+                                    [(ngModel)]="octaveLowerBound" type="number" name="octaveLowerBound">
+                                thru
+                                <input class='form-control' style='width:70px; display:inline-block'
+                                    [(ngModel)]="octaveUpperBound" type="number" name="octaveUpperBound">
+                            </label>
+                        </div>
+                    </div>
+                    <br />
+                    <label class="custom-radio-button form-label"
+                        style='display:inline-block; margin-right: 15px'>Generate chord progression
+                        <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
+                        <span class="radio"></span>
+                    </label>
+                    <label class="custom-radio-button form-label" style='display:inline-block'>
+                        <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">Generate
+                        melody
+                        <span class="radio"></span>
+                    </label>
+                    <br />
+                    <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-target="#chordVoicings"
+                        aria-expanded="true" aria-controls="chordVoicings" *ngIf="generationType == 'chords'">
+                        Chord voicings
                     </button>
-                </div>
-                <div class="modal-body">
-                     <form #generationForm="ngForm">
+                    <div class="generation-modal-collapsible collapse show" id="chordVoicings"
+                        *ngIf="generationType == 'chords'">
                         <div class='row'>
-                            <div class='col-4'>
-                                <label class="form-label form-label-text">
-                                    Generate notes in
+                            <div class='col-6'>
+                                <label class='form-label form-label-text' style='display:inline-block;'
+                                    *ngIf="generationType == 'chords'">
+                                    Chords may contain
+                                </label>
+                            </div>
+                            <div class='col-6'>
+                                <label class='form-label' style='display:inline-block;right:-10px;'
+                                    *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chordSizeLowerBound" type="number"
+                                        name="chordSizeLowerBound" style='width:70px; display:inline-block'>
+                                    to
+                                    <input class='form-control' [(ngModel)]="chordSizeUpperBound" type="number"
+                                        name="chordSizeUpperBound" style='width:70px; display:inline-block'>
+                                    notes
+                                </label>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-8'>
+                                <label class='form-label form-label-text' style='display:block;'>
+                                    Chance to voice chord using a voicing from the voicings library
+                                </label>
+                                <label class='form-label form-label-text' style='display:block;'>
+                                    Chance to allow arbitrary non-diatonic chord
                                 </label>
                                 <label class='form-label form-label-text' style='display:inline-block;'>
-                                    Allowed octaves
+                                    Chance to allow alt dominant chords with accidentals. (Stacks with non-diatonic
+                                    chord probability)
+                                </label>
+                                <label class='form-label form-label-text' style='display:block;'>
+                                    Chance to allow borrowed chord. (Does not stack with non-diatonic chord probability)
                                 </label>
                             </div>
-                            <div class='col-8 text-right'>
-                                <select name="key" style="text-align-last:center;width:70px;display:inline-block"  class='form-control' [ngModel]="configDataService.key" >
-                                    <option *ngFor="let key of configDataService.keys" [ngValue]="key">
-                                        {{ key }}
-                                    </option>
-                                </select>
-                                <select name="scale" style="text-align-last:center;width:190px; display:inline-block" class='form-control' [ngModel]="configDataService.scale">
-                                    <option *ngFor="let scale of configDataService.scales" [ngValue]="scale">
-                                        {{ scale.name }}
-                                    </option>
-                                </select>
-                                <label class='form-label' style='display:inline-block'>
-                                    <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveLowerBound" type="number" name="octaveLowerBound">
-                                    thru
-                                    <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="octaveUpperBound" type="number" name="octaveUpperBound">
+                            <div class='col-4'>
+                                <label class='form-label' style='display:inline-block;'
+                                    *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chanceToUseCommonVoicing" type="number"
+                                        name="chanceToUseCommonVoicing" style='width:70px; display:inline-block'>
+                                </label>
+                                <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chanceToAllowNonDiatonicChord"
+                                        type="number" name="chanceToAllowNonDiatonicChord"
+                                        style='width:70px; display:inline-block'>
+                                </label>
+                                <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chanceToAllowAlteredDominantChord"
+                                        type="number" name="chanceToAllowAlteredDominantChord"
+                                        style='width:70px; display:inline-block'>
+                                </label>
+                                <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chanceToAllowBorrowedChord" type="number"
+                                        name="chanceToAllowBorrowedChord" style='width:70px; display:inline-block'>
                                 </label>
                             </div>
                         </div>
-                        <br/>
-                        <label class="custom-radio-button form-label" style='display:inline-block; margin-right: 15px'>Generate chord progression
-                            <input [(ngModel)]="generationType" type="radio" value="chords" name="generationType">
-                            <span class="radio"></span>
-                        </label>
-                        <label class="custom-radio-button form-label" style='display:inline-block'>
-                            <input [(ngModel)]="generationType" type="radio" value="melody" name="generationType">Generate melody
-                            <span class="radio"></span>
-                        </label>
-                        <br/>
-                        <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-target="#chordVoicings" aria-expanded="true" aria-controls="chordVoicings" *ngIf="generationType == 'chords'">
-                            Chord voicings
-                        </button>
-                        <div class="generation-modal-collapsible collapse show" id="chordVoicings" *ngIf="generationType == 'chords'">
-                            <div class='row'>
-                                <div class='col-6'>
-                                    <label class='form-label form-label-text' style='display:inline-block;' *ngIf="generationType == 'chords'">
-                                        Chords may contain
-                                    </label>
-                                </div>
-                                <div class='col-6'>
-                                    <label class='form-label' style='display:inline-block;right:-10px;' *ngIf="generationType == 'chords'">
-                                        <input class='form-control' [(ngModel)]="chordSizeLowerBound" type="number" name="chordSizeLowerBound" style='width:70px; display:inline-block' >
-                                        to
-                                        <input class='form-control' [(ngModel)]="chordSizeUpperBound" type="number" name="chordSizeUpperBound" style='width:70px; display:inline-block' >
-                                        notes
-                                    </label>
-                                </div>
+                    </div>
+
+                    <button class="generation-modal-collapsible-btn" data-toggle="collapse"
+                        data-target="#chordProgressions" aria-expanded="true" aria-controls="chordProgressions"
+                        *ngIf="generationType == 'chords'">
+                        Chord progressions
+                    </button>
+                    <div class="generation-modal-collapsible collapse show" id="chordProgressions">
+                        <div class='row'>
+                            <div class='col-8'>
+                                <label class='form-label form-label-text' style='display:inline-block;'>
+                                    Disallow consecutive repeats
+                                </label>
+                                <label class='form-label form-label-text' style='display:block;'
+                                    *ngIf="generationType == 'chords'">
+                                    Chance to use classical chord leading charts to choose follow-up chord
+                                </label>
+                                <label class='form-label form-label-text' style='display:block;margin-top:10px;'
+                                    *ngIf="generationType == 'chords'">
+                                    Chance to integrate progression from progressions library
+                                </label>
                             </div>
-                            <div class='row'>
-                                <div class='col-8'>
-                                    <label class='form-label form-label-text' style='display:block;'>
-                                        Chance to voice chord using a voicing from the voicings library
-                                    </label>
-                                    <label class='form-label form-label-text' style='display:block;'>
-                                        Chance to allow arbitrary non-diatonic chord
-                                    </label>
-                                    <label class='form-label form-label-text' style='display:inline-block;'>
-                                        Chance to allow alt dominant chords with accidentals. (Stacks with non-diatonic chord probability)
-                                     </label>
-                                    <label class='form-label form-label-text' style='display:block;'>
-                                        Chance to allow borrowed chord. (Does not stack with non-diatonic chord probability)
-                                    </label>
-                                </div>
-                                <div class='col-4'>
-                                    <label class='form-label' style='display:inline-block;' *ngIf="generationType == 'chords'">
-                                        <input class='form-control' [(ngModel)]="chanceToUseCommonVoicing" type="number" name="chanceToUseCommonVoicing" style='width:70px; display:inline-block' >
-                                    </label>
-                                    <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
-                                        <input class='form-control' [(ngModel)]="chanceToAllowNonDiatonicChord" type="number" name="chanceToAllowNonDiatonicChord" style='width:70px; display:inline-block' >
-                                    </label>
-                                    <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
-                                        <input class='form-control' [(ngModel)]="chanceToAllowAlteredDominantChord" type="number" name="chanceToAllowAlteredDominantChord" style='width:70px; display:inline-block' >
-                                    </label>
-                                    <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
-                                        <input class='form-control' [(ngModel)]="chanceToAllowBorrowedChord" type="number" name="chanceToAllowBorrowedChord" style='width:70px; display:inline-block' >
-                                    </label>
-                                </div>
+                            <div class='col-4'>
+                                <label class='custom-checkbox' style='display:block;'>
+                                    <input class='form-control' style='width:70px; display:inline-block'
+                                        [(ngModel)]="disallowRepeats" type="checkbox" name="disallowRepeats">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chanceToUseChordLeadingChart" type="number"
+                                        name="chanceToUseChordLeadingChart" style='width:70px; display:inline-block'>
+                                </label>
+                                <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="chanceToUseCommonProgression" type="number"
+                                        name="chanceToUseCommonProgression" style='width:70px; display:inline-block'>
+                                </label>
                             </div>
                         </div>
+                    </div>
 
-                        <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-target="#chordProgressions" aria-expanded="true" aria-controls="chordProgressions" *ngIf="generationType == 'chords'">
-                            Chord progressions
-                        </button>
-                        <div class="generation-modal-collapsible collapse show" id="chordProgressions" >
-                            <div class='row'>
-                                <div class='col-8'>
-                                    <label class='form-label form-label-text' style='display:inline-block;'>
-                                        Disallow consecutive repeats
-                                    </label>
-                                    <label class='form-label form-label-text' style='display:block;' *ngIf="generationType == 'chords'">
-                                        Chance to use classical chord leading charts to choose follow-up chord
-                                    </label>
-                                    <label class='form-label form-label-text' style='display:block;margin-top:10px;' *ngIf="generationType == 'chords'" >
-                                        Chance to integrate progression from progressions library
-                                    </label>
-                                </div>
-                                <div class='col-4'>
-                                    <label class='custom-checkbox' style='display:block;'>
-                                        <input class='form-control' style='width:70px; display:inline-block' [(ngModel)]="disallowRepeats" type="checkbox" name="disallowRepeats">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'" >
-                                        <input class='form-control' [(ngModel)]="chanceToUseChordLeadingChart" type="number" name="chanceToUseChordLeadingChart" style='width:70px; display:inline-block' >
-                                    </label>
-                                    <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
-                                        <input class='form-control' [(ngModel)]="chanceToUseCommonProgression" type="number" name="chanceToUseCommonProgression" style='width:70px; display:inline-block' >
-                                    </label>
-                                </div>
+                    <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-toggle="collapse"
+                        data-target="#voiceLeading" aria-expanded="true" aria-controls="voiceLeading"
+                        *ngIf="generationType == 'chords'">
+                        Voice leading
+                    </button>
+                    <div class="generation-modal-collapsible collapse show" id="voiceLeading">
+                        <div class='row'>
+                            <div class='col-8'>
+                                <label class='form-label form-label-text' style='display:block;'
+                                    *ngIf="generationType == 'chords'">
+                                    Topline-distance voice leading constraint: keep the highest notes of adjacent chords
+                                    within
+                                </label>
+                            </div>
+                            <div class='col-4'>
+                                <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
+                                    <input class='form-control' [(ngModel)]="maxToplineDistance" type="number"
+                                        name="maxToplineDistance" style='width:70px; display:inline-block'>
+                                    semitones
+                                </label>
                             </div>
                         </div>
-
-                        <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-toggle="collapse" data-target="#voiceLeading" aria-expanded="true" aria-controls="voiceLeading" *ngIf="generationType == 'chords'">
-                            Voice leading
-                        </button>
-                        <div class="generation-modal-collapsible collapse show" id="voiceLeading" >
-                            <div class='row'>
-                                <div class='col-8'>
-                                    <label class='form-label form-label-text' style='display:block;' *ngIf="generationType == 'chords'" >
-                                        Topline-distance voice leading constraint: keep the highest notes of adjacent chords within
-                                    </label>
-                                </div>
-                                <div class='col-4'>
-                                    <label class='form-label' style='display:block;' *ngIf="generationType == 'chords'">
-                                        <input class='form-control' [(ngModel)]="maxToplineDistance" type="number" name="maxToplineDistance" style='width:70px; display:inline-block' >
-                                        semitones
-                                    </label>
-                                </div>
-                            </div>
-                            <div class='row'>
-                                <div class='col-6'>
-                                    <!-- <label class='form-label form-label-text' style='display:block;;margin-top:10px;' *ngIf="generationType == 'chords'" >
+                        <div class='row'>
+                            <div class='col-6'>
+                                <!-- <label class='form-label form-label-text' style='display:block;;margin-top:10px;' *ngIf="generationType == 'chords'" >
                                         Note-change voice leading constraint: the # of notes that change between chords must be between
                                     </label> -->
-                                    <label class='form-label form-label-text' style='display:block;;margin-top:10px;' *ngIf="generationType == 'chords'" >
-                                        The contour of the chord progression's topline should be
-                                    </label>
-                                </div>
-                                <div class='col-6'>
-                                    <!-- <label class='form-label' style='display:inline-block;margin-top:10px;' *ngIf="generationType == 'chords'">
+                                <label class='form-label form-label-text' style='display:block;;margin-top:10px;'
+                                    *ngIf="generationType == 'chords'">
+                                    The contour of the chord progression's topline should be
+                                </label>
+                            </div>
+                            <div class='col-6'>
+                                <!-- <label class='form-label' style='display:inline-block;margin-top:10px;' *ngIf="generationType == 'chords'">
                                         <input class='form-control' [(ngModel)]="noteChangesLowerBound" type="number" name="noteChangesLowerBound" style='width:70px; display:inline-block' >
                                         and
                                         <input class='form-control' [(ngModel)]="noteChangesUpperBound" type="number" name="noteChangesUpperBound" style='width:70px; display:inline-block' >
                                         semitones
                                     </label> -->
-                                    <select name="toplineContour" style="text-align-last:center;width:190px; display:inline-block" class='form-control form-label' [ngModel]="configDataService.toplineContour">
-                                        <option *ngFor="let contour of configDataService.toplineContours" [ngValue]="contour">
-                                            {{ contour.name }}
-                                        </option>
-                                    </select>
-                                </div>
+                                <select name="toplineContour"
+                                    style="text-align-last:center;width:190px; display:inline-block"
+                                    class='form-control form-label' [ngModel]="configDataService.toplineContour">
+                                    <option *ngFor="let contour of configDataService.toplineContours"
+                                        [ngValue]="contour">
+                                        {{ contour.name }}
+                                    </option>
+                                </select>
                             </div>
                         </div>
+                    </div>
 
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
-                    <button type="button" (click)="generate(generationForm.value)" class="btn btn-success" data-dismiss="modal">Generate</button>
-                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                <button type="button" (click)="generate(generationForm.value)" class="btn btn-success"
+                    data-dismiss="modal">Generate</button>
             </div>
         </div>
     </div>
+</div>
 
 <div class='resize-container'>
     <nav class="navbar fixed-bottom navbar-light bg-light piano-roll-wrapper resize-drag">
@@ -189,25 +227,25 @@
                     <span *ngIf="trackNumber==-1">N/A</span>
                 </span>
 
-                <button class="action-button" type="button" id="generate-button"
-                    data-toggle="modal" [attr.data-target]="'#generationModal' + trackNumber "
-                    [disabled]="trackNumber==-1">
+                <button class="action-button" type="button" id="generate-button" data-toggle="modal"
+                    [attr.data-target]="'#generationModal' + trackNumber " [disabled]="trackNumber==-1">
                     GENERATE <span class='glyphicon glyphicon-fire'></span>
                 </button>
 
-                <button class="action-button" type="button" id="generate-button" (click)=quickGenerate(generationForm.value)
-                    [disabled]="trackNumber==-1">
+                <button class="action-button" type="button" id="generate-button"
+                    (click)=quickGenerate(generationForm.value) [disabled]="trackNumber==-1">
                     QUICK GENERATE <span class='glyphicon glyphicon-flash'></span>
                 </button>
 
-                <button class="action-button" id="clear-button"
-                    (click)="clearPianoRoll()" [disabled]="trackNumber==-1">
+                <button class="action-button" id="clear-button" (click)="clearPianoRoll()" [disabled]="trackNumber==-1">
                     CLEAR <span class='glyphicon glyphicon-ban-circle'></span>
                 </button>
 
                 <div class='piano-roll-input-group'>
                     Roll notes in
-                    <input class='form-control' type='number' value='0.01' max='10' min='0' step='0.01' id='playOffsetPerNoteDueToRoll' style='width:70px;display:inline-block' [(ngModel)]="this.configDataService.playOffsetPerNoteDueToRoll"/>
+                    <input class='form-control' type='number' value='0.01' max='10' min='0' step='0.01'
+                        id='playOffsetPerNoteDueToRoll' style='width:70px;display:inline-block'
+                        [(ngModel)]="this.configDataService.playOffsetPerNoteDueToRoll" />
                     s
                 </div>
             </div>
@@ -216,32 +254,30 @@
                     <div class="col-1 piano">
                         <div class='piano-keys'>
                             <ul class="piano-key-set">
-                                <li *ngFor="let note of notes"
-                                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}"><span class='note-label' attr.data-note='{{ note.note.toUpperCase() }}'>{{ note.note.toUpperCase() + note.octave }}</span></li>
+                                <li *ngFor="let note of configDataService.notes" class="{{ note.color }} {{ note.note }}"
+                                    attr.data-octave="{{ note.octave }}"><span class='note-label'
+                                        attr.data-note='{{ note.note.toUpperCase() }}'>{{ note.note.toUpperCase() + note.octave }}</span>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div class='col note-grid'>
                         <ul class='note-rows'>
-                            <li *ngFor="let note of gridState"
-                                class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
+                            <li *ngFor="let note of gridState" class="{{ note.color }} {{ note.note }}"
+                                attr.data-octave="{{ note.octave }}">
                                 <label class="grid-state-wrapper"
                                     *ngFor="let state of note.timeStates; let index= index;"
                                     [style.width]="configDataService.stateWidth"
-                                    attr.data-active="{{ note.timeStates[index] }}"
-                                    [attr.id]="note.id"
-                                    [attr.data-step]="index"
-                                    >
-                                    <hr/>
-                                    <input class='grid-state' type='checkbox'
-                                        attr.data-active="{{ state }}"
+                                    attr.data-active="{{ note.timeStates[index] }}" [attr.id]="note.id"
+                                    [attr.data-step]="index">
+                                    <hr />
+                                    <input class='grid-state' type='checkbox' attr.data-active="{{ state }}"
                                         [(ngModel)]="note.timeStates[index]"
-                                        (change)="noteDrawnHandler(note.note, note.octave, note.timeStates[index])"
-                                        >
+                                        (change)="noteDrawnHandler(note.note, note.octave, note.timeStates[index])">
                                 </label>
                             </li>
                         </ul>
-                     </div>
+                    </div>
                 </div>
             </div>
         </div>

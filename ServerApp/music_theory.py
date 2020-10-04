@@ -284,8 +284,8 @@ def build_chord_from_voicing(voicing, chord_root, roman_numeral, octave_range):
 
 def transpose_notes_to_grid(notes):
         grid = []
-        timeStateLength = 8
-        for step in range(timeStateLength):
+        numBeats = len(notes[0]['timeStates'])
+        for step in range(numBeats):
             notes_at_this_step = []
             for note in notes:
                 if note['timeStates'][step] == True:
