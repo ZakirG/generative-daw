@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
 import { interact } from '../assets/js/interact.min.js';
+import { WebAudioPianoRollComponent } from './webaudio-pianoroll.component';
 import { config } from 'process';
 declare var require: any
 const interact = require('interactjs');
@@ -11,7 +12,8 @@ const interact = require('interactjs');
     selector:    'piano-roll',
     templateUrl: './piano-roll.component.html',
     providers:  [ ],
-    styleUrls: ['./piano-roll.component.css', './app.component.css']
+    styleUrls: ['./piano-roll.component.css', './app.component.css'],
+    scripts: []
 })
 
 export class PianoRollComponent {
@@ -81,6 +83,17 @@ export class PianoRollComponent {
             target.style.height = event.rect.height + 'px';
             y += event.deltaRect.top;
         });
+        this.loadWebAudioPianoRollScript();
+    }
+
+    loadWebAudioPianoRollScript() {
+        let body = <HTMLDivElement> document.body;
+        let script = document.createElement('script');
+        script.innerHTML = '';
+        script.src = 'assets/js/webaudio-pianoroll.js';
+        script.async = true;
+        script.defer = true;
+        body.appendChild(script);
     }
 
     clearPianoRoll() {
