@@ -1,6 +1,10 @@
 #wacWrapper {
-    width: 100%;
+    max-width: 100%;
+    /* overflow:scroll; */
+    /* display:inline-block; */
+    /* position:absolute; */
+}
+
+#wac-body {
     overflow:hidden;
-    display:inline-block;
-    position:absolute;
 }

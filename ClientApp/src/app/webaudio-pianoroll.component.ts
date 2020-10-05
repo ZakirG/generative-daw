@@ -128,14 +128,14 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             markstart:          {type:Number, value:0, observer:'redrawMarker'},
             markend:            {type:Number, value:960, observer:'redrawMarker'},
             defvelo:            {type:Number, value:100},
-            collt:              {type:String, value:"#ccc"},
-            coldk:              {type:String, value:"#aaa"},
-            colgrid:            {type:String, value:"#666"},
-            colnote:            {type:String, value:"#f22"},
-            colnotesel:         {type:String, value:"#0f0"},
+            collt:              {type:String, value:"#a8efff"},
+            coldk:              {type:String, value:"#77d1e6"},
+            colgrid:            {type:String, value:"#6e6e6e"},
+            colnote:            {type:String, value:"#ff2e7b"},
+            colnotesel:         {type:String, value:"#f22"},
             colnoteborder:      {type:String, value:"#000"},
             colnoteselborder:   {type:String, value:"#fff"},
-            colrulerbg:         {type:String, value:"#666"},
+            colrulerbg:         {type:String, value:"#008fa8"},
             colrulerfg:         {type:String, value:"#fff"},
             colrulerborder:     {type:String, value:"#000"},
             colselarea:         {type:String, value:"rgba(0,0,0,0.3)"},
@@ -1237,7 +1237,6 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             }
             return v;
         }
-        console.log('failed to find ', n, def);
         return def;
     }
     
