@@ -20,7 +20,7 @@ This app applies algorithmic composition processes suggested by classical and ja
 
 #### General features:
 - Export application state to a MIDI file and optionally download its generation log
-- Quickly generate compositions with the Quick Generate bbutton that reruns the last-applied settings and clicks play
+- Quickly generate compositions with the Quick Generate button that reruns the last-applied settings and clicks play
 - Add tracks and edit notes in a resizable piano roll window
 - Chords can be rolled bottom-up during playback with a configurable note roll offset
 - UI automatically calculates and labels chords with their names and scale degrees
@@ -63,6 +63,7 @@ A tab will automatically open in your default web browser at localhost:4200.
 
 
 #### Resources:
+- Credit to <a href='https://github.com/g200kg/webaudio-pianoroll'>g200kg</a> for their WebAudio Piano Roll package. Their code has been integrated into this application and adjusted to match our needs.
 - Credit to <a href='https://ankursethi.in/2016/01/13/build-a-sampler-with-angular-2-webaudio-and-webmidi-lesson-1-introduction-to-the-webaudio-api/'>Ankur Sethi</a>
 for their examples on audio manipulation in Angular. Code snippets of theirs are used in this application.
 
