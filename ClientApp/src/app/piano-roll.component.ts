@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ComponentFactoryResolver, ViewContainerRef, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
@@ -13,10 +13,10 @@ const interact = require('interactjs');
     templateUrl: './piano-roll.component.html',
     providers:  [ ],
     styleUrls: ['./piano-roll.component.css', './app.component.css'],
-    scripts: []
 })
 
-export class PianoRollComponent {
+export class PianoRollComponent implements AfterViewInit{
+    @ViewChild("webAudioPianoRoll", { read: ViewContainerRef, static: true }) container : ViewContainerRef;
     gridState = [];
     conformToKeyScale = true;
     generationType = 'chords';
@@ -53,7 +53,10 @@ export class PianoRollComponent {
     @Output()
     trackChange = new EventEmitter<any>();
 
-    constructor(public generationService: GenerationService, public configDataService: ConfigDataService) {
+    constructor(
+            public generationService: GenerationService, 
+            public configDataService: ConfigDataService,
+            public resolver: ComponentFactoryResolver) {
         this.gridState = this.configDataService.initializeEmptyGridState();
         this.scale = this.configDataService.scale;
         this.key = this.configDataService.key;
@@ -83,18 +86,24 @@ export class PianoRollComponent {
             target.style.height = event.rect.height + 'px';
             y += event.deltaRect.top;
         });
-        this.loadWebAudioPianoRollScript();
     }
 
-    loadWebAudioPianoRollScript() {
-        let body = <HTMLDivElement> document.body;
-        let script = document.createElement('script');
-        script.innerHTML = '';
-        script.src = 'assets/js/webaudio-pianoroll.js';
-        script.async = true;
-        script.defer = true;
-        body.appendChild(script);
+    ngAfterViewInit(){
+        // const factory = this.resolver.resolveComponentFactory(WebAudioPianoRollComponent);
+        // var webAudioPianoRoll = this.container.createComponent(factory);
+        // webAudioPianoRoll.instance._ref = webAudioPianoRoll;
+        // this.loadWebAudioPianoRollScript();
     }
+
+    // loadWebAudioPianoRollScript() {
+    //     let body = <HTMLDivElement> document.body;
+    //     let script = document.createElement('script');
+    //     script.innerHTML = '';
+    //     script.src = 'assets/js/webaudio-pianoroll.js';
+    //     script.async = true;
+    //     script.defer = true;
+    //     body.appendChild(script);
+    // }
 
     clearPianoRoll() {
         for (var i = 0; i < this.gridState.length; i++) {

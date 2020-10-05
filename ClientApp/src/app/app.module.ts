@@ -29,7 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   providers: [Title],
   bootstrap: [AppComponent],
-  entryComponents: [ TrackComponent, PianoRollComponent ],
+  entryComponents: [ TrackComponent, PianoRollComponent, WebAudioPianoRollComponent ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 
