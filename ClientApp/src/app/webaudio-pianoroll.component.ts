@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ViewContainerRef, ElementRef, AfterViewInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConfigDataService } from './configdata.service';
 
@@ -8,6 +8,9 @@ import { ConfigDataService } from './configdata.service';
   styleUrls: ['./webaudio-pianoroll.component.css'],
 })
 export class WebAudioPianoRollComponent implements AfterViewInit {
+    @Output() noteDrawn = new EventEmitter<any>();
+    @Input() trackNumber: number;
+    
     ctx: any;
     width :number;
     height :number;
@@ -54,7 +57,6 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     kbwidth : number;
     loop : number;
     preload : number;
-    tempo :number;
     enable :boolean;
     press : any;
     index1 : any;
@@ -204,6 +206,44 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         this.initialized=1;
         this.redraw();
     }
+
+    clear() {
+        console.log('clearing sequence: ', this.sequence);
+        this.sequence = [];
+        this.redraw();
+    }
+
+    renderNotes(sequence) {
+        for (let i = 0; i < sequence.length; i+=1) {
+            this.addNoteWithoutRedraw(sequence[i]);
+        }
+
+        this.sortSequence();
+        this.redraw();
+    }
+
+    pushToSequence(ev) {
+        this.sequence.push(ev);
+        this.noteDrawnHandler(ev.n, true);
+    }
+
+    noteDrawnHandler(numeral=null, playNote=false) {
+        if (typeof numeral == 'undefined') {
+            this.noteDrawn.emit({
+                'event' : 'noteDrawn', 'sequence' : this.sequence, 'track' : this.trackNumber
+            });
+        }
+        
+        // This code adds 24 semitones to everything for some reason
+        let note = this.configDataService.numeral_to_note(numeral - 24);
+        let noteName = note.slice(0, -1);
+        let noteOctave = note.slice(-1);
+        this.noteDrawn.emit({
+            'event' : 'noteDrawn', 'sequence' : this.sequence,
+            'state' : playNote, 'track' : this.trackNumber,
+            'noteName': noteName, 'noteOctave': noteOctave 
+        });
+    }
   
     sortSequence(){
         this.sequence.sort((x,y)=>{return x.t-y.t;});
@@ -225,7 +265,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     };
     
     updateTimer(){
-        this.tick2time=4*60/this.tempo/this.timebase;
+        this.tick2time=4*60/this.configDataService.tempo/this.timebase;
     };
     
     play(actx,playcallback,tick){
@@ -277,7 +317,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         this.timestack=[];
         this.time0=this.time1=this.actx.currentTime+0.1;
         this.tick0=this.tick1=this.cursor;
-        this.tick2time=4*60/this.tempo/this.timebase;
+        this.tick2time=4*60/this.configDataService.tempo/this.timebase;
         const p=this.findNextEv(this.cursor);
         this.index1=p.i;
         this.timestack.push([0,this.cursor,0]);
@@ -364,7 +404,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                 break;
             case 't': case 'T':
                 ++parse.i; n=-1; l=0;
-                this.tempo=getNum(parse);
+                this.configDataService.tempo=getNum(parse);
                 break;
             case 'o': case 'O':
                 ++parse.i; n=-1; l=0;
@@ -393,7 +433,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                     tie=0;
                 }
                 else
-                    this.sequence.push(evlast={t:t,n:n,g:l,f:0});
+                    this.pushToSequence({t:t,n:n,g:l,f:0});
             }
             t+=l;
         }
@@ -422,7 +462,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             }
             return mmlnote.substring(1);
         }
-        var mml="t"+this.tempo+"o4l8";
+        var mml="t"+this.configDataService.tempo+"o4l8";
         var ti=0,meas=0,oct=5,n;
         var notes=["c","d-","d","e-","e","f","g-","g","a-","a","b-","b"];
         for(let i=0;i<this.sequence.length;++i) {
@@ -505,13 +545,29 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     addNote(t,n,g,v,f){
         if(t>=0 && n>=0 && n<128){
             const ev={t:t,c:0x90,n:n,g:g,v:v,f:f};
-            this.sequence.push(ev);
+            this.pushToSequence(ev);
             this.sortSequence();
             this.redraw();
             return ev;
         }
         return null;
     }
+
+    addNoteWithoutRedraw(noteObject){
+        let t = noteObject['t'];
+        let n = noteObject['n'];
+        let g = noteObject['g'];
+        let v = noteObject['v'];
+        let f = noteObject['f'];
+        if(t>=0 && n>=0 && n<128){
+            const ev={t:t,c:0x90,n:n,g:g,v:v,f:f};
+            this.pushToSequence(ev);
+            return ev;
+        }
+        return null;
+    }
+
+
     
     selAreaNote(t1,t2,n1,n2){
         let t, i=0, e=this.sequence[i];
@@ -530,6 +586,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     
     delNote(idx){
         this.sequence.splice(idx,1);
+        this.noteDrawnHandler();
         this.redraw();
     }
     
@@ -554,6 +611,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                 }
             }
         }
+        this.noteDrawnHandler();
     }
     
     delSelectedNote(){
@@ -563,6 +621,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             if(ev.f)
                 this.sequence.splice(i,1);
         }
+        this.noteDrawnHandler();
     }
     
     moveSelectedNote(dt,dn){
@@ -585,6 +644,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         const l=this.sequence.length;
         for(let i=0;i<l;++i){
             this.sequence[i].f=0;
+            this.noteDrawnHandler();
         }
     }
     
@@ -606,8 +666,9 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             this.dragging={o:"D",m:"N",i:ht.i,t:ht.t,n:ev.n,dt:ht.t-ev.t};
             for(let i=0,l=this.sequence.length;i<l;++i){
                 ev=this.sequence[i];
-                if(ev.f)
+                if(ev.f) {
                     ev.on=ev.n, ev.ot=ev.t, ev.og=ev.g;
+                }
             }
             this.redraw();
         }
@@ -628,10 +689,11 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         else if(ht.m=="s"&&ht.t>=0){
             this.clearSel();
             var t=((ht.t/this.snap)|0)*this.snap;
-            this.sequence.push({t:t, n:ht.n|0, g:1, f:1});
+            this.pushToSequence({t:t, n:ht.n|0, g:1, f:1});
             this.dragging={o:"D",m:"E",i:this.sequence.length-1, t:t, g:1, ev:[{t:t,g:1,ev:this.sequence[this.sequence.length-1]}]};
             this.redraw();
         }
+        this.noteDrawnHandler();
     }
     
     editDragMove(pos){
@@ -686,15 +748,18 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                     ev.t=t-1;
                     ev.g=1;
                 }
+                this.noteDrawnHandler();
                 this.redraw();
                 break;
             case "N":
                 ev=this.sequence[this.dragging.i];
                 this.moveSelectedNote((ht.t-this.dragging.t)|0, (ht.n|0)-this.dragging.n);
+                this.noteDrawnHandler();
                 this.redraw();
                 break;
             }
         }
+        this.noteDrawnHandler();
     }
     
     editGridDown(pos){
@@ -957,7 +1022,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         return false;
     }
     
-    cancel= function(ev) {
+    cancel(ev) {
         let e;
         if(ev.touches)
             e = null;
@@ -1001,7 +1066,6 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         window.removeEventListener("mouseup",this.bindcancel,false);
         ev.preventDefault();
         ev.stopPropagation();
-//            window.removeEventListener("contextmenu",this.contextmenu);
         return false;
     }
     
@@ -1009,41 +1073,8 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     }
     
     pointerout(e) {
-//            window.removeEventListener("contextmenu",this.contextmenu);
     };
-    // this.wheel(e) {
-    //     let delta = 0;
-    //     const pos=this.getPos(e);
-    //     if(!e)
-    //         e = window.event;
-    //     if(e.wheelDelta)
-    //         delta = e.wheelDelta/120;
-    //     else if(e.detail)
-    //         delta = -e.detail/3;
-    //     const ht=this.hitTest(pos);
-    //     if((this.wheelzoomx||this.wheelzoom) && ht.m=="x"){
-    //         if(delta>0){
-    //             this.xoffset=ht.t-(ht.t-this.xoffset)/1.2
-    //             this.xrange/=1.2;
-    //         }
-    //         else{
-    //             this.xoffset=ht.t-(ht.t-this.xoffset)*1.2
-    //             this.xrange*=1.2;
-    //         }
-    //     }
-    //     if((this.wheelzoomy||this.wheelzoom) && ht.m=="y"){
-    //         if(delta>0){
-    //             this.yoffset=ht.n-(ht.n-this.yoffset)/1.2
-    //             this.yrange/=1.2;
-    //         }
-    //         else{
-    //             this.yoffset=ht.n-(ht.n-this.yoffset)*1.2
-    //             this.yrange*=1.2;
-    //         }
-
-    //     }
-    //     e.preventDefault();
-    // }
+    
     
     layout(){
         if(typeof(this.kbwidth)=="undefined")
@@ -1215,7 +1246,6 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
  
 
     sendEvent(ev){
-        console.log('sending event ', ev);
         let event;
         event=document.createEvent("HTMLEvents");
         event.initEvent(ev,false,true);

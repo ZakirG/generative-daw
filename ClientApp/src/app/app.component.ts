@@ -34,6 +34,24 @@ export class AppComponent {
     serverURL = 'http://localhost:5000/'
     constantsURL = this.serverURL + 'constants';
 
+    // For the webaudioapi piano roll
+    actx : any;
+    timestack: any;
+    timer : any;
+    timebase : any;
+    gain : any;
+    tick2time : any;
+    index1 : any;
+    time1 : any;
+    tick0 : any;
+    time0:  any;
+    tick1 : any;
+    cursor = 0;
+    playcallback : any;
+    markstart = 0;
+    markend = 240;
+    preload = 1.0;
+
     public constructor(
         public titleService: Title,
         public configDataService: ConfigDataService,
@@ -45,6 +63,7 @@ export class AppComponent {
             this.notes = [];
             this.audioBuffers = {};
             this.queuedSounds = [];
+            this.timebase = 480;
         }
 
     public setTitle( newTitle: string) {
@@ -54,6 +73,9 @@ export class AppComponent {
     ngOnInit() {
         this.setTitle('GenerativeDAW');
         this.audioContext = new AudioContext();
+        this.actx = new AudioContext();
+        this.gain = this.actx.createGain();
+        this.gain.gain.value = 0;
 
         this.controlPanelForm = new FormGroup({
             scale: new FormControl(this.configDataService.scale),
@@ -115,7 +137,9 @@ export class AppComponent {
 
         var trackNumber = event['track'];
         var track = this.tracks[trackNumber];
-        track.gridState = this.pianoRoll.gridState;
+        this.tracks[trackNumber].gridState = this.pianoRoll.gridState;
+        this.tracks[trackNumber].sequence = this.pianoRoll.sequence;
+        console.log('app set this.tracks: ', this.tracks);
 
         this.updateDawState();
     }
@@ -151,10 +175,11 @@ export class AppComponent {
 
     togglePlayState() {
         if(this.configDataService.inPlayState) {
+            this.stopSequence();
+            this.configDataService.inPlayState = false;
             for(let i = 0; i < this.pendingTimeouts.length; i++) {
                 clearTimeout(this.pendingTimeouts[i]);
             }
-            this.configDataService.inPlayState = false;
             for (var i = 0; i < this.queuedSounds.length; i++) {
                 this.queuedSounds[i].stop(0);
             }
@@ -164,39 +189,24 @@ export class AppComponent {
 
         this.queuedSounds = [];
         this.configDataService.inPlayState = true;
-
-        let rollChords = true;
-
-        if(!rollChords) {
-            for (var noteIndex = 0; noteIndex < this.notes.length; noteIndex++) {
-                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.numDivisions; timeStateIndex++) {
-                    for (let track of this.tracks) {
-                        var note = track.gridState[noteIndex];
-                        if(note['timeStates'][timeStateIndex]) {
-                            // beat number * seconds per beat
-                            var timeToPlay = (timeStateIndex / this.configDataService.numSubdivisionsPerBeat) * (60 / this.configDataService.tempo);
-                            this.playNote(note.note, note.octave, timeToPlay);
-                        }
-                    }
-                }
-            }
-        } else {
-            // Build chords
-            for (let track of this.tracks) {
-                for (var timeStateIndex = 0; timeStateIndex < this.configDataService.numDivisions; timeStateIndex++) {
-                    let playOffsetDueToRoll = 0;
-                    for (var noteIndex = this.notes.length - 1; noteIndex >= 0;  noteIndex--) {
-                        var note = track.gridState[noteIndex];
-                        if(note['timeStates'][timeStateIndex]) {
-                            // beat number * seconds per beat
-                            var timeToPlay = (timeStateIndex / this.configDataService.numSubdivisionsPerBeat) * (60 / this.configDataService.tempo) + playOffsetDueToRoll;
-                            this.playNote(note.note, note.octave, timeToPlay);
-                            playOffsetDueToRoll += this.configDataService.playOffsetPerNoteDueToRoll
-                        }
-                    }
-                }
-            }
+        
+        // Build chords
+        for (let track of this.tracks) {
+            this.playSequence(track.sequence);
+            // for (var timeStateIndex = 0; timeStateIndex < this.configDataService.numDivisions; timeStateIndex++) {
+            //     let playOffsetDueToRoll = 0;
+            //     for (var noteIndex = this.notes.length - 1; noteIndex >= 0;  noteIndex--) {
+            //         var note = track.gridState[noteIndex];
+            //         if(note['timeStates'][timeStateIndex]) {
+            //             // beat number * seconds per beat
+            //             var timeToPlay = (timeStateIndex / this.configDataService.numSubdivisionsPerBeat) * (60 / this.configDataService.tempo) + playOffsetDueToRoll;
+            //             this.playNote(note.note, note.octave, timeToPlay);
+            //             playOffsetDueToRoll += this.configDataService.playOffsetPerNoteDueToRoll
+            //         }
+            //     }
+            // }
         }
+        
 
         var root = this;
     
@@ -214,6 +224,91 @@ export class AppComponent {
         }
     }
 
+    playSequence(sequence) {
+        if (this.actx.state === 'suspended') {
+            this.actx.resume();
+        }
+        console.log('playing sequence: ', sequence);
+        let tick = null;
+        function Interval(){
+            const current=this.actx.currentTime;
+            while(this.timestack.length>1 && current>=this.timestack[1][0]){
+                this.timestack.shift();
+            }
+            this.cursor=this.timestack[0][1]+(current-this.timestack[0][0])/this.timestack[0][2];
+            // this.redrawMarker();
+            while(current + this.preload >= this.time1){
+                this.time0=this.time1;
+                this.tick0=this.tick1;
+                let e = sequence[this.index1];
+                if(!e || e.t>=this.markend){
+                    this.timestack.push([this.time1,this.markstart,this.tick2time]);
+                    const p=this.findNextEv(this.markstart, sequence);
+                    this.time1+=p.dt*this.tick2time;
+                    this.index1=p.i;
+                }
+                else{
+                    this.tick1=e.t;
+                    this.timestack.push([this.time1,e.t,this.tick2time]);
+                    let gmax=Math.min(e.t+e.g,this.markend)-e.t;
+                    const cbev={t:this.time1,g:this.time1+gmax*this.tick2time,n:e.n, note:e.note, octave:e.octave};
+                    this.playSequenceNote(cbev, this.time1);
+                    e = sequence[++this.index1];
+                    if(!e || e.t>=this.markend){
+                        this.time1+=(this.markend-this.tick1)*this.tick2time;
+                        const p=this.findNextEv(this.markstart, sequence);
+                        this.timestack.push([this.time1,this.markstart,this.tick2time]);
+                        this.time1+=p.dt*this.tick2time;
+                        this.index1=p.i;
+                    }
+                    else
+                        this.time1+=(e.t-this.tick1)*this.tick2time;
+                }
+            }
+        }
+        if(typeof(tick)!="undefined")
+            this.locate(tick);
+        if(this.timer!=null)
+            return;
+        this.timestack=[];
+        this.time0=this.time1=this.actx.currentTime+0.1;
+        this.tick0=this.tick1=this.cursor;
+        this.updateTimer();
+        const p=this.findNextEv(this.cursor, sequence);
+        
+        this.index1=p.i;
+        this.timestack.push([0,this.cursor,0]);
+        this.timestack.push([this.time0,this.cursor,this.tick2time]);
+        this.time1+=p.dt*this.tick2time;
+        if(p.i<0)
+            this.timestack.push([this.time1,this.markstart,this.tick2time]);
+        else
+            this.timestack.push([this.time1,p.t1,this.tick2time]);
+        this.timer=setInterval(Interval.bind(this),25);
+        console.log('285');
+    }
+
+    findNextEv(tick, sequence) {
+        for(let i = 0; i < sequence.length; ++i) {
+            const nev = sequence[i];
+            if(nev.t >= this.markend) {
+                return {t1:tick,n2:this.markend,dt:this.markend-tick,i:-1};
+            }
+            if(nev.t >= tick) {
+                return {t1:tick,t2:nev.t,dt:nev.t-tick,i:i};
+            }
+        }
+        return {t1:tick,t2:this.markend,dt:this.markend-tick,i:-1};
+    };
+
+    locate(tick){
+        this.cursor=tick;
+    };
+
+    updateTimer(){
+        this.tick2time=4*60/this.configDataService.tempo/this.timebase;
+    };
+
     playNote(noteName : string, noteOctave : number, time : number) {
         this.playSound(noteName + noteOctave, time);
     }
@@ -225,6 +320,46 @@ export class AppComponent {
         bufferSource.connect(this.audioContext.destination);
         bufferSource.start(this.audioContext.currentTime + time);
     }
+
+    playSequenceNote(ev, timeToPlay=0) {
+        let note = this.configDataService.numeral_to_note(ev.n - 24);
+        console.log('playing sound ', note);
+        
+        let bufferSource = this.actx.createBufferSource();
+        this.queuedSounds.push(bufferSource);
+        bufferSource.buffer = this.audioBuffers[note];
+        bufferSource.connect(this.actx.destination);
+        bufferSource.start(ev.t);
+        // this.gain.gain.setTargetAtTime(0.5, ev.t, 0.005);
+        // this.gain.gain.setTargetAtTime(0, ev.g, 0.1);
+
+        console.log('ev.t: ', ev.t);
+        console.log('ev.g: ', ev.g);
+        console.log('this.actx.currentTime: ', this.actx.currentTime);
+
+        // this.gain.gain.setTargetAtTime(0.5, ev.t, 0.005);
+        // this.gain.gain.setTargetAtTime(0, ev.g, 0.1);
+        
+
+
+        // var o=actx.createOscillator();
+        // var g=actx.createGain();
+        // o.type="sawtooth";
+        // o.detune.value=(ev.n-69)*100;
+        // g.gain.value=0;
+        // o.start(actx.currentTime);
+        // g.gain.setTargetAtTime(0.2,ev.t,0.005);
+        // g.gain.setTargetAtTime(0,ev.g,0.1);
+        // o.connect(g);
+        // g.connect(actx.destination);
+    }
+
+    stopSequence(){
+        if(this.timer) {
+            clearInterval(this.timer);
+        }
+        this.timer = null;
+    };
 
     fetchNoteSample(filename) : Promise<any> {
         return fetch(filename)

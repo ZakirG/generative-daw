@@ -6,7 +6,7 @@ import { PianoRollComponent } from './piano-roll.component';
 @Component({
     selector:    'track',
     templateUrl: './track.component.html',
-    providers:  [ /*NoteService*/ ],
+    providers:  [ ],
     styleUrls: ['./track.component.css', './app.component.css']
 })
 
@@ -16,6 +16,7 @@ export class TrackComponent {
     @Input() scale: Object;
     @Input() pianoRollOpen: boolean;
     @Input() gridState: any;
+    @Input() sequence: any;
     @Input() notes: Array<any>;
     @Input() thisTrackIsSelected: boolean;
     _ref: any;

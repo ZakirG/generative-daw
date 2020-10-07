@@ -574,4 +574,12 @@ class Generator:
         
         ClientLogger.log('~~~')
         ClientLogger.log('Generation settings: {}'.format(self.all_settings))
-        return result_chord_progression, result_chord_names
+
+        result_chord_progression_labeled_with_midi_numerals = []
+        for chord in result_chord_progression:
+            labeled_chord = []
+            for note in chord:
+                note['numeral'] = midi_tools.note_to_numeral(note)
+                labeled_chord.append(note)
+            result_chord_progression_labeled_with_midi_numerals.append(labeled_chord)
+        return result_chord_progression_labeled_with_midi_numerals, result_chord_names
