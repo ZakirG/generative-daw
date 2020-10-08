@@ -208,7 +208,6 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     }
 
     clear() {
-        console.log('clearing sequence: ', this.sequence);
         this.sequence = [];
         this.redraw();
     }
@@ -227,11 +226,9 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         this.noteDrawnHandler(ev.n, playSound);
     }
 
-    noteDrawnHandler(numeral=null, playSound=false) {
-        if (typeof numeral == 'undefined') {
-            this.noteDrawn.emit({
-                'event' : 'noteDrawn', 'sequence' : this.sequence, 'track' : this.trackNumber
-            });
+    noteDrawnHandler(numeral=null, playSound=true) {
+        if (typeof numeral == 'undefined' || numeral == null) {
+            return;
         }
         
         // This code adds 24 semitones to everything for some reason
@@ -242,7 +239,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             'event' : 'noteDrawn', 'sequence' : this.sequence,
             'state' : playSound, 'track' : this.trackNumber,
             'noteName': noteName, 'noteOctave': noteOctave,
-            'playSound': playSound
+            'playSound': playSound, numeral : numeral
         });
     }
   
@@ -587,8 +584,8 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     
     delNote(idx){
         this.sequence.splice(idx,1);
-        this.noteDrawnHandler();
         this.redraw();
+        this.noteDrawnHandler();
     }
     
     delAreaNote(t,g,n){
@@ -749,13 +746,11 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                     ev.t=t-1;
                     ev.g=1;
                 }
-                this.noteDrawnHandler();
                 this.redraw();
                 break;
             case "N":
                 ev=this.sequence[this.dragging.i];
                 this.moveSelectedNote((ht.t-this.dragging.t)|0, (ht.n|0)-this.dragging.n);
-                this.noteDrawnHandler();
                 this.redraw();
                 break;
             }

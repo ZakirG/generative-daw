@@ -136,7 +136,6 @@ export class PianoRollComponent implements AfterViewInit{
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
-            console.log('generation result: ', generatedNotes);
             if(isQuickGenerate) {
                 this.triggerQuickGenerate.emit({
                     'event' : 'triggerQuickGenerate'

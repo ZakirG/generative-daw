@@ -37,9 +37,7 @@ export class AppComponent {
     // For the webaudioapi piano roll
     actx : any;
     timestack: any;
-    pendingIntervals : any;
     numTicksPerBar : any;
-    gain : any;
     secondsPerTick : any;
     indexOfNextSequenceNoteToPlay : any;
     timeToPlayNextNote : any;
@@ -47,6 +45,8 @@ export class AppComponent {
     playcallback : any;
     totalNumberOfTicksInProject = 240;
     preload = 1.0;
+    pendingIntervals = [];
+    releaseTime : number;
 
     public constructor(
         public titleService: Title,
@@ -73,8 +73,6 @@ export class AppComponent {
         this.setTitle('GenerativeDAW');
         this.audioContext = new AudioContext();
         this.actx = new AudioContext();
-        this.gain = this.actx.createGain();
-        this.gain.gain.value = 0;
 
         this.controlPanelForm = new FormGroup({
             scale: new FormControl(this.configDataService.scale),
@@ -130,10 +128,8 @@ export class AppComponent {
     }
 
     registerNoteDrawn(event) {
-        console.log('app component register note drawn', event);
-        if(event['event'] == 'noteDrawn' && event['state'] && event['playSound']) {
-            console.log('135 playing sound');
-            this.playSound(event['note'], 0);
+        if(event['event'] == 'noteDrawn' && event['state'] && event['playSound'] && event['noteName']) {
+            this.playSound(event['noteName'] + event['noteOctave'], 0);
         }
 
         var trackNumber = event['track'];
@@ -181,7 +177,8 @@ export class AppComponent {
                 clearTimeout(this.pendingTimeouts[i]);
             }
             for (var i = 0; i < this.queuedSounds.length; i++) {
-                this.queuedSounds[i].stop(0);
+                this.queuedSounds[i]['gainNode'].gain.linearRampToValueAtTime(0, this.actx.currentTime + 0.2)
+                // this.queuedSounds[i]['bufferSource'].stop(0, this.actx.currentTime + 1.01);
             }
             this.queuedSounds = [];
             return;
@@ -212,7 +209,6 @@ export class AppComponent {
     
         if(this.inCycleMode) {
             var pendingTimeout = setTimeout(function(){
-                console.log('cycling...');
                 root.configDataService.inPlayState = false;
                 root.togglePlayState();
             }, 1000 * root.configDataService.numBeatsInProject * (60 / root.configDataService.tempo) );
@@ -225,7 +221,7 @@ export class AppComponent {
         }
     }
 
-    updateSecondsPerTick() {
+    updateTimeConstants() {
         /* 
             (60 seconds / minute) * (1/tempo in minutes / beat) * (4 beats / bar) = 
             (60 * 4 / tempo) seconds / bar.
@@ -238,27 +234,14 @@ export class AppComponent {
         // taking the 4 away, so bars are the same thing as beats.
         // (seconds / beat) / (ticks / beat) = (seconds / tick)
         this.secondsPerTick = 60 / this.configDataService.tempo / this.numTicksPerBar;
+        this.releaseTime = this.secondsPerTick * 2; // 1 tick of release
     }
 
     playSequence(sequence) {
-        // if (this.actx.state === 'suspended') {
-        //     this.actx.resume();
-        // }
-
-        console.log('playing sequence: ', sequence);
-        if (!this.configDataService.inPlayState) {
-            return;
-        }
-        this.cursor = 0;
-        this.updateSecondsPerTick();
-        
         function Interval() {
-            if (!this.configDataService.inPlayState) {
-                return;
-            }
             const currentTime = this.actx.currentTime;
             // Update the secondsPerTick just in case the tempo was changed
-            this.updateSecondsPerTick();
+            this.updateTimeConstants();
             // Remove elements from the front of the array until the second event
             // of the timestack occurs in the future.
             while(this.timestack.length > 1 && currentTime >= this.timestack[1][0]){
@@ -304,6 +287,10 @@ export class AppComponent {
                 }
             }
         }
+
+        this.cursor = 0;
+        this.updateTimeConstants();
+
         // The timestack is a list of lists. Each sublist has 2 elements:
         // timestack_element[0] is the global time the note will be played, in seconds. 
         // timestack_element[1] is the time relative time the note will be played, in ticks.
@@ -324,7 +311,7 @@ export class AppComponent {
         else {
             this.timestack.push([this.timeToPlayNextNote, nextEvent.t1]);
         }
-        this.pendingIntervals = setInterval(Interval.bind(this), 25);
+        this.pendingIntervals.push(setInterval(Interval.bind(this), 25));
     }
 
     findNextEventAfterTick(tick, sequence) {
@@ -352,56 +339,47 @@ export class AppComponent {
         return {t1: tick, t2: this.totalNumberOfTicksInProject, dt: this.totalNumberOfTicksInProject - tick, i: -1};
     };
 
-    playNote(noteName : string, noteOctave : number, time : number) {
-        this.playSound(noteName + noteOctave, time);
-    }
-
     playSound(soundName, time) {
         let bufferSource = this.audioContext.createBufferSource();
         this.queuedSounds.push(bufferSource);
         bufferSource.buffer = this.audioBuffers[soundName];
+        
+        // Give this note its own gain node
+        var gainNode = this.audioContext.createGain();
+        gainNode.gain.value = 1;
+        bufferSource.connect(gainNode);
+
         bufferSource.connect(this.audioContext.destination);
         bufferSource.start(this.audioContext.currentTime + time);
     }
 
     playSequenceNote(ev, timeToPlay=0) {
         let note = this.configDataService.numeral_to_note(ev.n - 24);
-        console.log('playing sequence note: ', note);
         
         let bufferSource = this.actx.createBufferSource();
-        this.queuedSounds.push(bufferSource);
         bufferSource.buffer = this.audioBuffers[note];
-        bufferSource.connect(this.actx.destination);
-        bufferSource.start(ev.t);
-        // this.gain.gain.setTargetAtTime(0.5, ev.t, 0.005);
-        // this.gain.gain.setTargetAtTime(0, ev.g, 0.1);
-
-        console.log('ev.t: ', ev.t);
-        console.log('ev.g: ', ev.g);
-        console.log('this.actx.currentTime: ', this.actx.currentTime);
-
-        // this.gain.gain.setTargetAtTime(0.5, ev.t, 0.005);
-        // this.gain.gain.setTargetAtTime(0, ev.g, 0.1);
         
+        // Give this note its own gain node
+        var gainNode = this.actx.createGain();
+        gainNode.gain.value = 1;
+        bufferSource.connect(gainNode);
+        gainNode.connect(this.actx.destination);
+        bufferSource.start(ev.t);
 
-
-        // var o=actx.createOscillator();
-        // var g=actx.createGain();
-        // o.type="sawtooth";
-        // o.detune.value=(ev.n-69)*100;
-        // g.gain.value=0;
-        // o.start(actx.currentTime);
-        // g.gain.setTargetAtTime(0.2,ev.t,0.005);
-        // g.gain.setTargetAtTime(0,ev.g,0.1);
-        // o.connect(g);
-        // g.connect(actx.destination);
+        // The sound should stop after the note-up plus some release time.
+        gainNode.gain.setTargetAtTime(0.7, ev.g, 0.5);
+        gainNode.gain.linearRampToValueAtTime(0, ev.g + this.releaseTime);
+        bufferSource.stop( ev.g + this.releaseTime );
+        this.queuedSounds.push({ 'bufferSource': bufferSource, 'gainNode': gainNode});
     }
 
     stopSequence(){
-        if(this.pendingIntervals) {
-            clearInterval(this.pendingIntervals);
+        if(this.pendingIntervals.length > 0) {
+            for (let i = 0; i < this.pendingIntervals.length; i++) {
+                clearInterval(this.pendingIntervals[i]);
+            }
         }
-        this.pendingIntervals = null;
+        this.pendingIntervals = [];
     };
 
     fetchNoteSample(filename) : Promise<any> {

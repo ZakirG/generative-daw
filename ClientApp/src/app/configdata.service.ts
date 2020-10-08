@@ -104,7 +104,10 @@ export class ConfigDataService {
     var sequence = [];
     for(let timeStateIndex = 0; timeStateIndex < noteList.length; timeStateIndex+=1) {
       for(let noteIndex = 0; noteIndex < noteList[timeStateIndex].length; noteIndex+=1) {
-          let sustainTime = 4; // for now, all notes are equal time
+          let sustainTime = 8; // for now, all notes are equal time  
+          if (noteList[timeStateIndex][noteIndex]['sustainTime']) {
+            sustainTime = noteList[timeStateIndex][noteIndex]['sustainTime'];
+          }
           let note = noteList[timeStateIndex][noteIndex];
           let noteNumeral = this.note_to_numeral(note['note'], note['octave']) + 24;
           sequence.push({
@@ -160,8 +163,7 @@ export class ConfigDataService {
     var MIDI_A4 = 69
     let num = midiNumeral - (MIDI_A4 - 4 * 12 - 9)
     let note = (num + .5) % 12 - .5
-    let rnote = Math.round(note)
-    let error = note - rnote
+    let rnote = Math.round(note);
     let octave = Math.round((num - note) / 12.).toString();
     var namesArr = ["c", "cs", "d", "ds", "e", "f", "fs", "g", "gs", "a", "as", "b"]
     var names = namesArr[rnote] + octave
