@@ -11,60 +11,42 @@ from music_theory import determine_chord_name, get_allowed_notes, \
         chord_passes_topline_contour_constraint
 import sys, traceback
 import json
+from generator import Generator
 ClientLogger = ClientLogger()
 
-class Generator:
+class ChordsGenerator(Generator):
     def __init__(self, content):
-        generation_type = content['generationType']
-        self.all_settings = ""
-        for x in content.keys():
-            self.all_settings += "\n\t" + x + ": " + str(content[x])
-        self.key = content['key'].replace('#', 's').lower()
-        self.scale = content['scale']
-        self.scale_name = constants['scales'][self.scale]['name']
-        self.length = content['numChords']
-        self.disallow_repeats = content['disallowRepeats']
-        self.octave_range = list(range(content['octaveLowerBound'], content['octaveUpperBound'] + 1))
-        self.allowed_notes = get_allowed_notes(self.key, self.scale, self.octave_range)
-        self.parent_scale_allowed_notes = self.allowed_notes
-        self.parent_scale_code = self.scale
-        self.parent_scale_allowed_notes = self.allowed_notes
-        if len(constants['scales'][self.scale]['intervals']) < 7:
-            self.parent_scale_code = constants['scales'][self.scale]['parent_scale']
-            self.parent_scale_allowed_notes = get_allowed_notes(self.key, self.parent_scale_code, [3])
+        super(ChordsGenerator, self).__init__(content)
 
-        if generation_type == 'chords':
-            self.chance_to_use_chord_leading=content['chanceToUseChordLeadingChart']
-            self.chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
-            chord_size_bounds = (content['chordSizeLowerBound'], content['chordSizeUpperBound'])
-            self.chord_size_upper_bound = chord_size_bounds[1]
-            self.chord_size_lower_bound = chord_size_bounds[0]
-            
-            # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
-            upper_bd = min(self.chord_size_upper_bound, len(self.allowed_notes))
-            if upper_bd == self.chord_size_lower_bound:
-                self.allowed_chord_sizes = [upper_bd]
-            else:
-                self.allowed_chord_sizes = range(self.chord_size_lower_bound, upper_bd + 1)
-
-            self.chance_to_allow_non_diatonic_chord = content['chanceToAllowNonDiatonicChord']
-            self.chance_to_allow_borrowed_chord = content['chanceToAllowBorrowedChord']
-            self.chance_to_allow_alt_dom_chord = content['chanceToAllowAlteredDominantChord']
-            self.chance_to_use_common_progression = content['chanceToUseCommonProgression']
-            # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
-            # This result is specific to the scale of interest. But not its key.
-            self.labeled_voicings = label_voicings_with_metadata(self.key, self.scale, self.octave_range)
-
-            self.max_topline_distance = content["maxToplineDistance"]
-            # self.note_changes_lower_bound = content["noteChangesLowerBound"]
-            # self.note_changes_upper_bound= content["noteChangesUpperBound"]
-            self.topline_contour = content["toplineContour"]
+        self.chance_to_use_chord_leading=content['chanceToUseChordLeadingChart']
+        self.chance_to_use_voicing_from_library = content['chanceToUseCommonVoicing']
+        chord_size_bounds = (content['chordSizeLowerBound'], content['chordSizeUpperBound'])
+        self.chord_size_upper_bound = chord_size_bounds[1]
+        self.chord_size_lower_bound = chord_size_bounds[0]
         
-        # We measure "beats" in whole notes. Each chord is a whole note.
-        self.current_beat = 0
+        # Account for cases where there are very few allowed notes in the scale (like a pentatonic scale)
+        upper_bd = min(self.chord_size_upper_bound, len(self.allowed_notes))
+        if upper_bd == self.chord_size_lower_bound:
+            self.allowed_chord_sizes = [upper_bd]
+        else:
+            self.allowed_chord_sizes = range(self.chord_size_lower_bound, upper_bd + 1)
+
+        self.chance_to_allow_non_diatonic_chord = content['chanceToAllowNonDiatonicChord']
+        self.chance_to_allow_borrowed_chord = content['chanceToAllowBorrowedChord']
+        self.chance_to_allow_alt_dom_chord = content['chanceToAllowAlteredDominantChord']
+        self.chance_to_use_common_progression = content['chanceToUseCommonProgression']
+        # Labeling chord voicings with acceptable roman numerals per scale to preserve diatonicity.
+        # This result is specific to the scale of interest. But not its key.
+        self.labeled_voicings = label_voicings_with_metadata(self.key, self.scale, self.octave_range)
+
+        self.max_topline_distance = content["maxToplineDistance"]
+        # self.note_changes_lower_bound = content["noteChangesLowerBound"]
+        # self.note_changes_upper_bound= content["noteChangesUpperBound"]
+        self.topline_contour = content["toplineContour"]
         # On each beat, the chord topline will need to respect a height constraint relative to the
         # previous chord.
         self.beats_to_contour_directions = music_theory.get_contour_directions_per_beat(self.topline_contour, self.length)
+
  
     def get_current_topline_direction(self):
         """

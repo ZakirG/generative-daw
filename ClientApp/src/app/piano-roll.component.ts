@@ -109,8 +109,9 @@ export class PianoRollComponent implements AfterViewInit{
         this.sequence = event['sequence'];
 
         // this.updateDawState();
+        event['track'] = this.trackNumber;
         if(event['event'] == 'noteDrawn' && event['state']) {
-            this.noteDrawnHandler(event['noteName'], event['noteOctave'], event['state']);
+            this.noteDrawn.emit(event);
         }
     }
 
@@ -118,15 +119,9 @@ export class PianoRollComponent implements AfterViewInit{
         for (var i = 0; i < this.gridState.length; i++) {
             this.gridState[i]['timeStates'] = this.configDataService.makeEmptyTimeState();
         }
-        this.noteDrawn.emit({'event': 'clear', 'track' : this.trackNumber});
         this.webAudioPianoRoll.instance.clear();
-    }
-
-    noteDrawnHandler(noteName, noteOctave, noteState) {
-        this.noteDrawn.emit({
-            'event' : 'noteDrawn', 'note' : noteName + noteOctave,
-            'state' : noteState, 'track' : this.trackNumber
-        });
+        this.sequence = [];
+        this.noteDrawn.emit({'event': 'clear', 'track' : this.trackNumber});
     }
 
     destroyReference() {
@@ -141,7 +136,7 @@ export class PianoRollComponent implements AfterViewInit{
             this.renderNotes(generatedNotes);
             this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
-            
+            console.log('generation result: ', generatedNotes);
             if(isQuickGenerate) {
                 this.triggerQuickGenerate.emit({
                     'event' : 'triggerQuickGenerate'
@@ -158,7 +153,7 @@ export class PianoRollComponent implements AfterViewInit{
     renderNotes(notesToRender) {
         this.clearPianoRoll();
         this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
-        this.webAudioPianoRoll.instance.renderNotes(this.sequence);
+        this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
         return;
         var timeStateIndex = 0;
         for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {

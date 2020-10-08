@@ -105,7 +105,8 @@ export class ConfigDataService {
     for(let timeStateIndex = 0; timeStateIndex < noteList.length; timeStateIndex+=1) {
       for(let noteIndex = 0; noteIndex < noteList[timeStateIndex].length; noteIndex+=1) {
           let sustainTime = 4; // for now, all notes are equal time
-          let noteNumeral = noteList[timeStateIndex][noteIndex]['numeral'] + 24;
+          let note = noteList[timeStateIndex][noteIndex];
+          let noteNumeral = this.note_to_numeral(note['note'], note['octave']) + 24;
           sequence.push({
               t: timeStateIndex * sustainTime,
               n: noteNumeral,

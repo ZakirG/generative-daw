@@ -5,11 +5,11 @@ import os
 import json
 from crossdomain import crossdomain
 import constants
-import generation_tools
 from music_theory import name_chords_in_tracks
 import midi_tools
 from client_logging import ClientLogger
-from generation_tools import Generator
+from chords_generator import ChordsGenerator
+from melody_generator import MelodyGenerator
 app = Flask(__name__)
 CORS(app)
 
@@ -35,8 +35,8 @@ def generate_melody():
     ClientLogger.log('Generating new melody...')
 
     content = request.get_json()
-    melody_generator = Generator(content)
-    result = melody_generator.generate_melody()
+    mel_generator = MelodyGenerator(content)
+    result = mel_generator.generate_melody()
     
     response = {'generationResult' : result}
     return json.dumps(add_logs_to_response(response))
@@ -45,7 +45,7 @@ def generate_melody():
 @crossdomain(origin='*')
 def generate_chords():
     content = request.get_json()
-    chord_generator = Generator(content)
+    chord_generator = ChordsGenerator(content)
     result_chords, result_chord_names = chord_generator.generate_chords()
 
     DawState['chord_names'] = result_chord_names

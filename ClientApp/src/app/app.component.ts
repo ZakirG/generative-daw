@@ -37,19 +37,15 @@ export class AppComponent {
     // For the webaudioapi piano roll
     actx : any;
     timestack: any;
-    timer : any;
-    timebase : any;
+    pendingIntervals : any;
+    numTicksPerBar : any;
     gain : any;
-    tick2time : any;
-    index1 : any;
-    time1 : any;
-    tick0 : any;
-    time0:  any;
-    tick1 : any;
+    secondsPerTick : any;
+    indexOfNextSequenceNoteToPlay : any;
+    timeToPlayNextNote : any;
     cursor = 0;
     playcallback : any;
-    markstart = 0;
-    markend = 240;
+    totalNumberOfTicksInProject = 240;
     preload = 1.0;
 
     public constructor(
@@ -63,7 +59,10 @@ export class AppComponent {
             this.notes = [];
             this.audioBuffers = {};
             this.queuedSounds = [];
-            this.timebase = 480;
+            // The default note length is 1 tick.
+            // So if you want the smallest note length to be an eighth note,
+            // and a bar is a whole note, there should be 8 ticks per bar.
+            this.numTicksPerBar = 8; // 480;
         }
 
     public setTitle( newTitle: string) {
@@ -131,7 +130,9 @@ export class AppComponent {
     }
 
     registerNoteDrawn(event) {
-        if(event['event'] == 'noteDrawn' && event['state']) {
+        console.log('app component register note drawn', event);
+        if(event['event'] == 'noteDrawn' && event['state'] && event['playSound']) {
+            console.log('135 playing sound');
             this.playSound(event['note'], 0);
         }
 
@@ -139,7 +140,6 @@ export class AppComponent {
         var track = this.tracks[trackNumber];
         this.tracks[trackNumber].gridState = this.pianoRoll.gridState;
         this.tracks[trackNumber].sequence = this.pianoRoll.sequence;
-        console.log('app set this.tracks: ', this.tracks);
 
         this.updateDawState();
     }
@@ -212,6 +212,7 @@ export class AppComponent {
     
         if(this.inCycleMode) {
             var pendingTimeout = setTimeout(function(){
+                console.log('cycling...');
                 root.configDataService.inPlayState = false;
                 root.togglePlayState();
             }, 1000 * root.configDataService.numBeatsInProject * (60 / root.configDataService.tempo) );
@@ -224,89 +225,131 @@ export class AppComponent {
         }
     }
 
-    playSequence(sequence) {
-        if (this.actx.state === 'suspended') {
-            this.actx.resume();
-        }
-        console.log('playing sequence: ', sequence);
-        let tick = null;
-        function Interval(){
-            const current=this.actx.currentTime;
-            while(this.timestack.length>1 && current>=this.timestack[1][0]){
-                this.timestack.shift();
-            }
-            this.cursor=this.timestack[0][1]+(current-this.timestack[0][0])/this.timestack[0][2];
-            // this.redrawMarker();
-            while(current + this.preload >= this.time1){
-                this.time0=this.time1;
-                this.tick0=this.tick1;
-                let e = sequence[this.index1];
-                if(!e || e.t>=this.markend){
-                    this.timestack.push([this.time1,this.markstart,this.tick2time]);
-                    const p=this.findNextEv(this.markstart, sequence);
-                    this.time1+=p.dt*this.tick2time;
-                    this.index1=p.i;
-                }
-                else{
-                    this.tick1=e.t;
-                    this.timestack.push([this.time1,e.t,this.tick2time]);
-                    let gmax=Math.min(e.t+e.g,this.markend)-e.t;
-                    const cbev={t:this.time1,g:this.time1+gmax*this.tick2time,n:e.n, note:e.note, octave:e.octave};
-                    this.playSequenceNote(cbev, this.time1);
-                    e = sequence[++this.index1];
-                    if(!e || e.t>=this.markend){
-                        this.time1+=(this.markend-this.tick1)*this.tick2time;
-                        const p=this.findNextEv(this.markstart, sequence);
-                        this.timestack.push([this.time1,this.markstart,this.tick2time]);
-                        this.time1+=p.dt*this.tick2time;
-                        this.index1=p.i;
-                    }
-                    else
-                        this.time1+=(e.t-this.tick1)*this.tick2time;
-                }
-            }
-        }
-        if(typeof(tick)!="undefined")
-            this.locate(tick);
-        if(this.timer!=null)
-            return;
-        this.timestack=[];
-        this.time0=this.time1=this.actx.currentTime+0.1;
-        this.tick0=this.tick1=this.cursor;
-        this.updateTimer();
-        const p=this.findNextEv(this.cursor, sequence);
-        
-        this.index1=p.i;
-        this.timestack.push([0,this.cursor,0]);
-        this.timestack.push([this.time0,this.cursor,this.tick2time]);
-        this.time1+=p.dt*this.tick2time;
-        if(p.i<0)
-            this.timestack.push([this.time1,this.markstart,this.tick2time]);
-        else
-            this.timestack.push([this.time1,p.t1,this.tick2time]);
-        this.timer=setInterval(Interval.bind(this),25);
-        console.log('285');
+    updateSecondsPerTick() {
+        /* 
+            (60 seconds / minute) * (1/tempo in minutes / beat) * (4 beats / bar) = 
+            (60 * 4 / tempo) seconds / bar.
+            So ((60 * 4 / tempo) seconds / bar) / (numTicksPerBar in ticks / bar) = 
+            (60 * 4 / tempo / numTicksPerBar) in (seconds / bar) * (bar / ticks ).
+            So secondsPerTick = (60 * 4 / tempo / numTicksPerBar) in seconds / tick
+            is the number of seconds in a tick. Use this value to convert ticks into seconds.
+        */
+        // this.secondsPerTick = 4 * 60 / this.configDataService.tempo / this.numTicksPerBar;
+        // taking the 4 away, so bars are the same thing as beats.
+        // (seconds / beat) / (ticks / beat) = (seconds / tick)
+        this.secondsPerTick = 60 / this.configDataService.tempo / this.numTicksPerBar;
     }
 
-    findNextEv(tick, sequence) {
-        for(let i = 0; i < sequence.length; ++i) {
-            const nev = sequence[i];
-            if(nev.t >= this.markend) {
-                return {t1:tick,n2:this.markend,dt:this.markend-tick,i:-1};
+    playSequence(sequence) {
+        // if (this.actx.state === 'suspended') {
+        //     this.actx.resume();
+        // }
+
+        console.log('playing sequence: ', sequence);
+        if (!this.configDataService.inPlayState) {
+            return;
+        }
+        this.cursor = 0;
+        this.updateSecondsPerTick();
+        
+        function Interval() {
+            if (!this.configDataService.inPlayState) {
+                return;
             }
-            if(nev.t >= tick) {
-                return {t1:tick,t2:nev.t,dt:nev.t-tick,i:i};
+            const currentTime = this.actx.currentTime;
+            // Update the secondsPerTick just in case the tempo was changed
+            this.updateSecondsPerTick();
+            // Remove elements from the front of the array until the second event
+            // of the timestack occurs in the future.
+            while(this.timestack.length > 1 && currentTime >= this.timestack[1][0]){
+                this.timestack.shift();
+            }
+            // Shift the cursor up to the first event's tick, which may be a value in the past.
+            this.cursor = this.timestack[0][1] + (currentTime - this.timestack[0][0]) / this.secondsPerTick;
+            // this.redrawMarker();
+            while(this.timeToPlayNextNote <= currentTime + this.preload){
+                let nextNote = sequence[this.indexOfNextSequenceNoteToPlay];
+                if( !nextNote || nextNote.t >= this.totalNumberOfTicksInProject){
+                    // If the next note is missing or out of bounds, go back to
+                    // the project's beginning.
+                    this.timestack.push([this.timeToPlayNextNote, 0]);
+                    const nextEvent = this.findNextEventAfterTick(0, sequence);
+                    this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
+                    this.indexOfNextSequenceNoteToPlay = nextEvent.i;
+                }
+                else {
+                    // Case where the next note is playable
+                    this.timestack.push([this.timeToPlayNextNote, nextNote.t]);
+                    let gmax = Math.min(nextNote.t + nextNote.g, this.totalNumberOfTicksInProject) - nextNote.t;
+                    const nextNoteInGlobalTimeForm = {
+                        t: this.timeToPlayNextNote,
+                        g: this.timeToPlayNextNote + gmax * this.secondsPerTick,
+                        n: nextNote.n,
+                        note: nextNote.note,
+                        octave: nextNote.octave
+                    };
+                    this.playSequenceNote(nextNoteInGlobalTimeForm, this.timeToPlayNextNote);
+                    let previousNote = nextNote;
+                    nextNote = sequence[++this.indexOfNextSequenceNoteToPlay];
+                    if(!nextNote || nextNote.t >= this.totalNumberOfTicksInProject){
+                        this.timeToPlayNextNote += (this.totalNumberOfTicksInProject - previousNote.t) * this.secondsPerTick;
+                        const nextEvent = this.findNextEventAfterTick(0, sequence);
+                        this.timestack.push([this.timeToPlayNextNote, 0]);
+                        this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
+                        this.indexOfNextSequenceNoteToPlay = nextEvent.i;
+                    }
+                    else {
+                        this.timeToPlayNextNote += (nextNote.t - previousNote.t) * this.secondsPerTick;
+                    }
+                }
             }
         }
-        return {t1:tick,t2:this.markend,dt:this.markend-tick,i:-1};
-    };
+        // The timestack is a list of lists. Each sublist has 2 elements:
+        // timestack_element[0] is the global time the note will be played, in seconds. 
+        // timestack_element[1] is the time relative time the note will be played, in ticks.
+        this.timestack = [];
+        this.timeToPlayNextNote = this.actx.currentTime + 0.1;
 
-    locate(tick){
-        this.cursor=tick;
-    };
+        const nextEvent = this.findNextEventAfterTick(this.cursor, sequence);
+        
+        this.indexOfNextSequenceNoteToPlay = nextEvent.i;
+        this.timestack.push([0, this.cursor]);
+        this.timestack.push([this.actx.currentTime + 0.1, this.cursor]);
+        // Set timeToPlayNextNote to represent the time at which the next note will be played.
+        this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
+        if(nextEvent.i < 0) {
+            // The next note is out of bounds; this event will result in a loop. (?)
+            this.timestack.push([this.timeToPlayNextNote, 0]);
+        } 
+        else {
+            this.timestack.push([this.timeToPlayNextNote, nextEvent.t1]);
+        }
+        this.pendingIntervals = setInterval(Interval.bind(this), 25);
+    }
 
-    updateTimer(){
-        this.tick2time=4*60/this.configDataService.tempo/this.timebase;
+    findNextEventAfterTick(tick, sequence) {
+        /* 
+        Returns an object of this form:
+        {
+            t1 -- The tick input to this function. Points at the preceding "event" or position
+            t2 -- When the new event will occur.
+            dt -- The number of ticks between the next event (t2) and the previous event (t1).
+            i  -- The position of this event in the play sequence.
+        }
+        */
+
+        for(let i = 0; i < sequence.length; ++i) {
+            const nev = sequence[i];
+            if(nev.t >= this.totalNumberOfTicksInProject) {
+                // The next note is beyond the end of the project.
+                return {t1: tick, dt: this.totalNumberOfTicksInProject - tick, i: -1};
+            }
+            if(nev.t >= tick) {
+                // Successfully found a playable note at sequence[i].
+                return {t1: tick, t2: nev.t, dt:nev.t - tick, i: i};
+            }
+        }
+        return {t1: tick, t2: this.totalNumberOfTicksInProject, dt: this.totalNumberOfTicksInProject - tick, i: -1};
     };
 
     playNote(noteName : string, noteOctave : number, time : number) {
@@ -323,7 +366,7 @@ export class AppComponent {
 
     playSequenceNote(ev, timeToPlay=0) {
         let note = this.configDataService.numeral_to_note(ev.n - 24);
-        console.log('playing sound ', note);
+        console.log('playing sequence note: ', note);
         
         let bufferSource = this.actx.createBufferSource();
         this.queuedSounds.push(bufferSource);
@@ -355,10 +398,10 @@ export class AppComponent {
     }
 
     stopSequence(){
-        if(this.timer) {
-            clearInterval(this.timer);
+        if(this.pendingIntervals) {
+            clearInterval(this.pendingIntervals);
         }
-        this.timer = null;
+        this.pendingIntervals = null;
     };
 
     fetchNoteSample(filename) : Promise<any> {

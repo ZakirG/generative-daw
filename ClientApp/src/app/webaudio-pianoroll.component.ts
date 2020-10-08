@@ -96,7 +96,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     elem : any;
     dragging : any;
     stepw : any;
-    tick2time : any;
+    secondsPerTick : any;
     swidth : any;
 
 
@@ -213,21 +213,21 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         this.redraw();
     }
 
-    renderNotes(sequence) {
+    renderNotes(sequence, playSound=true) {
         for (let i = 0; i < sequence.length; i+=1) {
-            this.addNoteWithoutRedraw(sequence[i]);
+            this.addNoteWithoutRedraw(sequence[i], playSound=playSound);
         }
 
         this.sortSequence();
         this.redraw();
     }
 
-    pushToSequence(ev) {
+    pushToSequence(ev, playSound=true) {
         this.sequence.push(ev);
-        this.noteDrawnHandler(ev.n, true);
+        this.noteDrawnHandler(ev.n, playSound);
     }
 
-    noteDrawnHandler(numeral=null, playNote=false) {
+    noteDrawnHandler(numeral=null, playSound=false) {
         if (typeof numeral == 'undefined') {
             this.noteDrawn.emit({
                 'event' : 'noteDrawn', 'sequence' : this.sequence, 'track' : this.trackNumber
@@ -240,8 +240,9 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         let noteOctave = note.slice(-1);
         this.noteDrawn.emit({
             'event' : 'noteDrawn', 'sequence' : this.sequence,
-            'state' : playNote, 'track' : this.trackNumber,
-            'noteName': noteName, 'noteOctave': noteOctave 
+            'state' : playSound, 'track' : this.trackNumber,
+            'noteName': noteName, 'noteOctave': noteOctave,
+            'playSound': playSound
         });
     }
   
@@ -265,7 +266,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     };
     
     updateTimer(){
-        this.tick2time=4*60/this.configDataService.tempo/this.timebase;
+        this.secondsPerTick=4*60/this.configDataService.tempo/this.timebase;
     };
     
     play(actx,playcallback,tick){
@@ -281,30 +282,30 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                 this.tick0=this.tick1;
                 let e=this.sequence[this.index1];
                 if(!e || e.t>=this.markend){
-                    this.timestack.push([this.time1,this.markstart,this.tick2time]);
+                    this.timestack.push([this.time1,this.markstart,this.secondsPerTick]);
                     const p=this.findNextEv(this.markstart);
-                    this.time1+=p.dt*this.tick2time;
+                    this.time1+=p.dt*this.secondsPerTick;
                     this.index1=p.i;
                 }
                 else{
                     this.tick1=e.t;
-                    this.timestack.push([this.time1,e.t,this.tick2time]);
+                    this.timestack.push([this.time1,e.t,this.secondsPerTick]);
                     let gmax=Math.min(e.t+e.g,this.markend)-e.t;
                     if(this.editmode=="gridmono"||this.editmode=="gridpoly")
                         gmax*=this.gridnoteratio;
-                    const cbev={t:this.time1,g:this.time1+gmax*this.tick2time,n:e.n};
+                    const cbev={t:this.time1,g:this.time1+gmax*this.secondsPerTick,n:e.n};
                     if(this.playcallback)
                         this.playcallback(cbev);
                     e=this.sequence[++this.index1];
                     if(!e || e.t>=this.markend){
-                        this.time1+=(this.markend-this.tick1)*this.tick2time;
+                        this.time1+=(this.markend-this.tick1)*this.secondsPerTick;
                         const p=this.findNextEv(this.markstart);
-                        this.timestack.push([this.time1,this.markstart,this.tick2time]);
-                        this.time1+=p.dt*this.tick2time;
+                        this.timestack.push([this.time1,this.markstart,this.secondsPerTick]);
+                        this.time1+=p.dt*this.secondsPerTick;
                         this.index1=p.i;
                     }
                     else
-                        this.time1+=(e.t-this.tick1)*this.tick2time;
+                        this.time1+=(e.t-this.tick1)*this.secondsPerTick;
                 }
             }
         }
@@ -317,16 +318,16 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         this.timestack=[];
         this.time0=this.time1=this.actx.currentTime+0.1;
         this.tick0=this.tick1=this.cursor;
-        this.tick2time=4*60/this.configDataService.tempo/this.timebase;
+        this.secondsPerTick=4*60/this.configDataService.tempo/this.timebase;
         const p=this.findNextEv(this.cursor);
         this.index1=p.i;
         this.timestack.push([0,this.cursor,0]);
-        this.timestack.push([this.time0,this.cursor,this.tick2time]);
-        this.time1+=p.dt*this.tick2time;
+        this.timestack.push([this.time0,this.cursor,this.secondsPerTick]);
+        this.time1+=p.dt*this.secondsPerTick;
         if(p.i<0)
-            this.timestack.push([this.time1,this.markstart,this.tick2time]);
+            this.timestack.push([this.time1,this.markstart,this.secondsPerTick]);
         else
-            this.timestack.push([this.time1,p.t1,this.tick2time]);
+            this.timestack.push([this.time1,p.t1,this.secondsPerTick]);
         this.timer=setInterval(Interval.bind(this),25);
     }
     
@@ -553,7 +554,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         return null;
     }
 
-    addNoteWithoutRedraw(noteObject){
+    addNoteWithoutRedraw(noteObject, playSound=true){
         let t = noteObject['t'];
         let n = noteObject['n'];
         let g = noteObject['g'];
@@ -561,7 +562,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         let f = noteObject['f'];
         if(t>=0 && n>=0 && n<128){
             const ev={t:t,c:0x90,n:n,g:g,v:v,f:f};
-            this.pushToSequence(ev);
+            this.pushToSequence(ev, playSound=playSound);
             return ev;
         }
         return null;
