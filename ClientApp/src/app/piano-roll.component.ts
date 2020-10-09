@@ -103,9 +103,6 @@ export class PianoRollComponent implements AfterViewInit{
     }
 
     registerNoteDrawn(event) {
-        var trackNumber = event['track'];
-        // var track = this.tracks[trackNumber];
-        // track.gridState = this.pianoRoll.gridState;
         this.sequence = event['sequence'];
 
         // this.updateDawState();
@@ -132,15 +129,24 @@ export class PianoRollComponent implements AfterViewInit{
         var generatedNotes = [];
         return this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
-            let logs = data['logs']
             this.renderNotes(generatedNotes);
-            this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
-            this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
+            // this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
+            let logs = data['logs'];
+            
             if(isQuickGenerate) {
                 this.triggerQuickGenerate.emit({
-                    'event' : 'triggerQuickGenerate'
+                    'event' : 'triggerQuickGenerate',
+                    'track' : this.trackNumber,
+                    'logs' : logs
                 });
+            } else {
+                this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
+                // let logs = data['logs'];
+                this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
             }
+
+            // let logs = data['logs'];
+            // this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
         });
     }
 
@@ -154,10 +160,10 @@ export class PianoRollComponent implements AfterViewInit{
         this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
         this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
         return;
-        var timeStateIndex = 0;
-        for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
-            this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
-        }
+        // var timeStateIndex = 0;
+        // for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
+        //     this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
+        // }
     }
 
     renderNotesInOneTimeStep(notesToRenderInThisTimeStep, timeStateIndex) {

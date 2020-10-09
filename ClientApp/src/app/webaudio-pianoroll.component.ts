@@ -214,16 +214,18 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
 
     renderNotes(sequence, playSound=true) {
         for (let i = 0; i < sequence.length; i+=1) {
-            this.addNoteWithoutRedraw(sequence[i], playSound=playSound);
+            this.addNoteWithoutRedraw(sequence[i], playSound, false);
         }
 
         this.sortSequence();
         this.redraw();
     }
 
-    pushToSequence(ev, playSound=true) {
+    pushToSequence(ev, playSound=true, triggerHandler=true) {
         this.sequence.push(ev);
-        this.noteDrawnHandler(ev.n, playSound);
+        if(triggerHandler) {
+            this.noteDrawnHandler(ev.n, playSound);
+        }
     }
 
     noteDrawnHandler(numeral=null, playSound=true) {
@@ -551,7 +553,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         return null;
     }
 
-    addNoteWithoutRedraw(noteObject, playSound=true){
+    addNoteWithoutRedraw(noteObject, playSound=true, triggerHandler=true){
         let t = noteObject['t'];
         let n = noteObject['n'];
         let g = noteObject['g'];
@@ -559,7 +561,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         let f = noteObject['f'];
         if(t>=0 && n>=0 && n<128){
             const ev={t:t,c:0x90,n:n,g:g,v:v,f:f};
-            this.pushToSequence(ev, playSound=playSound);
+            this.pushToSequence(ev, playSound, triggerHandler);
             return ev;
         }
         return null;

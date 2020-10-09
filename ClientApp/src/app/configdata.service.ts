@@ -130,8 +130,8 @@ export class ConfigDataService {
     var letter = noteName.trim().toUpperCase();
     
     if (noteName.length == 2) {
-        letter = noteName.trim().replace('s','#');
-        letter = letter[0].ToUpperCase() + letter.slice(1);
+        letter = noteName.trim().replace('s','#').replace('S', '#');
+        letter = letter[0].toUpperCase() + letter.slice(1);
     }
     
     var noteString = letter + noteOctave;

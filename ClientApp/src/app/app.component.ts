@@ -136,11 +136,16 @@ export class AppComponent {
         var track = this.tracks[trackNumber];
         this.tracks[trackNumber].gridState = this.pianoRoll.gridState;
         this.tracks[trackNumber].sequence = this.pianoRoll.sequence;
-
-        this.updateDawState();
+        
+        // this.updateDawState();
     }
 
-    registerTriggerQuickGenerate() {
+    registerTriggerQuickGenerate(event) {
+        this.registerNoteDrawn(event);
+        this.registerNewLogs(event);
+        if(this.configDataService.inPlayState) {
+            this.togglePlayState();
+        }
         this.togglePlayState();
     }
     
@@ -301,7 +306,7 @@ export class AppComponent {
         
         this.indexOfNextSequenceNoteToPlay = nextEvent.i;
         this.timestack.push([0, this.cursor]);
-        this.timestack.push([this.actx.currentTime + 0.1, this.cursor]);
+        this.timestack.push([this.timeToPlayNextNote, this.cursor]);
         // Set timeToPlayNextNote to represent the time at which the next note will be played.
         this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
         if(nextEvent.i < 0) {
@@ -434,7 +439,7 @@ export class AppComponent {
             this.registerNoteDrawn(event);
         });
         pianoRoll.instance.triggerQuickGenerate.subscribe((event) => {
-            this.registerTriggerQuickGenerate();
+            this.registerTriggerQuickGenerate(event);
         });
         pianoRoll.instance.newLogs.subscribe((event) => {
             this.registerNewLogs(event);
