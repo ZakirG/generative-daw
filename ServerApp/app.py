@@ -60,6 +60,7 @@ def update_daw_state():
     scale = content['scale']
     tempo = content['tempo']
     tracks = content['tracks']
+    sequence = content['sequence']
     
     DawState['scale'] = scale
     DawState['key'] =  key
@@ -68,6 +69,7 @@ def update_daw_state():
     chord_names, chord_degrees = name_chords_in_tracks(tracks, key, scale)
     DawState['chord_names'] = chord_names
     DawState['chord_degrees'] = chord_degrees
+    DawState['sequence'] = sequence
     
     response = DawState
     return json.dumps(add_logs_to_response(response))

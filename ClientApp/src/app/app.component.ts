@@ -27,6 +27,7 @@ export class AppComponent {
     constants: any;
     inCycleMode = true;
     pendingTimeouts = [];
+    sequences = [];
     
     pageLoaded = false;
     pageReady = false;
@@ -143,10 +144,14 @@ export class AppComponent {
     registerTriggerQuickGenerate(event) {
         this.registerNoteDrawn(event);
         this.registerNewLogs(event);
-        if(this.configDataService.inPlayState) {
-            this.togglePlayState();
-        }
-        this.togglePlayState();
+
+        var _this = this;
+        setTimeout(function(){
+            if(_this.configDataService.inPlayState) {
+                _this.togglePlayState();
+            }
+            _this.togglePlayState();
+        }, 1000);
     }
     
     registerNewLogs(event) {
@@ -300,12 +305,12 @@ export class AppComponent {
         // timestack_element[0] is the global time the note will be played, in seconds. 
         // timestack_element[1] is the time relative time the note will be played, in ticks.
         this.timestack = [];
-        this.timeToPlayNextNote = this.actx.currentTime + 0.1;
 
         const nextEvent = this.findNextEventAfterTick(this.cursor, sequence);
         
         this.indexOfNextSequenceNoteToPlay = nextEvent.i;
         this.timestack.push([0, this.cursor]);
+        this.timeToPlayNextNote = this.actx.currentTime + 0.05;
         this.timestack.push([this.timeToPlayNextNote, this.cursor]);
         // Set timeToPlayNextNote to represent the time at which the next note will be played.
         this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
@@ -464,6 +469,10 @@ export class AppComponent {
         dawState['scale'] = this.configDataService.scale;
         dawState['key'] = this.configDataService.key;
         dawState['tempo'] = this.configDataService.tempo;
+        for(let trackNumber = 0; trackNumber < this.tracks.length; trackNumber++) {
+            this.sequences.push(this.tracks[trackNumber].sequence)
+        }
+        dawState['sequence'] = this.sequences
 
         return this.dawStateService.updateDawState(dawState).subscribe((data) => {
             this.configDataService.dawState = data;
