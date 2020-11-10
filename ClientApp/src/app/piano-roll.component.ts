@@ -12,7 +12,7 @@ const interact = require('interactjs');
     selector:    'piano-roll',
     templateUrl: './piano-roll.component.html',
     providers:  [ ],
-    styleUrls: ['./piano-roll.component.css', './app.component.css'],
+    styleUrls: ['./piano-roll.component.css', './app.component.css', './form-styles.css'],
 })
 
 export class PianoRollComponent implements AfterViewInit{
@@ -129,7 +129,7 @@ export class PianoRollComponent implements AfterViewInit{
         var generatedNotes = [];
         return this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
-            this.renderNotes(generatedNotes);
+            this.renderNotesDeprecated(generatedNotes);
             // this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             let logs = data['logs'];
             
@@ -155,9 +155,35 @@ export class PianoRollComponent implements AfterViewInit{
         this.generate(formValue, true);
     }
 
-    renderNotes(notesToRender) {
+    renderNotes(sequence) {
+        console.log('piano rendering ', sequence)
+        this.webAudioPianoRoll.instance.renderNotes(sequence, false);
+    }
+
+    setSequence(input) {
+        console.log('setting sequence to ', input);
+        this.sequence = input;
+        console.log('now the sequence is ', this.sequence);
+        console.log('this: ', this);
+    }
+
+    // TODO: refactor
+    renderNotesDeprecated(notesToRender) {
         this.clearPianoRoll();
         this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
+        this.renderNotes(this.sequence);
+        this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
+        return;
+        // var timeStateIndex = 0;
+        // for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
+        //     this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
+        // }
+    }
+
+    refresh() {
+        // this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
+        console.log('179 refresh with', this.sequence);
+        this.renderNotes(this.sequence);
         this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
         return;
         // var timeStateIndex = 0;

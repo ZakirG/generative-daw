@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.css', './form-styles.css']
 })
 
 export class AppComponent {
@@ -48,6 +48,10 @@ export class AppComponent {
     preload = 1.0;
     pendingIntervals = [];
     releaseTime : number;
+    changeTempoWithMidiImport = true;
+    importedMidiSequence = [];
+    importedMidiTempo : number;
+    importedMidiFileName : string;
 
     public constructor(
         public titleService: Title,
@@ -64,6 +68,7 @@ export class AppComponent {
             // So if you want the smallest note length to be an eighth note,
             // and a bar is a whole note, there should be 8 ticks per bar.
             this.numTicksPerBar = 8; // 480;
+            this.sequences = [];
         }
 
     public setTitle( newTitle: string) {
@@ -137,6 +142,7 @@ export class AppComponent {
         var track = this.tracks[trackNumber];
         this.tracks[trackNumber].gridState = this.pianoRoll.gridState;
         this.tracks[trackNumber].sequence = this.pianoRoll.sequence;
+        this.tracks[trackNumber].triggerNoteDraw();
         
         // this.updateDawState();
     }
@@ -411,13 +417,21 @@ export class AppComponent {
         }
     }
 
-    addTrack() {
+    addTrack(trackNameToAdd='') {
         const factory = this.resolver.resolveComponentFactory(TrackComponent);
         var newTrack = this.container.createComponent(factory);
         newTrack.instance._ref = newTrack;
         newTrack.instance.key = this.configDataService.key;
         newTrack.instance.scale = this.configDataService.scale.name;
         newTrack.instance.trackNumber = this.tracks.length;
+        
+        let trackName = 'Piano';
+        if (trackNameToAdd) {
+            trackName = trackNameToAdd;
+        }
+
+        newTrack.instance.trackName = trackName;
+        
         newTrack.instance.numBeatsInProject = this.configDataService.numBeatsInProject;
         newTrack.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
@@ -469,10 +483,11 @@ export class AppComponent {
         dawState['scale'] = this.configDataService.scale;
         dawState['key'] = this.configDataService.key;
         dawState['tempo'] = this.configDataService.tempo;
+        this.sequences = [];
         for(let trackNumber = 0; trackNumber < this.tracks.length; trackNumber++) {
             this.sequences.push(this.tracks[trackNumber].sequence)
         }
-        dawState['sequence'] = this.sequences
+        dawState['sequence'] = this.sequences.slice();
 
         return this.dawStateService.updateDawState(dawState).subscribe((data) => {
             this.configDataService.dawState = data;
@@ -507,13 +522,65 @@ export class AppComponent {
 
     exportMidiFile() {
         var timestamp = this.niceDateTimeStamp();
-        this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
+        this.dawStateService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
             this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
         });
     }
 
     exportToMidi() {
         this.updateDawState(this.exportMidiFile);
+    }
+
+    importMidi(file, target) {
+        let formData = new FormData();
+
+        formData.append("file", file, file.name);
+        
+        this.dawStateService.midiToSequence(formData).subscribe((data) => {
+            console.log('response from midi to sequence: ', data);
+            console.log('537: ', this.sequences);
+            
+
+            let importMidiModalToggle = document.getElementById('import-midi-toggle');
+            importMidiModalToggle.click();
+
+            this.importedMidiSequence = data['sequence'].slice();
+            this.importedMidiTempo = data['tempo'];
+            this.importedMidiFileName = file.name;
+        });
+
+        target.value = '';
+
+        // req.open("POST", '/upload/image');
+        // req.send(formData);
+        // this.addTrack(trackNameToAdd);
+    }
+
+    renderMidi() {
+        if(this.changeTempoWithMidiImport){
+            console.log('561', this.importedMidiTempo);
+            this.controlPanelForm.controls.tempo.setValue(this.importedMidiTempo);
+            this.controlPanelForm.value.tempo = this.importedMidiTempo;
+            this.configDataService.tempo = this.importedMidiTempo;
+        }
+
+        let trackNumber = 0;
+
+        if(this.sequences && this.sequences.length > 0 && this.sequences[0].length != 0) {
+            this.addTrack(this.importedMidiFileName);
+            trackNumber = this.sequences.length - 1;
+        } else {
+            this.sequences = [];
+        }
+
+        this.sequences[trackNumber] = this.importedMidiSequence;
+        this.tracks[trackNumber].sequence = this.importedMidiSequence;
+        this.tracks[trackNumber].triggerNoteDraw();
+        this.tracks[trackNumber].trackName = this.importedMidiFileName;
+        this.pianoRoll.setSequence(this.importedMidiSequence);
+        this.pianoRoll.refresh();
+        // this.pianoRoll.renderNotes(data['sequence']);
+        // this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
     }
 
     exportMidiAndLog() {
@@ -523,7 +590,7 @@ export class AppComponent {
         let lastGenerationLog = logs.slice(finalSeparator + 1).join("\n");
 
         var timestamp = this.niceDateTimeStamp();
-        this.generationService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
+        this.dawStateService.exportToMidi(this.configDataService.dawState).subscribe((data) => {
             this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
             this.downloadFile(lastGenerationLog, 'text/plain;charset=utf-8', 'composition-' + timestamp + '.txt');
         });

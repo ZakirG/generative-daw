@@ -12,6 +12,7 @@ import { PianoRollComponent } from './piano-roll.component';
 
 export class TrackComponent {
     @Input() trackNumber: number;
+    @Input() trackName: number;
     @Input() key: string;
     @Input() scale: Object;
     @Input() pianoRollOpen: boolean;
@@ -28,12 +29,15 @@ export class TrackComponent {
     trackChange = new EventEmitter<any>();
 
 
-    constructor(public configDataService: ConfigDataService) { }
+    constructor(public configDataService: ConfigDataService) { 
+        this.sequence = [];
+    }
 
     clearPianoRoll() {
-        for (var i = 0; i < this.gridState.length; i++) {
-            this.gridState[i]['timeStates'] = this.configDataService.makeEmptyTimeState();
-        }
+        // for (var i = 0; i < this.gridState.length; i++) {
+        //     this.gridState[i]['timeStates'] = this.configDataService.makeEmptyTimeState();
+        // }
+        this.sequence = [];
     }
 
     ngOnInit() { }
@@ -56,12 +60,18 @@ export class TrackComponent {
         this.gridState = track;
     }
 
+    triggerNoteDraw() {
+        this.renderNotes(this.sequence);
+    }
+
     renderNotes(notesToRender) {
-        this.clearPianoRoll();
-        var timeStateIndex = 0;
-        for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
-            this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
-        }
+        // this.clearPianoRoll();
+        
+        // var timeStateIndex = 0;
+        // console.log('rendering', this.sequence);
+        // for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
+        //     this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
+        // }
     }
 
     renderNotesInOneTimeStep(notesToRenderInThisTimeStep, timeStateIndex) {

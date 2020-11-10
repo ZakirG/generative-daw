@@ -5,6 +5,13 @@
 
 .track-controls, .track-right-pane {
     background: linear-gradient(#009ab5, #019bb7);
+    /* background: linear-gradient(#1d626d, #019bb7); */
+    color:white;
+    border-bottom:solid 1px #1d626d;
+}
+
+.track-number-column {
+    background: linear-gradient(#1d626d, #019bb7);
     color:white;
     border-bottom:solid 1px #1d626d;
 }
@@ -14,6 +21,15 @@
     color:white;
     font-weight:bold;
     font-size:16px;
+    padding:6px 5px 10px 13px;
+}
+
+.track-name {
+    margin-left:10px;
+    font-size:16px;
+    /* font-weight:bold; */
+    display:inline-block;
+    color:white;
     padding:6px 5px 10px 13px;
 }
 

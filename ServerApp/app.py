@@ -79,15 +79,25 @@ def update_daw_state():
 def get_constants():
     return json.dumps(constants.constants, default=set_default)
 
-@app.route('/midi', methods=['POST', 'OPTIONS'])
+@app.route('/sequence-to-midi', methods=['POST', 'OPTIONS'])
 @crossdomain(origin='*')
-def create_midi_file():
+def sequence_to_midi_file():
     content = request.get_json()
     filename, fp = midi_tools.create_midi_file(content)
     return send_file(filename,
         mimetype='audio/midi audio/x-midi',
         as_attachment=True,
         attachment_filename=filename)
+    
+@app.route('/midi-to-sequence', methods=['POST', 'OPTIONS'])
+@crossdomain(origin='*')
+def midi_file_to_sequence():
+    print('midi_file_to_sequence')
+    print(request.files)
+    content = request.get_json()
+
+    sequence, tempo = midi_tools.midi_file_to_sequence(request.files['file'])
+    return json.dumps({ 'sequence': sequence, 'tempo': tempo}, default=set_default)
 
 @app.errorhandler(404)
 def page_not_found(error):

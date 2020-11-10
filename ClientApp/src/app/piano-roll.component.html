@@ -1,4 +1,4 @@
-<div class="modal fade generation-modal" [id]="'generationModal' + trackNumber" tabindex="-1" role="dialog"
+<div class="modal fade custom-modal" [id]="'generationModal' + trackNumber" tabindex="-1" role="dialog"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -53,11 +53,11 @@
                         <span class="radio"></span>
                     </label>
                     <br />
-                    <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-target="#chordVoicings"
+                    <button class="custom-modal-collapsible-btn" data-toggle="collapse" data-target="#chordVoicings"
                         aria-expanded="true" aria-controls="chordVoicings" *ngIf="generationType == 'chords'">
                         Chord voicings
                     </button>
-                    <div class="generation-modal-collapsible collapse show" id="chordVoicings"
+                    <div class="custom-modal-collapsible collapse show" id="chordVoicings"
                         *ngIf="generationType == 'chords'">
                         <div class='row'>
                             <div class='col-6'>
@@ -118,12 +118,12 @@
                         </div>
                     </div>
 
-                    <button class="generation-modal-collapsible-btn" data-toggle="collapse"
+                    <button class="custom-modal-collapsible-btn" data-toggle="collapse"
                         data-target="#chordProgressions" aria-expanded="true" aria-controls="chordProgressions"
                         *ngIf="generationType == 'chords'">
                         Chord progressions
                     </button>
-                    <div class="generation-modal-collapsible collapse show" id="chordProgressions">
+                    <div class="custom-modal-collapsible collapse show" id="chordProgressions">
                         <div class='row'>
                             <div class='col-8'>
                                 <label class='form-label form-label-text' style='display:inline-block;'>
@@ -156,12 +156,12 @@
                         </div>
                     </div>
 
-                    <button class="generation-modal-collapsible-btn" data-toggle="collapse" data-toggle="collapse"
+                    <button class="custom-modal-collapsible-btn" data-toggle="collapse" data-toggle="collapse"
                         data-target="#voiceLeading" aria-expanded="true" aria-controls="voiceLeading"
                         *ngIf="generationType == 'chords'">
                         Voice leading
                     </button>
-                    <div class="generation-modal-collapsible collapse show" id="voiceLeading">
+                    <div class="custom-modal-collapsible collapse show" id="voiceLeading">
                         <div class='row'>
                             <div class='col-8'>
                                 <label class='form-label form-label-text' style='display:block;'

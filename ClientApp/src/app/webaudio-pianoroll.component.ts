@@ -213,6 +213,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     }
 
     renderNotes(sequence, playSound=true) {
+        console.log('current sequence ', sequence);
         for (let i = 0; i < sequence.length; i+=1) {
             this.addNoteWithoutRedraw(sequence[i], playSound, false);
         }
@@ -567,8 +568,6 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         return null;
     }
 
-
-    
     selAreaNote(t1,t2,n1,n2){
         let t, i=0, e=this.sequence[i];
         if(n1>n2)
