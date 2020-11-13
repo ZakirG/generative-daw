@@ -52,6 +52,7 @@ export class AppComponent {
     importedMidiSequence = [];
     importedMidiTempo : number;
     importedMidiFileName : string;
+    selectedTrackNumber = 0;
 
     public constructor(
         public titleService: Title,
@@ -97,7 +98,7 @@ export class AppComponent {
         });
 
         this.addTrack();
-        this.showPianoRoll(0);
+        this.createPianoRoll();
         this.updateDawState();
     }
 
@@ -165,21 +166,31 @@ export class AppComponent {
         this.configDataService.appLogs.push(this.configDataService.logSeparator)
     }
 
+    refreshTrackView() {
+        for (var i = 0; i < this.tracks.length; i++) { 
+            this.tracks[i].thisTrackIsSelected = false;
+        }
+        this.tracks[this.selectedTrackNumber].thisTrackIsSelected = true;
+
+    }
+
     registerTrackChange(event) {
         if(event['event'] == 'deleteTrack') {
             var trackInstance = this.tracks[event['trackNumber']];
             trackInstance.destroyReference();
             this.tracks.splice(event['trackNumber'], 1);
+            this.sequences.splice(event['trackNumber'], 1);
             for (var i = event['trackNumber']; i < this.tracks.length; i++) {
                 this.tracks[i].trackNumber = i;
             }
-            this.pianoRoll.trackNumber = -1;
+            this.selectedTrackNumber = 0;
+            this.refreshTrackView();
+            this.refreshPianoRoll();
         } else if (event['event'] == 'regionSelected') {
-            var trackInstance = this.tracks[event['trackNumber']];
-            var oldSelectedTrack = this.pianoRoll.trackNumber;
-            this.pianoRoll.gridState = trackInstance.gridState;
-            this.pianoRoll.trackNumber = trackInstance.trackNumber;
-            this.tracks[oldSelectedTrack].thisTrackIsSelected = false;
+            this.selectedTrackNumber = event['trackNumber'];
+            var trackInstance = this.tracks[this.selectedTrackNumber];
+            this.refreshTrackView();
+            this.refreshPianoRoll();
         }
 
         this.updateDawState();
@@ -444,15 +455,24 @@ export class AppComponent {
         // });
         newTrack.instance.gridState = this.configDataService.initializeEmptyGridState();
         this.tracks.push(newTrack.instance);
+        this.sequences.push([]);
+
+        if(this.tracks.length > 1) {
+            this.selectedTrackNumber = newTrack.instance.trackNumber;
+            this.refreshTrackView();
+            this.refreshPianoRoll();
+        }
     }
 
-    showPianoRoll(trackNumber) {
+    createPianoRoll() {
+        let trackNumber = 0;
         const factory = this.resolver.resolveComponentFactory(PianoRollComponent);
         var pianoRoll = this.container.createComponent(factory);
         pianoRoll.instance._ref = pianoRoll;
         pianoRoll.instance.key = this.configDataService.key;
         pianoRoll.instance.scale = this.configDataService.scale.name;
         pianoRoll.instance.trackNumber = trackNumber;
+        pianoRoll.instance.setSequence(this.sequences[trackNumber]);
         this.tracks[trackNumber].thisTrackIsSelected = true;
         pianoRoll.instance.noteDrawn.subscribe((event) => {
             this.registerNoteDrawn(event);
@@ -467,6 +487,31 @@ export class AppComponent {
             this.registerTrackChange(event);
         });
         this.pianoRoll = pianoRoll.instance;
+    }
+
+    refreshPianoRoll() {
+        this.pianoRoll.trackNumber = this.selectedTrackNumber;
+        
+        this.pianoRoll.setSequence(this.sequences[this.selectedTrackNumber]);
+        this.pianoRoll.refresh();
+
+        // this.pianoRoll.key = this.configDataService.key;
+        // this.pianoRoll.scale = this.configDataService.scale.name;
+        // this.pianoRoll.trackNumber = trackNumber;
+        // this.pianoRoll.setSequence(this.sequences[trackNumber]);
+        // this.tracks[trackNumber].thisTrackIsSelected = true;
+        // this.pianoRoll.noteDrawn.subscribe((event) => {
+        //     this.registerNoteDrawn(event);
+        // });
+        // this.pianoRoll.triggerQuickGenerate.subscribe((event) => {
+        //     this.registerTriggerQuickGenerate(event);
+        // });
+        // this.pianoRoll.newLogs.subscribe((event) => {
+        //     this.registerNewLogs(event);
+        // });
+        // this.pianoRoll.trackChange.subscribe((event) => {
+        //     this.registerTrackChange(event);
+        // });
     }
 
     updateDawState(callback=null) {
@@ -537,10 +582,6 @@ export class AppComponent {
         formData.append("file", file, file.name);
         
         this.dawStateService.midiToSequence(formData).subscribe((data) => {
-            console.log('response from midi to sequence: ', data);
-            console.log('537: ', this.sequences);
-            
-
             let importMidiModalToggle = document.getElementById('import-midi-toggle');
             importMidiModalToggle.click();
 
@@ -558,7 +599,6 @@ export class AppComponent {
 
     renderMidi() {
         if(this.changeTempoWithMidiImport){
-            console.log('561', this.importedMidiTempo);
             this.controlPanelForm.controls.tempo.setValue(this.importedMidiTempo);
             this.controlPanelForm.value.tempo = this.importedMidiTempo;
             this.configDataService.tempo = this.importedMidiTempo;
@@ -577,8 +617,9 @@ export class AppComponent {
         this.tracks[trackNumber].sequence = this.importedMidiSequence;
         this.tracks[trackNumber].triggerNoteDraw();
         this.tracks[trackNumber].trackName = this.importedMidiFileName;
-        this.pianoRoll.setSequence(this.importedMidiSequence);
-        this.pianoRoll.refresh();
+        this.selectedTrackNumber = trackNumber;
+        this.refreshTrackView();
+        this.refreshPianoRoll();
         // this.pianoRoll.renderNotes(data['sequence']);
         // this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
     }

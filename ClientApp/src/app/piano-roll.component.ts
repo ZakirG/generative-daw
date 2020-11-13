@@ -156,15 +156,11 @@ export class PianoRollComponent implements AfterViewInit{
     }
 
     renderNotes(sequence) {
-        console.log('piano rendering ', sequence)
         this.webAudioPianoRoll.instance.renderNotes(sequence, false);
     }
 
     setSequence(input) {
-        console.log('setting sequence to ', input);
         this.sequence = input;
-        console.log('now the sequence is ', this.sequence);
-        console.log('this: ', this);
     }
 
     // TODO: refactor
@@ -173,23 +169,11 @@ export class PianoRollComponent implements AfterViewInit{
         this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
         this.renderNotes(this.sequence);
         this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
-        return;
-        // var timeStateIndex = 0;
-        // for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
-        //     this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
-        // }
     }
 
     refresh() {
-        // this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
-        console.log('179 refresh with', this.sequence);
+        this.webAudioPianoRoll.instance.clear();
         this.renderNotes(this.sequence);
-        this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
-        return;
-        // var timeStateIndex = 0;
-        // for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
-        //     this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
-        // }
     }
 
     renderNotesInOneTimeStep(notesToRenderInThisTimeStep, timeStateIndex) {

@@ -34,7 +34,6 @@ export class DawStateService {
     }
 
     midiToSequence(formData) {
-        console.log('posting to ', this.midiToSequenceURL);
         return this.http.post(this.midiToSequenceURL, formData, {responseType: 'json'});
     }
 }

@@ -69,6 +69,10 @@
     border:0;
 }
 
+.track-controls, .region-preview {
+    height:167px;
+}
+
 .track {
     opacity:0.8;
 }

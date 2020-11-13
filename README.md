@@ -5,23 +5,27 @@ GenerativeDAW is a digital audio workstation webapp with tools for automated and
 Built with Flask, Angular 8, and Python 3. Tested with Jasmine.
 
 ## Overview
+This app composes music.
 
-This app applies algorithmic composition processes suggested by classical and jazz lineages to create compositions matching user-applied constraints. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL for sound designing and songwriting. In contrast with other generative composition tools, this application does not apply machine learning. It is meant to be used as an assisitive composition tool by musicians.
+That is, it applies algorithmic composition processes suggested by classical and jazz lineages to generate musically sensible compositions matching user-applied constraints. After editing the result to taste, application state can be downloaded as a MIDI file and loaded into a conventional DAW like Logic Pro X or FL for sound designing and songwriting. 
+
+In contrast with other generative composition tools, this application does not apply machine learning. It is meant to be used as an assisitive composition tool by musicians.
 
 
 #### Music generation features:
-- Generate melodies and chord progressions in a given key, scale, and octave
-- Configurably incorporate tasteful chord voicings from the built-in voicings library
-- Configurably incorporate popular chord progressions into compositions
+- Use the classical chord leading system construct chord progressions
+- Configurably incorporate tasteful voicings from the built-in chord voicings library
 - Specify the contour shape of a chord progression's topline (static, downward, up and then down...)
+- Generate melodies and chord progressions in a given key, scale, and octave
+- Configurably incorporate popular chord progressions into compositions
 - Configure probabilities for the inclusion of non-diatonic, borrowed, altered dominant chords
-- Configure probability to use the classical chord leading chart to select follow-up chords
 - Logging panel in UI provides step-by-step explanations of the result generation method
 
 #### General features:
-- Export application state to a MIDI file and optionally download its generation log
-- Quickly generate compositions with the Quick Generate button that reruns the last-applied settings and clicks play
 - Add tracks and edit notes in a resizable piano roll window
+- Export application state to a MIDI file and optionally download its generation log
+- Import user-provided MIDI files for automated manipulation
+- Quickly generate compositions with the Quick Generate button that reruns the last-applied settings and clicks play
 - Chords can be rolled bottom-up during playback with a configurable note roll offset
 - UI automatically calculates and labels chords with their names and scale degrees
 - Cycle mode toggle button for looped playback

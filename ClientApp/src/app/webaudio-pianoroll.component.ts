@@ -213,7 +213,6 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     }
 
     renderNotes(sequence, playSound=true) {
-        console.log('current sequence ', sequence);
         for (let i = 0; i < sequence.length; i+=1) {
             this.addNoteWithoutRedraw(sequence[i], playSound, false);
         }
