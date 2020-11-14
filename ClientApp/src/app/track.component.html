@@ -1,8 +1,10 @@
 <div class='track' [class.track-selected]="thisTrackIsSelected">
     <div class='row'>
         <div class='col-2 track-controls'>
-            <span class='track-number'>{{ trackNumber + 1 }}.</span>
-            <span class='track-name'>{{ trackName }}</span>
+            <div class='track-header'>
+                <span class='track-number'>{{ trackNumber + 1 }}.</span>
+                <span class='track-name'>{{ trackName }}</span>
+            </div>
         </div>
 
         <div class="col-9 region-preview" (click)="toggleRegionSelected()">

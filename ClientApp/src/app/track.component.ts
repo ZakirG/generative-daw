@@ -7,7 +7,7 @@ import { PianoRollComponent } from './piano-roll.component';
     selector:    'track',
     templateUrl: './track.component.html',
     providers:  [ ],
-    styleUrls: ['./track.component.css', './app.component.css']
+    styleUrls: ['./track.component.css', './app.component.css', './form-styles.css']
 })
 
 export class TrackComponent {

@@ -1,3 +1,10 @@
+.truncate {
+    white-space: nowrap;
+    max-width:100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 .custom-modal.modal {
     background: rgba(0,0,0,0.4);
 }

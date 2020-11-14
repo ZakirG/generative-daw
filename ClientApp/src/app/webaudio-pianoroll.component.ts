@@ -132,11 +132,11 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             defvelo:            {type:Number, value:100},
             collt:              {type:String, value:"#a8efff"},
             coldk:              {type:String, value:"#77d1e6"},
-            colgrid:            {type:String, value:"#6e6e6e"},
+            colgrid:            {type:String, value:"#eee"},
             colnote:            {type:String, value:"#ff2e7b"},
-            colnotesel:         {type:String, value:"#f22"},
+            colnotesel:         {type:String, value:"#ff2e7b"},
             colnoteborder:      {type:String, value:"#000"},
-            colnoteselborder:   {type:String, value:"#fff"},
+            colnoteselborder:   {type:String, value:"#919090"},
             colrulerbg:         {type:String, value:"#008fa8"},
             colrulerfg:         {type:String, value:"#fff"},
             colrulerborder:     {type:String, value:"#000"},
@@ -1094,14 +1094,15 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     }
     
     redrawMarker(){
-        if(!this.initialized)
-            return;
-        const cur=(this.cursor-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
-        this.cursorimg.style.left=(cur+this.cursoroffset)+"px";
-        const start=(this.markstart-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
-        this.markstartimg.style.left=(start+this.markstartoffset)+"px";
-        const end=(this.markend-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
-        this.markendimg.style.left=(end+this.markendoffset)+"px";
+        return;
+        // if(!this.initialized)
+        //     return;
+        // const cur=(this.cursor-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
+        // this.cursorimg.style.left=(cur+this.cursoroffset)+"px";
+        // const start=(this.markstart-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
+        // this.markstartimg.style.left=(start+this.markstartoffset)+"px";
+        // const end=(this.markend-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
+        // this.markendimg.style.left=(end+this.markendoffset)+"px";
     }
     
     redrawGrid(){

@@ -9,7 +9,7 @@
     padding:0;
     resize:vertical;
     overflow:hidden;
-    height:240px;
+    height:340px;
 }
 
 .piano-roll-wrapper .row {
@@ -237,7 +237,7 @@ span.note-label[data-note='C'] {
     width:100%;
     display:inline-block;
     padding:10px 5px;
-    color:white;
+    color:#eee;
     user-select:none;
 }
 
@@ -253,7 +253,7 @@ label.disabled {
 .piano-roll-input-group {
     padding-left:5px;
     margin-top:15px;
-    color:black;
+    color:#eee;
 }
 
 .piano-roll-input-group input {

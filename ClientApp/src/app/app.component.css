@@ -83,7 +83,7 @@ button:focus, button:active, input:focus, input:active, select:focus, select:act
     border:none;
     letter-spacing: 1px;
     font-weight:500;
-    color:white;
+    color:#eee;
 }
 
 #top-toolbar button:hover {
@@ -207,8 +207,8 @@ input[type=number] {
     padding: 7px 20px;
     color: #1d626d;
     font-size:12px;
-/*     background:linear-gradient(#008fa8, #019bb7); */
-    background: linear-gradient(#009ab5, #019bb7);
+/*  background: linear-gradient(#009ab5, #019bb7); */
+    background: linear-gradient(#008fa8, #019bb7);
     border-top:solid 1px #1d626d;
     border-bottom:solid 1px #1d626d;
     width:100%;
@@ -219,38 +219,28 @@ input[type=number] {
     height:136px;
 }
 
-.control-bar-button {
-    border: solid black 1px;
+.control-bar-button, .action-button {
+    border: solid 1px #1d626d;
     border-radius:2px;
-    padding:5px 10px;
-    color:white;
-    background:#006e82;
+    padding:7px 10px;
+    color:#333;
+    font-weight:bold;
+    letter-spacing: 0.5px;
+    background: #75ebff;
     transition:color .2s, border-color .2s;
     -webkit-transition:color .2s, border-color .2s;
     -moz-transition:color .2s, border-color .2s;
+    font-size:12px;
 }
 
-.control-bar-button:hover {
-    border-color:white;
-}
+/* .control-bar-button:hover {
+    border-color:black;
+} */
 
 
 .action-button {
-    border: solid black 1px;
-    color:white;
-    padding:5px 10px;
-    border-radius:2px;
-    font-size:12px;
     margin:10px 10px 0 5px;
     width:250px;
-    background:#006e82;
-    transition:color .2s, border-color .2s;
-    -webkit-transition:color .2s, border-color .2s;
-    -moz-transition:color .2s, border-color .2s;
-}
-
-.action-button:hover {
-    border-color: white;
 }
 
 
