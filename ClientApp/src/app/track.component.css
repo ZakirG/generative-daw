@@ -167,13 +167,13 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 .piano-metadata {
     margin:0px 0 10px 0;
-    padding:0 15px 0 5px;
+    padding:10px 15px 0 5px;
+    font-size:12px;
+    color:#212529;
 }
 
 .chord-data {
     border-radius: 2px;
-    font-size:10px;
-    color:#1d626d;
 }
 
 .chord-name {
@@ -182,5 +182,8 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     height:15px;
 }
 
+.track-metadata-header {
+    font-weight:bold;
+}
 
 

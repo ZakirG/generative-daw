@@ -29,6 +29,6 @@ class Generator:
         if len(constants['scales'][self.scale]['intervals']) < 7:
             self.parent_scale_code = constants['scales'][self.scale]['parent_scale']
             self.parent_scale_allowed_notes = get_allowed_notes(self.key, self.parent_scale_code, [3])
-        
+        self.track_number = content['trackNumber']
         # We measure "beats" in whole notes. Each chord is a whole note.
         self.current_beat = 0

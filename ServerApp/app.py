@@ -16,8 +16,9 @@ CORS(app)
 BASE_URL = os.path.abspath(os.path.dirname(__file__))
 CLIENT_APP_FOLDER = os.path.join(BASE_URL, "ClientApp")
 
-DawState = {}
+DawState = {'chord_names': [[]], 'chord_degrees': [[]]}
 ClientLogger = ClientLogger()
+# Maps hashed chord sets to names. One dict for each track
 
 def set_default(obj):
     if isinstance(obj, set):
@@ -38,7 +39,7 @@ def generate_melody():
     mel_generator = MelodyGenerator(content)
     result = mel_generator.generate_melody()
     
-    response = {'generationResult' : result}
+    response = {'generation_result' : result}
     return json.dumps(add_logs_to_response(response))
 
 @app.route('/generate/chords', methods=['POST', 'OPTIONS'])
@@ -48,8 +49,8 @@ def generate_chords():
     chord_generator = ChordsGenerator(content)
     result_chords, result_chord_names = chord_generator.generate_chords()
 
-    DawState['chord_names'] = result_chord_names
-    response = {'generationResult' : result_chords}
+    DawState['chord_names'][content['trackNumber']] = result_chord_names
+    response = {'generation_result' : result_chords, 'chord_names': result_chord_names}
     return json.dumps(add_logs_to_response(response))
 
 @app.route('/daw-state', methods=['POST', 'OPTIONS'])
@@ -66,7 +67,22 @@ def update_daw_state():
     DawState['key'] =  key
     DawState['tempo'] =  tempo
     DawState['tracks'] =  tracks
-    chord_names, chord_degrees = name_chords_in_tracks(tracks, key, scale)
+
+    # # if DawState['chord_names']:
+    # #     print('bout ot build cache', DawState['chord_names'] )
+    # #     for i in range(len(sequences)):
+    # #         for name in DawState['chord_names'][i]:
+    # #             chord_name_caches[i][str(sequences[i]] = name
+    # # else:
+    # #     DawState['chord_names'] = []
+    # #     DawState['chord_degrees'] = []
+    # #     for i in range(len(sequences)):
+    # #         DawState['chord_names'].append({})
+    # #         DawState['chord_degrees'].append({})
+    # print('built cache', chord_name_caches)
+
+
+    chord_names, chord_degrees = name_chords_in_tracks(sequences, key, scale)
     DawState['chord_names'] = chord_names
     DawState['chord_degrees'] = chord_degrees
     DawState['sequences'] = sequences

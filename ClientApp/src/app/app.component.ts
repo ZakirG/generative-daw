@@ -25,7 +25,7 @@ export class AppComponent {
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
     constants: any;
-    inCycleMode = true;
+    inCycleMode = false;
     pendingTimeouts = [];
     sequences = [];
     
@@ -140,12 +140,11 @@ export class AppComponent {
         }
 
         var trackNumber = event['track'];
-        var track = this.tracks[trackNumber];
         this.tracks[trackNumber].gridState = this.pianoRoll.gridState;
         this.tracks[trackNumber].sequence = this.pianoRoll.sequence;
         this.tracks[trackNumber].triggerNoteDraw();
         
-        // this.updateDawState();
+        this.updateDawState();
     }
 
     registerTriggerQuickGenerate(event) {
@@ -174,7 +173,7 @@ export class AppComponent {
 
     }
 
-    registerTrackChange(event) {
+    registerTrackChange(event, updateDawState=true) {
         if(event['event'] == 'deleteTrack') {
             var trackInstance = this.tracks[event['trackNumber']];
             trackInstance.destroyReference();
@@ -193,7 +192,11 @@ export class AppComponent {
             this.refreshPianoRoll();
         }
 
-        this.updateDawState();
+        this.configDataService.dawState.sequences = this.sequences;
+
+        if(updateDawState) {
+            this.updateDawState();
+        }
     }
 
     togglePlayState() {
@@ -218,24 +221,13 @@ export class AppComponent {
         // Build chords
         for (let track of this.tracks) {
             this.playSequence(track.sequence);
-            // for (var timeStateIndex = 0; timeStateIndex < this.configDataService.numDivisions; timeStateIndex++) {
-            //     let playOffsetDueToRoll = 0;
-            //     for (var noteIndex = this.notes.length - 1; noteIndex >= 0;  noteIndex--) {
-            //         var note = track.gridState[noteIndex];
-            //         if(note['timeStates'][timeStateIndex]) {
-            //             // beat number * seconds per beat
-            //             var timeToPlay = (timeStateIndex / this.configDataService.numSubdivisionsPerBeat) * (60 / this.configDataService.tempo) + playOffsetDueToRoll;
-            //             this.playNote(note.note, note.octave, timeToPlay);
-            //             playOffsetDueToRoll += this.configDataService.playOffsetPerNoteDueToRoll
-            //         }
-            //     }
-            // }
         }
         
 
         var root = this;
     
         if(this.inCycleMode) {
+            console.log('setting play toggle in cycle mode');
             var pendingTimeout = setTimeout(function(){
                 root.configDataService.inPlayState = false;
                 root.togglePlayState();
@@ -243,9 +235,9 @@ export class AppComponent {
             this.pendingTimeouts.push(pendingTimeout);
         }
         else {
-            setTimeout(function(){
-                root.configDataService.inPlayState = false;
-            }, 1000 * root.configDataService.numBeatsInProject * (60 / root.configDataService.tempo) );
+            // setTimeout(function() {
+            //     this.togglePlayState();
+            // }, 1000 * root.configDataService.numBeatsInProject * (60 / root.configDataService.tempo) );
         }
     }
 
@@ -265,9 +257,8 @@ export class AppComponent {
         this.releaseTime = this.secondsPerTick * 2; // 1 tick of release
     }
 
-    playSequence(sequence) {
-        // Preprocess sequence: add user-supplied note roll offsets to make the
-        // play-style sound prettier and more legible
+    rollSequence(sequence) {
+        // Preprocess sequence: add user-supplied note roll offsets to make the play-style sound prettier
         var lastTimeStep = -1;
         let currentOffset = this.configDataService.playOffsetPerNoteDueToRoll;
         for(let i = 0; i < sequence.length; i++) {
@@ -277,8 +268,12 @@ export class AppComponent {
                 lastTimeStep = note['t'];
                 sequence[i]['t'] = sequence[i]['t'] + currentOffset;
             }
-
         }
+        return sequence;
+    }
+
+    playSequence(sequence) {
+        sequence = this.rollSequence(sequence);
 
         function Interval() {
             const currentTime = this.actx.currentTime;
@@ -511,7 +506,8 @@ export class AppComponent {
         
         this.pianoRoll.setSequence(this.sequences[this.selectedTrackNumber]);
         this.pianoRoll.refresh();
-
+        
+        this.registerTrackChange(null);
         // this.pianoRoll.key = this.configDataService.key;
         // this.pianoRoll.scale = this.configDataService.scale.name;
         // this.pianoRoll.trackNumber = trackNumber;

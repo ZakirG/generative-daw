@@ -1,6 +1,6 @@
 import random
 from constants import constants
-from chord_knowledge import chord_leading_chart, good_voicings, chord_charts, good_chord_progressions
+from chord_knowledge import chord_leading_chart, good_voicings, chord_charts, good_chord_progressions, chord_name_caches
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set, pick_n_random_notes, pretty_print_progression
 from client_logging import ClientLogger
 import midi_tools
@@ -8,7 +8,7 @@ import music_theory
 from music_theory import determine_chord_name, get_allowed_notes, \
     transpose_note_n_semitones, build_chord_from_voicing, label_voicings_with_metadata, \
     roman_numeral_to_note, chords_are_equal, topline_note_passes_topline_constraints, non_topline_note_meets_topline_constraints, \
-        chord_passes_topline_contour_constraint
+        chord_passes_topline_contour_constraint, convert_chord_to_cache_key
 import sys, traceback
 import json
 from generator import Generator
@@ -558,10 +558,15 @@ class ChordsGenerator(Generator):
         ClientLogger.log('Generation settings: {}'.format(self.all_settings))
 
         result_chord_progression_labeled_with_midi_numerals = []
-        for chord in result_chord_progression:
+        for i in range(len(result_chord_progression)):
+            chord = result_chord_progression[i]
             labeled_chord = []
             for note in chord:
                 note['numeral'] = midi_tools.note_to_numeral(note)
                 labeled_chord.append(note)
             result_chord_progression_labeled_with_midi_numerals.append(labeled_chord)
+        
+            cache_key = convert_chord_to_cache_key(chord)
+            chord_name_caches[self.track_number][cache_key] = result_chord_names[i]
+        
         return result_chord_progression_labeled_with_midi_numerals, result_chord_names

@@ -1,6 +1,6 @@
 from constants import constants
 import chord_knowledge
-from chord_knowledge import chord_charts, good_voicings
+from chord_knowledge import chord_charts, good_voicings, chord_name_caches
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set
 import music21
 import midi_tools
@@ -125,6 +125,52 @@ def correct_mispelled_enharmonic_notes_according_to_key_sig(key, scale_code, not
         if appended_already == False:
             correct_spelling_of_note_set.append(note)
     return correct_spelling_of_note_set
+
+
+def convert_chord_to_cache_key(note_list):
+    sequence = []
+    time_state_index = 0
+    for i in range(len(note_list)):
+        sequence.append(note_list[i]['numeral'])
+    return str(sequence)
+
+def convert_sequence_to_cache_key(sequence):
+    result = []
+    time_state_index = 0
+    for i in range(len(sequence)):
+        result.append(sequence[i]['n'])
+    return str(result)
+  
+
+def determine_chord_name_from_sequence(sequence, key, scale, track_number):
+    print('determining chord name for ', sequence)
+    for octave in list(range(-3, 3, 1)):
+        transposed_sequence = []
+        for i in range(len(sequence)):
+            transposed_sequence.append(sequence[i].copy())
+            transposed_sequence[i]['n'] += octave * 12
+        as_cache_key = convert_sequence_to_cache_key(transposed_sequence)
+        if as_cache_key in chord_name_caches[track_number]:
+            return chord_name_caches[track_number][as_cache_key]
+    return '~'
+
+    # notes.reverse()
+    # notes = list(map(lambda x: music21.pitch.Pitch(x).midi, notes))
+    # c = music21_chords.Chord(list(notes))
+    # full_name = c.pitchedCommonName
+    # abbreviation = full_name.replace('minor', 'min'
+    #     ).replace('major', 'maj').replace('seventh', '7'
+    #     ).replace('augmented', 'aug').replace('diminished', 'dim'
+    #     ).replace('incomplete', '').replace('dominant', '').replace('-', ' '
+    #     ).replace('E#', 'F')
+    
+    # if abbreviation.startswith('enharmonic equivalent'):
+    #     enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
+    #     matches = re.search(enharmonicRegex, abbreviation)
+    #     abbreviation = matches.group(2) + ' ' + matches.group(1)
+        
+    # return (abbreviation, determine_chord_roman_name(abbreviation, key, scale, c))
+    
 
 def determine_chord_name(chord, key, scale):
     """
@@ -293,16 +339,29 @@ def transpose_notes_to_grid(notes):
             grid.append(notes_at_this_step)
         return grid
 
-def name_chords_in_tracks(tracks, key, scale):
-    grid_by_tracks = list(map(transpose_notes_to_grid, tracks))
-    coupled = []
-    for grid in grid_by_tracks:
-        coupled.append(list(map(lambda x: determine_chord_name(x, key, scale), grid)))
-    
-    chord_names_by_tracks = [ [x[0] for x in track] for track in coupled ]
-    chord_degrees_by_tracks = [ [x[1] for x in track] for track in coupled ]
-    
-    return chord_names_by_tracks, chord_degrees_by_tracks   
+def name_chords_in_tracks(sequences, key, scale):
+    last_time_step = 0
+    all_chord_names = []
+    for s in range(len(sequences)):
+        chord_names = []
+        current_chord_group = []
+        for i in range(len(sequences[s])):
+            note = sequences[s][i]
+            if last_time_step != sequences[s][i]['t']:
+                name = determine_chord_name_from_sequence(current_chord_group, key, scale, s)
+                chord_names.append(name)
+                current_chord_group = []
+                last_time_step = sequences[s][i]['t']
+            current_chord_group.append(note)
+        all_chord_names.append(chord_names)
+
+    # names = [[x[0] for x in track] for track in coupled ]
+    # degrees = [[x[1] for x in track] for track in coupled ]
+    # print('resultzzz: ' , chord_names)
+    chord_names = [ [ x[0] for x in track] for track in all_chord_names ]
+    chord_degrees = [ [ x[1] for x in track] for track in all_chord_names ]
+
+    return chord_names, chord_degrees
 
 def chord_to_topline_int(chord):
     """

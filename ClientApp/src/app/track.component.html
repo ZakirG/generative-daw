@@ -8,38 +8,15 @@
         </div>
 
         <div class="col-9 region-preview">
-            <div class='col note-grid'>
-                <ul class='note-rows'>
-                    <li *ngFor="let note of gridState"
-                        class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
-                        <label class="grid-state-wrapper"
-                            *ngFor="let state of note.timeStates; let index= index;"
-                            [style.width]="configDataService.stateWidth"
-                            attr.data-active="{{ note.timeStates[index] }}"
-                            [attr.id]="note.id"
-                            [attr.data-step]="index"
-                            >
-                            <input class='grid-state' type='checkbox'
-                                attr.data-active="{{ state }}"
-                                [(ngModel)]="note.timeStates[index]"
-                                disabled
-                                >
-                        </label>
-                    </li>
-                </ul>
-             </div>
-             <div class='row piano-metadata'>
-                    <!--
-<div class="col-1">
+            <div class='row piano-metadata'>
+                    <div class='col chord-data' *ngIf="configDataService.dawState.chord_names[trackNumber]">
+                        <!-- {{ configDataService.dawState.chord_names[trackNumber].toString().replaceAll(",", " -> ") }}
+                        <br/>
+
+                        <br/> -->
+                        <span class='track-metadata-header'>Chords</span>: {{ configDataService.dawState.chord_degrees[trackNumber].toString().replaceAll(",", " -> ") }}
                     </div>
- -->
-                    <div class='col chord-data' >
-                        <span *ngFor="let chord of configDataService.dawState.chord_names[trackNumber]"
-                                class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
-                        <span *ngFor="let chord of configDataService.dawState.chord_degrees[trackNumber]"
-                            class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
-                    </div>
-                </div>
+            </div>
         </div>
 
         <div class='col-1 track-right-pane'>

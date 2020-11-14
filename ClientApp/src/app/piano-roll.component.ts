@@ -5,6 +5,7 @@ import { ConfigDataService } from './configdata.service';
 import { interact } from '../assets/js/interact.min.js';
 import { WebAudioPianoRollComponent } from './webaudio-pianoroll.component';
 import { config } from 'process';
+import { DawStateService } from './dawstate.service';
 declare var require: any
 const interact = require('interactjs');
 
@@ -58,6 +59,7 @@ export class PianoRollComponent implements AfterViewInit{
     constructor(
             public generationService: GenerationService, 
             public configDataService: ConfigDataService,
+            public dawStateService: DawStateService,
             public resolver: ComponentFactoryResolver) {
         this.gridState = this.configDataService.initializeEmptyGridState();
         this.scale = this.configDataService.scale;
@@ -127,11 +129,18 @@ export class PianoRollComponent implements AfterViewInit{
 
     generate(generationOptions, isQuickGenerate) {
         var generatedNotes = [];
+        generationOptions['trackNumber'] = this.trackNumber;
         return this.generationService.generate(generationOptions).subscribe((data) => {
-            generatedNotes = data['generationResult'];
-            console.log('generationResult: ', generatedNotes);
+            generatedNotes = data['generation_result'];
+            let chord_names = [];
+            let chord_degrees = [];
+            for (let i = 0; i < data['chord_names'].length; i+=1) {
+                chord_names.push(data['chord_names'][i][0]);
+                chord_degrees.push(data['chord_names'][i][1]);
+            }
+            this.configDataService.dawState.chord_names[this.trackNumber] = chord_names;
+            this.configDataService.dawState.chord_degrees[this.trackNumber] = chord_degrees;
             this.renderNotesFromNoteList(generatedNotes);
-            // this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             let logs = data['logs'];
             
             if(isQuickGenerate) {
@@ -142,12 +151,8 @@ export class PianoRollComponent implements AfterViewInit{
                 });
             } else {
                 this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
-                // let logs = data['logs'];
                 this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
             }
-
-            // let logs = data['logs'];
-            // this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
         });
     }
 

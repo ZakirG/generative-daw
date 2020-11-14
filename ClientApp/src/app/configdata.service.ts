@@ -53,6 +53,7 @@ export class ConfigDataService {
         this.stateWidth = (100 / this.numDivisions)  + '%';
         this.dawState.chord_names = [[]];
         this.dawState.chord_degrees = [[]];
+        this.dawState.sequences = [[]];
         this.playOffsetPerNoteDueToRoll = 0.01;
 
         var noteColors = [
