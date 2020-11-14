@@ -69,7 +69,7 @@ def create_midi_file(daw_state):
 
     return ("midi-export.mid", output_file)
 
-def midi_file_to_sequence(midi_file):
+def midi_file_to_sequence(midi_file, speed_change):
     """
     Using MIDO to translate a midi file into a sequence.
     A sequence is a list of dicts of this form:
@@ -131,8 +131,8 @@ def midi_file_to_sequence(midi_file):
             
             sequence_note = {
                 'n': int(note_numeral) + 24,
-                't': (note_start_time / 60),
-                'g': (note_sustain / 60)
+                't': (note_start_time / 60 / speed_change),
+                'g': (note_sustain / 60 / speed_change)
             }
             notes_as_sequence.append(sequence_note)
             message_index += 1

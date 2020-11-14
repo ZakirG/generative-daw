@@ -426,3 +426,8 @@ input[type=number] {
 .load-spinner.spinner-gone {
     display:none;
 }
+
+.import-midi-form {
+    width: 100%;
+    
+}

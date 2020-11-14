@@ -358,8 +358,11 @@ def name_chords_in_tracks(sequences, key, scale):
     # names = [[x[0] for x in track] for track in coupled ]
     # degrees = [[x[1] for x in track] for track in coupled ]
     # print('resultzzz: ' , chord_names)
-    chord_names = [ [ x[0] for x in track] for track in all_chord_names ]
-    chord_degrees = [ [ x[1] for x in track] for track in all_chord_names ]
+    try:
+        chord_names = [ [ x[0] for x in track] for track in all_chord_names ]
+        chord_degrees = [ [ x[1] for x in track] for track in all_chord_names ]
+    except:
+        return [[]], [[]]
 
     return chord_names, chord_degrees
 

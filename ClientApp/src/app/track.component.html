@@ -10,11 +10,9 @@
         <div class="col-9 region-preview">
             <div class='row piano-metadata'>
                     <div class='col chord-data' *ngIf="configDataService.dawState.chord_names[trackNumber]">
-                        <!-- {{ configDataService.dawState.chord_names[trackNumber].toString().replaceAll(",", " -> ") }}
-                        <br/>
-
-                        <br/> -->
                         <span class='track-metadata-header'>Chords</span>: {{ configDataService.dawState.chord_degrees[trackNumber].toString().replaceAll(",", " -> ") }}
+                        <br/> <br/>
+                        <span class='track-metadata-header' *ngIf="importedFileName != ''">Imported from:</span> {{ importedFileName }}
                     </div>
             </div>
         </div>

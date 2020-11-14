@@ -109,8 +109,12 @@ def sequence_to_midi_file():
 @crossdomain(origin='*')
 def midi_file_to_sequence():
     content = request.get_json()
+    print(request)
+    print(request.files)
+    midi_speed_change = float(request.form['midiSpeedChange'])
+    print('speed: ',  midi_speed_change)
 
-    sequence, tempo = midi_tools.midi_file_to_sequence(request.files['file'])
+    sequence, tempo = midi_tools.midi_file_to_sequence(request.files['file'], midi_speed_change)
     return json.dumps({ 'sequence': sequence, 'tempo': tempo}, default=set_default)
 
 @app.errorhandler(404)

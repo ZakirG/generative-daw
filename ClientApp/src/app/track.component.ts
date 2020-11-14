@@ -13,13 +13,14 @@ import { PianoRollComponent } from './piano-roll.component';
 export class TrackComponent {
     @Input() trackNumber: number;
     @Input() trackName: number;
+    @Input() importedFileName: string;
     @Input() key: string;
     @Input() scale: Object;
     @Input() pianoRollOpen: boolean;
-    @Input() gridState: any;
     @Input() sequence: any;
     @Input() notes: Array<any>;
     @Input() thisTrackIsSelected: boolean;
+    
     _ref: any;
 
     @Output()
@@ -30,13 +31,6 @@ export class TrackComponent {
 
 
     constructor(public configDataService: ConfigDataService) { 
-        this.sequence = [];
-    }
-
-    clearPianoRoll() {
-        // for (var i = 0; i < this.gridState.length; i++) {
-        //     this.gridState[i]['timeStates'] = this.configDataService.makeEmptyTimeState();
-        // }
         this.sequence = [];
     }
 
@@ -53,35 +47,5 @@ export class TrackComponent {
 
     destroyReference() {
         this._ref.destroy();
-    }
-
-    refresh() {
-        var track = this.configDataService.dawState.tracks[this.trackNumber];
-        this.gridState = track;
-    }
-
-    triggerNoteDraw() {
-        this.renderNotes(this.sequence);
-    }
-
-    renderNotes(notesToRender) {
-        // this.clearPianoRoll();
-        
-        // var timeStateIndex = 0;
-        // console.log('rendering', this.sequence);
-        // for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
-        //     this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
-        // }
-    }
-
-    renderNotesInOneTimeStep(notesToRenderInThisTimeStep, timeStateIndex) {
-        for (let noteToRender of notesToRenderInThisTimeStep) {
-            for (var noteIndex = 0; noteIndex < this.gridState.length; noteIndex++) {
-                if(this.gridState[noteIndex].note == noteToRender.note && this.gridState[noteIndex].octave == noteToRender.octave) {
-                    this.gridState[noteIndex]['timeStates'][timeStateIndex] = true;
-                    break;
-                }
-            }
-        }
     }
 }

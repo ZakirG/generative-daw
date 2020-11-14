@@ -25,6 +25,9 @@ export class ConfigDataService {
     toplineContours : any;
     logSeparator = '----------';
     appLogs = ['Welcome to GenerativeDAW =)', this.logSeparator];
+    midiSpeedChange : number;
+    midiSpeedOptions : any;
+    changeTempoWithMidiImport: any;
     
     keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
@@ -55,6 +58,9 @@ export class ConfigDataService {
         this.dawState.chord_degrees = [[]];
         this.dawState.sequences = [[]];
         this.playOffsetPerNoteDueToRoll = 0.01;
+        this.midiSpeedChange = 8; // 1;
+        this.midiSpeedOptions = [0.125, 0.25, 0.5, 1, 2, 4, 8];
+        this.changeTempoWithMidiImport = false;
 
         var noteColors = [
           {'color' : 'white', 'note' : 'b' },

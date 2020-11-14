@@ -24,10 +24,13 @@ export class AppComponent {
     audioBuffers: Object;
     queuedSounds: Array<any>;
     controlPanelForm: FormGroup;
+    importMidiForm: FormGroup;
     constants: any;
     inCycleMode = false;
     pendingTimeouts = [];
     sequences = [];
+    importMidiFormData: any;
+    importMidiFileName: any;
     
     pageLoaded = false;
     pageReady = false;
@@ -48,7 +51,6 @@ export class AppComponent {
     preload = 1.0;
     pendingIntervals = [];
     releaseTime : number;
-    changeTempoWithMidiImport = true;
     importedMidiSequence = [];
     importedMidiTempo : number;
     importedMidiFileName : string;
@@ -88,12 +90,17 @@ export class AppComponent {
             numBeatsInProject: new FormControl(this.configDataService.numBeatsInProject)
         });
         
+        this.importMidiForm = new FormGroup({
+            midiSpeedChange: new FormControl(this.configDataService.midiSpeedChange),
+            changeTempoWithMidiImport: new FormControl(this.configDataService.changeTempoWithMidiImport),
+        });
+
         this.http.get(this.constantsURL).subscribe((data) => {
             let constants = data;
             let scales = Object.values(constants['scales']);
             this.configDataService.scales = scales;
             this.configDataService.scale = scales[0];
-            let scale = scales[1];
+            let scale = scales[0];
             this.controlPanelForm.controls.scale.setValue(scale);
         });
 
@@ -107,6 +114,11 @@ export class AppComponent {
         this.configDataService.scale = this.controlPanelForm.value.scale;
         this.configDataService.key = this.controlPanelForm.value.key;
         this.configDataService.numBeatsInProject = this.controlPanelForm.value.numBeatsInProject;
+    }
+
+    updateImportMidiForm() {
+        this.configDataService.midiSpeedChange = this.importMidiForm.value.midiSpeedChange;
+        this.configDataService.changeTempoWithMidiImport = this.importMidiForm.value.changeTempoWithMidiImport;
     }
 
     toggleCycleMode() {
@@ -142,7 +154,6 @@ export class AppComponent {
         var trackNumber = event['track'];
         this.tracks[trackNumber].gridState = this.pianoRoll.gridState;
         this.tracks[trackNumber].sequence = this.pianoRoll.sequence;
-        this.tracks[trackNumber].triggerNoteDraw();
         
         this.updateDawState();
     }
@@ -174,7 +185,7 @@ export class AppComponent {
     }
 
     registerTrackChange(event, updateDawState=true) {
-        if(event['event'] == 'deleteTrack') {
+        if(event && event['event'] == 'deleteTrack') {
             var trackInstance = this.tracks[event['trackNumber']];
             trackInstance.destroyReference();
             this.tracks.splice(event['trackNumber'], 1);
@@ -185,7 +196,7 @@ export class AppComponent {
             this.selectedTrackNumber = 0;
             this.refreshTrackView();
             this.refreshPianoRoll();
-        } else if (event['event'] == 'regionSelected') {
+        } else if (event && event['event'] == 'regionSelected') {
             this.selectedTrackNumber = event['trackNumber'];
             var trackInstance = this.tracks[this.selectedTrackNumber];
             this.refreshTrackView();
@@ -227,7 +238,6 @@ export class AppComponent {
         var root = this;
     
         if(this.inCycleMode) {
-            console.log('setting play toggle in cycle mode');
             var pendingTimeout = setTimeout(function(){
                 root.configDataService.inPlayState = false;
                 root.togglePlayState();
@@ -272,8 +282,13 @@ export class AppComponent {
         return sequence;
     }
 
+    sortSequence(sequence){
+        sequence.sort((x,y)=>{return x.t-y.t;});
+        return sequence;
+    };
+
     playSequence(sequence) {
-        sequence = this.rollSequence(sequence);
+        sequence = this.sortSequence(this.rollSequence(sequence));
 
         function Interval() {
             const currentTime = this.actx.currentTime;
@@ -440,20 +455,16 @@ export class AppComponent {
         }
     }
 
-    addTrack(trackNameToAdd='') {
+    addTrack(importedFileName='') {
         const factory = this.resolver.resolveComponentFactory(TrackComponent);
         var newTrack = this.container.createComponent(factory);
         newTrack.instance._ref = newTrack;
         newTrack.instance.key = this.configDataService.key;
         newTrack.instance.scale = this.configDataService.scale.name;
         newTrack.instance.trackNumber = this.tracks.length;
-        
-        let trackName = 'Piano';
-        if (trackNameToAdd) {
-            trackName = trackNameToAdd;
-        }
 
-        newTrack.instance.trackName = trackName;
+        newTrack.instance.trackName = 'Piano';
+        newTrack.instance.importedFileName = importedFileName;
         
         newTrack.instance.numBeatsInProject = this.configDataService.numBeatsInProject;
         newTrack.instance.noteDrawn.subscribe((event) => {
@@ -462,10 +473,6 @@ export class AppComponent {
         newTrack.instance.trackChange.subscribe((event) => {
             this.registerTrackChange(event);
         });
-        // newTrack.instance.triggerQuickGenerate.subscribe((event) => {
-        //     this.registerTriggerQuickGenerate();
-        // });
-        newTrack.instance.gridState = this.configDataService.initializeEmptyGridState();
         this.tracks.push(newTrack.instance);
         this.sequences.push([]);
 
@@ -593,42 +600,44 @@ export class AppComponent {
         let formData = new FormData();
 
         formData.append("file", file, file.name);
+        this.importMidiFormData = formData;
+        this.importMidiFileName = file.name;
         
-        this.dawStateService.midiToSequence(formData).subscribe((data) => {
-            let importMidiModalToggle = document.getElementById('import-midi-toggle');
-            importMidiModalToggle.click();
-
-            this.importedMidiSequence = data['sequence'].slice();
-            this.importedMidiTempo = data['tempo'];
-            this.importedMidiFileName = file.name;
-        });
+        let importMidiModalToggle = document.getElementById('import-midi-toggle');
+        importMidiModalToggle.click();
 
         target.value = '';
     }
 
     renderMidi() {
-        if(this.changeTempoWithMidiImport){
-            this.controlPanelForm.controls.tempo.setValue(this.importedMidiTempo);
-            this.controlPanelForm.value.tempo = this.importedMidiTempo;
-            this.configDataService.tempo = this.importedMidiTempo;
-        }
+        this.importMidiFormData.append("midiSpeedChange", this.configDataService.midiSpeedChange)
+        this.dawStateService.midiToSequence(this.importMidiFormData).subscribe((data) => {    
+            this.importedMidiSequence = data['sequence'].slice();
+            this.importedMidiTempo = data['tempo'];
+            this.importedMidiFileName = this.importMidiFileName;
 
-        let trackNumber = 0;
-
-        if(this.sequences && this.sequences.length > 0 && this.sequences[0].length != 0) {
-            this.addTrack(this.importedMidiFileName);
-            trackNumber = this.sequences.length - 1;
-        } else {
-            this.sequences = [];
-        }
-
-        this.sequences[trackNumber] = this.importedMidiSequence;
-        this.tracks[trackNumber].sequence = this.importedMidiSequence;
-        this.tracks[trackNumber].triggerNoteDraw();
-        this.tracks[trackNumber].trackName = this.importedMidiFileName;
-        this.selectedTrackNumber = trackNumber;
-        this.refreshTrackView();
-        this.refreshPianoRoll();
+            if(this.configDataService.changeTempoWithMidiImport){
+                this.controlPanelForm.controls.tempo.setValue(this.importedMidiTempo);
+                this.controlPanelForm.value.tempo = this.importedMidiTempo;
+                this.configDataService.tempo = this.importedMidiTempo;
+            }
+    
+            let trackNumber = 0;
+    
+            if(this.sequences && this.sequences.length > 0 && this.sequences[0].length != 0) {
+                this.addTrack(this.importedMidiFileName);
+                trackNumber = this.sequences.length - 1;
+            } else {
+                this.sequences = [];
+            }
+    
+            this.sequences[trackNumber] = this.importedMidiSequence;
+            this.tracks[trackNumber].sequence = this.importedMidiSequence;
+            this.tracks[trackNumber].importedFileName = this.importedMidiFileName;
+            this.selectedTrackNumber = trackNumber;
+            this.refreshTrackView();
+            this.refreshPianoRoll();
+        });
     }
 
     exportMidiAndLog() {

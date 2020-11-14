@@ -19,8 +19,6 @@ export class DawStateService {
         var urlEndpoint = this.dawStateURL;
         var postData = JSON.stringify(dawState);
 
-        console.log('daw state chord names: ', dawState['chord_names']);
-
         const httpOptions = {
             headers: new HttpHeaders({
             'Content-Type':  'application/json',

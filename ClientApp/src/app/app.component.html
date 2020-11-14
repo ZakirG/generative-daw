@@ -127,14 +127,23 @@
                                 <label class='form-label form-label-text' style='display:inline-block;'>
                                     Alter project tempo to match imported file?
                                 </label>
+                                <label class='form-label form-label-text' style='display:inline-block;'>
+                                    Speed up MIDI by a factor of
+                                </label>
                             </div>
                             <div class='col-6'>
-                                <label class='custom-checkbox' style='display:block;'>
-                                    <input class='form-control' style='width:70px; display:inline-block'
-                                    [(ngModel)]="changeTempoWithMidiImport"
-                                     type="checkbox" name="changeTempoWithMidiImport"/>
-                                    <span class="checkmark"></span>
-                                </label>
+                                <form [formGroup]='importMidiForm' class='import-midi-form'  (change)='updateImportMidiForm()' >
+                                    <label class='custom-checkbox' style='display:block;'>
+                                        <input class='form-control' style='width:70px; display:inline-block' formControlName="changeTempoWithMidiImport"
+                                        type="checkbox" name="changeTempoWithMidiImport"/>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <select name="scale" style="text-align-last:center;width:190px; display:inline-block" class='form-control' formControlName="midiSpeedChange">
+                                        <option *ngFor="let val of configDataService.midiSpeedOptions" [ngValue]="val" >
+                                            {{ val }}
+                                        </option>
+                                    </select>
+                                </form>
                             </div>
                         </div>
                     </div>
