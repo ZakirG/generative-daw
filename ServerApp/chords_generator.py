@@ -1,10 +1,11 @@
 import random
 from constants import constants
-from chord_knowledge import chord_leading_chart, good_voicings, chord_charts, good_chord_progressions, chord_name_caches
+from chord_knowledge import chord_leading_chart, good_voicings, chord_charts, good_chord_progressions
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set, pick_n_random_notes, pretty_print_progression
 from client_logging import ClientLogger
 import midi_tools
 import music_theory
+import chord_knowledge
 from music_theory import determine_chord_name, get_allowed_notes, \
     transpose_note_n_semitones, build_chord_from_voicing, label_voicings_with_metadata, \
     roman_numeral_to_note, chords_are_equal, topline_note_passes_topline_constraints, non_topline_note_meets_topline_constraints, \
@@ -567,6 +568,11 @@ class ChordsGenerator(Generator):
             result_chord_progression_labeled_with_midi_numerals.append(labeled_chord)
         
             cache_key = convert_chord_to_cache_key(chord)
-            chord_name_caches[cache_key] = result_chord_names[i]
+            
+            chord_knowledge.chord_name_caches['key-scale'] = self.key + self.scale
+
+            chord_knowledge.chord_name_caches[cache_key] = result_chord_names[i]
+
+            chord_knowledge.chord_name_caches['key-scale'] = self.key.lower() + self.scale
         
         return result_chord_progression_labeled_with_midi_numerals, result_chord_names

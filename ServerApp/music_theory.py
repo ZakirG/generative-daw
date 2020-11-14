@@ -153,6 +153,7 @@ def determine_chord_name_from_sequence(sequence, key, scale, track_number):
             transposed_sequence.append(sequence[i].copy())
             transposed_sequence[i]['n'] += octave * 12
         as_cache_key = convert_sequence_to_cache_key(transposed_sequence)
+        from chord_knowledge import chord_name_caches
         if as_cache_key in chord_name_caches:
             return chord_name_caches[as_cache_key]
     

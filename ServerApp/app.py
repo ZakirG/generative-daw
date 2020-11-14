@@ -8,6 +8,7 @@ import constants
 from music_theory import name_chords_in_tracks
 import midi_tools
 from client_logging import ClientLogger
+import chord_knowledge
 from chords_generator import ChordsGenerator
 from melody_generator import MelodyGenerator
 app = Flask(__name__)
@@ -67,6 +68,14 @@ def update_daw_state():
     DawState['key'] =  key
     DawState['tempo'] =  tempo
     DawState['tracks'] =  tracks
+
+    keyscale = key.lower() + scale['code']
+
+    if 'key-scale' in chord_knowledge.chord_name_caches and chord_knowledge.chord_name_caches['key-scale'] != keyscale:
+        chord_knowledge.chord_name_caches = {}
+        print('Discarding chord name cache.')
+    elif 'key-scale' not in chord_knowledge.chord_name_caches:
+        chord_knowledge.chord_name_caches['key-scale'] = keyscale
 
     chord_names, chord_degrees = name_chords_in_tracks(sequences, key, scale)
     DawState['chord_names'] = chord_names

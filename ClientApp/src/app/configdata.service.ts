@@ -115,7 +115,6 @@ export class ConfigDataService {
     // Convert to MIDI numeral
     // Paraphrased from https://github.com/danilobellini/audiolazy/blob/master/audiolazy/lazy_midi.py
     var letter = noteName.trim().toUpperCase();
-    
     if (noteName.length == 2) {
         letter = noteName.trim().replace('s','#').replace('S', '#');
         letter = letter[0].toUpperCase() + letter.slice(1);
@@ -129,18 +128,18 @@ export class ConfigDataService {
     let data = noteString.trim().toLowerCase();
     let name2delta = {"c": -9, "d": -7, "e": -5, "f": -4, "g": -2, "a": 0, "b": 2};
     let accident2delta = {"b": -1, "#": 1, "x": 2};
-    
     let accidents = [];
-    if (data.slice(-1) == "b" || data.slice(-1) == "#") {
-      accidents.push(accident2delta[data.slice(-1)]);
+    if (letter.length > 1 && letter.slice(-1) == "B" || letter.slice(-1) == "#") {
+      accidents.push(accident2delta[letter.slice(-1)]);
     }
     let octave_delta = parseInt(data.slice(accidents.length + 1)) - 4;
 
     const reducer = (accumulator, currentValue) => accumulator + currentValue;
-  	let arr = accidents.map((ac) => accident2delta[ac]);
+    let arr = accidents.map((ac) => accident2delta[ac]);
     var MIDI_A4 = 69
-    return (MIDI_A4 + name2delta[data[0]] + arr.reduce(reducer, 0) + 
-      12 * octave_delta);
+    
+    let result = (MIDI_A4 + name2delta[data[0]] + accidents.reduce(reducer, 0) + 12 * octave_delta);
+    return result;
   }
 
   numeral_to_note(midiNumeral) {
