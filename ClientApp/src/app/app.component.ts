@@ -266,6 +266,20 @@ export class AppComponent {
     }
 
     playSequence(sequence) {
+        // Preprocess sequence: add user-supplied note roll offsets to make the
+        // play-style sound prettier and more legible
+        var lastTimeStep = -1;
+        let currentOffset = this.configDataService.playOffsetPerNoteDueToRoll;
+        for(let i = 0; i < sequence.length; i++) {
+            let note = sequence[i];
+            if(lastTimeStep != note['t']) {
+                currentOffset += this.configDataService.playOffsetPerNoteDueToRoll;
+                lastTimeStep = note['t'];
+                sequence[i]['t'] = sequence[i]['t'] + currentOffset;
+            }
+
+        }
+
         function Interval() {
             const currentTime = this.actx.currentTime;
             // Update the secondsPerTick just in case the tempo was changed
@@ -594,10 +608,6 @@ export class AppComponent {
         });
 
         target.value = '';
-
-        // req.open("POST", '/upload/image');
-        // req.send(formData);
-        // this.addTrack(trackNameToAdd);
     }
 
     renderMidi() {
@@ -623,8 +633,6 @@ export class AppComponent {
         this.selectedTrackNumber = trackNumber;
         this.refreshTrackView();
         this.refreshPianoRoll();
-        // this.pianoRoll.renderNotes(data['sequence']);
-        // this.downloadFile(data, 'audio/midi', 'composition-' + timestamp + '.midi');
     }
 
     exportMidiAndLog() {

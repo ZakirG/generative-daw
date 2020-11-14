@@ -130,7 +130,7 @@ export class PianoRollComponent implements AfterViewInit{
         return this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
             console.log('generationResult: ', generatedNotes);
-            this.renderNotesDeprecated(generatedNotes);
+            this.renderNotesFromNoteList(generatedNotes);
             // this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             let logs = data['logs'];
             
@@ -164,13 +164,11 @@ export class PianoRollComponent implements AfterViewInit{
         this.sequence = input;
     }
 
-    // TODO: refactor
-    renderNotesDeprecated(notesToRender) {
+    // TODO: refactor to use new note format
+    renderNotesFromNoteList(notesToRender) {
         this.clearPianoRoll();
         this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
-        console.log('translated ', notesToRender , ' to ', this.sequence);
         this.renderNotes(this.sequence);
-        this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
     }
 
     setCursor(cursor) {
@@ -182,16 +180,5 @@ export class PianoRollComponent implements AfterViewInit{
     refresh() {
         this.webAudioPianoRoll.instance.clear();
         this.renderNotes(this.sequence);
-    }
-
-    renderNotesInOneTimeStep(notesToRenderInThisTimeStep, timeStateIndex) {
-        for (let noteToRender of notesToRenderInThisTimeStep) {
-            for (var noteIndex = 0; noteIndex < this.gridState.length; noteIndex++) {
-                if(this.gridState[noteIndex].note == noteToRender.note && this.gridState[noteIndex].octave == noteToRender.octave) {
-                    this.gridState[noteIndex]['timeStates'][timeStateIndex] = true;
-                    break;
-                }
-            }
-        }
     }
 }
