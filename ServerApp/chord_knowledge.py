@@ -1,5 +1,5 @@
 # Populated during the lifecycle of the app
-chord_name_caches = [{}]
+chord_name_caches = {}
 
 chord_charts = {
     'maj': ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\xB0'],

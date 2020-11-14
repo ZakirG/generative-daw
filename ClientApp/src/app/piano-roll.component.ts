@@ -61,7 +61,6 @@ export class PianoRollComponent implements AfterViewInit{
             public configDataService: ConfigDataService,
             public dawStateService: DawStateService,
             public resolver: ComponentFactoryResolver) {
-        this.gridState = this.configDataService.initializeEmptyGridState();
         this.scale = this.configDataService.scale;
         this.key = this.configDataService.key;
         this.toplineContour = this.configDataService.toplineContour;

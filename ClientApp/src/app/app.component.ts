@@ -26,7 +26,7 @@ export class AppComponent {
     controlPanelForm: FormGroup;
     importMidiForm: FormGroup;
     constants: any;
-    inCycleMode = false;
+    inCycleMode = true;
     pendingTimeouts = [];
     sequences = [];
     importMidiFormData: any;
@@ -151,6 +151,10 @@ export class AppComponent {
             this.playSound(event['noteName'] + event['noteOctave'], 0);
         }
 
+        if(event['event'] == 'clear') {
+            this.tracks[event['track']].importedFileName = '';
+        }
+
         var trackNumber = event['track'];
         this.tracks[trackNumber].gridState = this.pianoRoll.gridState;
         this.tracks[trackNumber].sequence = this.pianoRoll.sequence;
@@ -161,6 +165,7 @@ export class AppComponent {
     registerTriggerQuickGenerate(event) {
         this.registerNoteDrawn(event);
         this.registerNewLogs(event);
+        this.tracks[event['track']].importedFileName = '';
 
         var _this = this;
         setTimeout(function(){
@@ -551,6 +556,9 @@ export class AppComponent {
         this.sequences = [];
         for(let trackNumber = 0; trackNumber < this.tracks.length; trackNumber++) {
             this.sequences.push(this.tracks[trackNumber].sequence)
+        }
+        for (let i = 0; i < this.sequences.length; i++) {
+            this.sequences[i] = this.sortSequence(this.sequences[i]);
         }
         dawState['sequences'] = this.sequences;
 

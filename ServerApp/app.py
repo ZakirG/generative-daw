@@ -68,20 +68,6 @@ def update_daw_state():
     DawState['tempo'] =  tempo
     DawState['tracks'] =  tracks
 
-    # # if DawState['chord_names']:
-    # #     print('bout ot build cache', DawState['chord_names'] )
-    # #     for i in range(len(sequences)):
-    # #         for name in DawState['chord_names'][i]:
-    # #             chord_name_caches[i][str(sequences[i]] = name
-    # # else:
-    # #     DawState['chord_names'] = []
-    # #     DawState['chord_degrees'] = []
-    # #     for i in range(len(sequences)):
-    # #         DawState['chord_names'].append({})
-    # #         DawState['chord_degrees'].append({})
-    # print('built cache', chord_name_caches)
-
-
     chord_names, chord_degrees = name_chords_in_tracks(sequences, key, scale)
     DawState['chord_names'] = chord_names
     DawState['chord_degrees'] = chord_degrees
@@ -109,10 +95,7 @@ def sequence_to_midi_file():
 @crossdomain(origin='*')
 def midi_file_to_sequence():
     content = request.get_json()
-    print(request)
-    print(request.files)
     midi_speed_change = float(request.form['midiSpeedChange'])
-    print('speed: ',  midi_speed_change)
 
     sequence, tempo = midi_tools.midi_file_to_sequence(request.files['file'], midi_speed_change)
     return json.dumps({ 'sequence': sequence, 'tempo': tempo}, default=set_default)

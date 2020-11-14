@@ -143,33 +143,36 @@ def convert_sequence_to_cache_key(sequence):
   
 
 def determine_chord_name_from_sequence(sequence, key, scale, track_number):
-    print('determining chord name for ', sequence)
+    if len(sequence) == 0:
+        return '?', '?'
+    
+    # First check cache
     for octave in list(range(-3, 3, 1)):
         transposed_sequence = []
         for i in range(len(sequence)):
             transposed_sequence.append(sequence[i].copy())
             transposed_sequence[i]['n'] += octave * 12
         as_cache_key = convert_sequence_to_cache_key(transposed_sequence)
-        if as_cache_key in chord_name_caches[track_number]:
-            return chord_name_caches[track_number][as_cache_key]
-    return '~'
-
-    # notes.reverse()
-    # notes = list(map(lambda x: music21.pitch.Pitch(x).midi, notes))
-    # c = music21_chords.Chord(list(notes))
-    # full_name = c.pitchedCommonName
-    # abbreviation = full_name.replace('minor', 'min'
-    #     ).replace('major', 'maj').replace('seventh', '7'
-    #     ).replace('augmented', 'aug').replace('diminished', 'dim'
-    #     ).replace('incomplete', '').replace('dominant', '').replace('-', ' '
-    #     ).replace('E#', 'F')
+        if as_cache_key in chord_name_caches:
+            return chord_name_caches[as_cache_key]
     
-    # if abbreviation.startswith('enharmonic equivalent'):
-    #     enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
-    #     matches = re.search(enharmonicRegex, abbreviation)
-    #     abbreviation = matches.group(2) + ' ' + matches.group(1)
+    # Now use music21
+
+    notes = [x['n'] for x in sequence]
+    c = music21_chords.Chord(list(notes))
+    full_name = c.pitchedCommonName
+    abbreviation = full_name.replace('minor', 'min'
+        ).replace('major', 'maj').replace('seventh', '7'
+        ).replace('augmented', 'aug').replace('diminished', 'dim'
+        ).replace('incomplete', '').replace('dominant', '').replace('-', ' '
+        ).replace('E#', 'F')
+    
+    if abbreviation.startswith('enharmonic equivalent'):
+        enharmonicRegex = re.compile(r"enharmonic equivalent to (.*) above (.*)")
+        matches = re.search(enharmonicRegex, abbreviation)
+        abbreviation = matches.group(2) + ' ' + matches.group(1)
         
-    # return (abbreviation, determine_chord_roman_name(abbreviation, key, scale, c))
+    return (abbreviation, determine_chord_roman_name(abbreviation, key, scale, c))
     
 
 def determine_chord_name(chord, key, scale):
@@ -348,21 +351,21 @@ def name_chords_in_tracks(sequences, key, scale):
         for i in range(len(sequences[s])):
             note = sequences[s][i]
             if last_time_step != sequences[s][i]['t']:
-                name = determine_chord_name_from_sequence(current_chord_group, key, scale, s)
-                chord_names.append(name)
+                if len(current_chord_group) > 1:
+                    name = determine_chord_name_from_sequence(current_chord_group, key, scale, s)
+                    chord_names.append(name)
                 current_chord_group = []
                 last_time_step = sequences[s][i]['t']
             current_chord_group.append(note)
+        # Final time step
+        name = determine_chord_name_from_sequence(current_chord_group, key, scale, s)
+        chord_names.append(name)
+        current_chord_group = []
         all_chord_names.append(chord_names)
-
-    # names = [[x[0] for x in track] for track in coupled ]
-    # degrees = [[x[1] for x in track] for track in coupled ]
-    # print('resultzzz: ' , chord_names)
-    try:
-        chord_names = [ [ x[0] for x in track] for track in all_chord_names ]
-        chord_degrees = [ [ x[1] for x in track] for track in all_chord_names ]
-    except:
-        return [[]], [[]]
+    
+    chord_names = [ [ x[0] for x in track] for track in all_chord_names ]
+    chord_degrees = [ [ x[1] for x in track] for track in all_chord_names ]
+    
 
     return chord_names, chord_degrees
 
