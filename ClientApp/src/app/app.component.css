@@ -223,19 +223,21 @@ input[type=number] {
     border: solid 1px #1d626d;
     border-radius:2px;
     padding:7px 10px;
-    color:#333;
+    /* color:#333; */
+    color:#1d626d;
     font-weight:bold;
     letter-spacing: 0.5px;
     background: #75ebff;
-    transition:color .2s, border-color .2s;
-    -webkit-transition:color .2s, border-color .2s;
-    -moz-transition:color .2s, border-color .2s;
+    transition:color .1s, border-color .1s;
+    -webkit-transition:color .1s, border-color .1s;
+    -moz-transition:color .1s, border-color .1s;
     font-size:12px;
 }
 
-/* .control-bar-button:hover {
-    border-color:black;
-} */
+.action-button:hover, .control-bar-button:hover {
+    border-color:#333;
+    color:#333;
+}
 
 
 .action-button {

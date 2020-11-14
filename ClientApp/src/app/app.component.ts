@@ -276,6 +276,7 @@ export class AppComponent {
             }
             // Shift the cursor up to the first event's tick, which may be a value in the past.
             this.cursor = this.timestack[0][1] + (currentTime - this.timestack[0][0]) / this.secondsPerTick;
+            this.pianoRoll.setCursor(this.cursor);
             // this.redrawMarker();
             while(this.timeToPlayNextNote <= currentTime + this.preload){
                 let nextNote = sequence[this.indexOfNextSequenceNoteToPlay];
@@ -339,6 +340,7 @@ export class AppComponent {
             this.timestack.push([this.timeToPlayNextNote, nextEvent.t1]);
         }
         this.pendingIntervals.push(setInterval(Interval.bind(this), 25));
+        this.pianoRoll.setCursor(this.cursor);
     }
 
     findNextEventAfterTick(tick, sequence) {

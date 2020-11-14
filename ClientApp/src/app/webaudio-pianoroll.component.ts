@@ -1093,16 +1093,15 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         this.redraw();
     }
     
-    redrawMarker(){
-        return;
-        // if(!this.initialized)
-        //     return;
-        // const cur=(this.cursor-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
-        // this.cursorimg.style.left=(cur+this.cursoroffset)+"px";
-        // const start=(this.markstart-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
-        // this.markstartimg.style.left=(start+this.markstartoffset)+"px";
-        // const end=(this.markend-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
-        // this.markendimg.style.left=(end+this.markendoffset)+"px";
+    redrawMarker() {
+        if(!this.initialized)
+            return;
+        const cur=(this.cursor-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
+        this.cursorimg.style.left=(cur+this.cursoroffset)+"px";
+        const start=(this.markstart-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
+        this.markstartimg.style.left=(start+this.markstartoffset)+"px";
+        const end=(this.markend-this.xoffset)*this.stepw+this.yruler+this.kbwidth;
+        this.markendimg.style.left=(end+this.markendoffset)+"px";
     }
     
     redrawGrid(){

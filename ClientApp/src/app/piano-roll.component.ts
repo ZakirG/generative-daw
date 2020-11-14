@@ -171,6 +171,12 @@ export class PianoRollComponent implements AfterViewInit{
         this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
     }
 
+    setCursor(cursor) {
+        this.webAudioPianoRoll.instance.cursor = cursor;
+        this.webAudioPianoRoll.instance.redrawMarker();
+
+    }
+
     refresh() {
         this.webAudioPianoRoll.instance.clear();
         this.renderNotes(this.sequence);

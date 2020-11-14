@@ -39,7 +39,7 @@
             <form [formGroup]='controlPanelForm' id='control-panel-form' (change)='updateConfigState()' style='display:inline-block'>
                 <div class='control-panel'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
-                        <span class='glyphicon' [class.glyphicon-play]="!configDataService.inPlayState" [class.glyphicon-pause]="configDataService.inPlayState"></span>
+                        <span class='glyphicon' [class.glyphicon-play]="!configDataService.inPlayState" [class.glyphicon-stop]="configDataService.inPlayState"></span>
                     </button>
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>
