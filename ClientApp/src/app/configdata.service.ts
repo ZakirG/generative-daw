@@ -101,6 +101,7 @@ export class ConfigDataService {
   }
 
   convertNoteListToSequence(noteList) {
+    console.log('inside noteListToSequence');
     var sequence = [];
     for(let timeStateIndex = 0; timeStateIndex < noteList.length; timeStateIndex+=1) {
       for(let noteIndex = 0; noteIndex < noteList[timeStateIndex].length; noteIndex+=1) {
@@ -125,6 +126,7 @@ export class ConfigDataService {
   }
 
   note_to_numeral(noteName, noteOctave) {
+    console.log('inside note_to_numeral');
     // Convert to MIDI numeral
     // Paraphrased from https://github.com/danilobellini/audiolazy/blob/master/audiolazy/lazy_midi.py
     var letter = noteName.trim().toUpperCase();

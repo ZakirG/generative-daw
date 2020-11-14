@@ -1128,7 +1128,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     redrawXRuler(){
         if(this.xruler){
             this.ctx.textAlign="left";
-            this.ctx.font=(this.xruler/2)+"px 'sans-serif'";
+            this.ctx.font="14px 'sans-serif'";
             this.ctx.fillStyle=this.colrulerbg;
             this.ctx.fillRect(0,0,this.width,this.xruler);
             this.ctx.fillStyle=this.colrulerborder;
@@ -1150,7 +1150,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     redrawYRuler(){
         if(this.yruler){
             this.ctx.textAlign="right";
-            this.ctx.font=(this.steph/2)+"px 'sans-serif'";
+            this.ctx.font="12px 'sans-serif'";
             this.ctx.fillStyle=this.colrulerbg;
             this.ctx.fillRect(0,this.xruler,this.yruler,this.sheight);
             this.ctx.fillStyle=this.colrulerborder;
@@ -1174,7 +1174,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     redrawKeyboard(){
         if(this.yruler){
             this.ctx.textAlign="right";
-            this.ctx.font=(this.steph/2)+"px 'sans-serif'";
+            this.ctx.font="12px 'sans-serif'";
             this.ctx.fillStyle=this.colortab.kbwh;
             this.ctx.fillRect(1,this.xruler,this.yruler,this.sheight);
             this.ctx.fillStyle=this.colortab.kbbk;

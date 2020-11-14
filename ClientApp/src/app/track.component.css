@@ -51,7 +51,6 @@
     margin: 0;
     padding:0;
     display:inline-block;
-    cursor:pointer;
     background:linear-gradient(#a8efff, #98e8f9);
     border-bottom:solid 1px #1d626d;
 }
@@ -78,11 +77,12 @@
     height:140px;
 }
 
-.track {
+.track .track-controls {
     opacity:0.8;
+    cursor:pointer;
 }
 
-.track.track-selected {
+.track.track-selected .track-controls {
     opacity:1;
 }
 

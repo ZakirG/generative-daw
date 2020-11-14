@@ -129,6 +129,7 @@ export class PianoRollComponent implements AfterViewInit{
         var generatedNotes = [];
         return this.generationService.generate(generationOptions).subscribe((data) => {
             generatedNotes = data['generationResult'];
+            console.log('generationResult: ', generatedNotes);
             this.renderNotesDeprecated(generatedNotes);
             // this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
             let logs = data['logs'];
@@ -167,6 +168,7 @@ export class PianoRollComponent implements AfterViewInit{
     renderNotesDeprecated(notesToRender) {
         this.clearPianoRoll();
         this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
+        console.log('translated ', notesToRender , ' to ', this.sequence);
         this.renderNotes(this.sequence);
         this.webAudioPianoRoll.instance.renderNotes(this.sequence, false);
     }

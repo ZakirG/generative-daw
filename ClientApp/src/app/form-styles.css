@@ -3,7 +3,7 @@
     max-width:100px;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+}
 
 .custom-modal.modal {
     background: rgba(0,0,0,0.4);
@@ -16,7 +16,6 @@
 .custom-modal .modal-content {
     position:absolute;
     width:650px;
-    max-height: 680px;
     overflow-y: scroll;
 }
 

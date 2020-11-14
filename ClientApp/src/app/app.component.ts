@@ -208,6 +208,7 @@ export class AppComponent {
                 // this.queuedSounds[i]['bufferSource'].stop(0, this.actx.currentTime + 1.01);
             }
             this.queuedSounds = [];
+            this.pianoRoll.setCursor(0);
             return;
         }
 
@@ -375,7 +376,7 @@ export class AppComponent {
         
         // Give this note its own gain node
         var gainNode = this.audioContext.createGain();
-        gainNode.gain.value = 1;
+        gainNode.gain.value = 0.5;
         bufferSource.connect(gainNode);
 
         bufferSource.connect(this.audioContext.destination);
@@ -390,7 +391,7 @@ export class AppComponent {
         
         // Give this note its own gain node
         var gainNode = this.actx.createGain();
-        gainNode.gain.value = 1;
+        gainNode.gain.value = 0.5;
         bufferSource.connect(gainNode);
         gainNode.connect(this.actx.destination);
         bufferSource.start(ev.t);
@@ -534,7 +535,7 @@ export class AppComponent {
         for(let trackNumber = 0; trackNumber < this.tracks.length; trackNumber++) {
             this.sequences.push(this.tracks[trackNumber].sequence)
         }
-        dawState['sequence'] = this.sequences.slice();
+        dawState['sequences'] = this.sequences;
 
         return this.dawStateService.updateDawState(dawState).subscribe((data) => {
             this.configDataService.dawState = data;
