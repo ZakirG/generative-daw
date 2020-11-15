@@ -71,7 +71,6 @@ def update_daw_state():
     
     if len(scale) != 0:
         keyscale = key.lower() + scale['code']
-        print(keyscale)
         if 'key-scale' in chord_knowledge.chord_name_caches and chord_knowledge.chord_name_caches['key-scale'] != keyscale:
             chord_knowledge.chord_name_caches = {}
             print('Discarding chord name cache.')
