@@ -232,6 +232,14 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
         if (typeof numeral == 'undefined' || numeral == null) {
             return;
         }
+        if (numeral < 0) {
+            this.noteDrawn.emit({
+                'event' : 'noteDrawn', 'sequence' : this.sequence,
+                'state' : false, 'track' : this.trackNumber,
+                'playSound': false,
+            });
+
+        }
         
         // This code adds 24 semitones to everything for some reason
         let note = this.configDataService.numeral_to_note(numeral - 24);
@@ -585,7 +593,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
     delNote(idx){
         this.sequence.splice(idx,1);
         this.redraw();
-        this.noteDrawnHandler();
+        this.noteDrawnHandler(-1);
     }
     
     delAreaNote(t,g,n){
@@ -609,7 +617,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                 }
             }
         }
-        this.noteDrawnHandler();
+        this.noteDrawnHandler(-1);
     }
     
     delSelectedNote(){
@@ -619,7 +627,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             if(ev.f)
                 this.sequence.splice(i,1);
         }
-        this.noteDrawnHandler();
+        this.noteDrawnHandler(-1);
     }
     
     moveSelectedNote(dt,dn){

@@ -241,7 +241,7 @@ def roman_numeral_to_note(roman_numeral_in, allowed_notes):
     # Remove diminished marks, seventh chord notation, augmented notation, sharps, flats
     roman_numeral_upper = roman_numeral_in.replace('b',''
         ).replace('#','').replace('+','').replace('\xB0', ''
-        ).replace('7', '').replace('6', '').upper()
+        ).replace('7', '').replace('6', '').replace('-flat-5', '').upper()
     target_digit = roman_to_int(roman_numeral_upper)
 
     # Lists are zero-indexed while roman numerals are 1-indexed, so subtract 1 from the target_digit
@@ -563,6 +563,8 @@ def label_voicings_with_metadata(key, scale, octave_range):
             for roman_numeral in chord_knowledge.all_roman:
                 chord_root = roman_numeral_to_note(roman_numeral, full_allowed_notes)
                 if chord_root == -1:
+                    print('continuing for ', chord_root)
+                    print('roman_numeral ', roman_numeral)
                     continue
                 chord = build_chord_from_voicing(voicing, { 'note': chord_root, 'octave': octave_range[0] }, roman_numeral, octave_range)
                 it_contains_accidentals = False

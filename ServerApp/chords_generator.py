@@ -78,11 +78,12 @@ class ChordsGenerator(Generator):
 
     def build_chord_with_root_randomly(self, chord_root_note, chosen_target_degree, previous_chord):
         quality = 'minor'
-        if chosen_target_degree.isupper():
+        if chosen_target_degree[0].isupper():
             quality = 'major'
 
         is_diminished =  '\xB0' in chosen_target_degree
         is_augmented = '+' in chosen_target_degree
+        is_flat_5 = '-flat-5' in chosen_target_degree
 
         third_of_chord = None
         if quality == 'major':
@@ -95,8 +96,8 @@ class ChordsGenerator(Generator):
         extra_notes_to_add = []
         
         fifth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 7)
-        if is_diminished:
-            # diminished chord
+        if is_diminished or is_flat_5:
+            # diminished chord or flattened fifth
             fifth_of_chord = transpose_note_n_semitones(chord_root_note['note'], 6)
         elif is_augmented:
             # augmented chord

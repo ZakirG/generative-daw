@@ -68,14 +68,14 @@ def update_daw_state():
     DawState['key'] =  key
     DawState['tempo'] =  tempo
     DawState['tracks'] =  tracks
-
-    keyscale = key.lower() + scale['code']
-
-    if 'key-scale' in chord_knowledge.chord_name_caches and chord_knowledge.chord_name_caches['key-scale'] != keyscale:
-        chord_knowledge.chord_name_caches = {}
-        print('Discarding chord name cache.')
-    elif 'key-scale' not in chord_knowledge.chord_name_caches:
-        chord_knowledge.chord_name_caches['key-scale'] = keyscale
+    
+    if len(scale) != 0:
+        keyscale = key.lower() + scale['code']
+        if 'key-scale' in chord_knowledge.chord_name_caches and chord_knowledge.chord_name_caches['key-scale'] != keyscale:
+            chord_knowledge.chord_name_caches = {}
+            print('Discarding chord name cache.')
+        elif 'key-scale' not in chord_knowledge.chord_name_caches:
+            chord_knowledge.chord_name_caches['key-scale'] = keyscale
 
     chord_names, chord_degrees = name_chords_in_tracks(sequences, key, scale)
     DawState['chord_names'] = chord_names
