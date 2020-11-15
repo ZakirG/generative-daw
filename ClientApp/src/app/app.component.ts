@@ -292,8 +292,18 @@ export class AppComponent {
         return sequence;
     };
 
-    playSequence(sequence) {
-        sequence = this.sortSequence(this.rollSequence(sequence));
+    makePlayContext() {
+        return {
+            'cursor': null,
+            'timeToPlayNextNote': null,
+            'indexOfNextSequenceNoteToPlay': null,
+            'timestack': null,
+        };
+    }
+
+    playSequence(sequenceIn) {
+        let sequence = this.sortSequence(this.rollSequence(sequenceIn));
+        let sequenceContext = this.makePlayContext();
 
         function Interval() {
             const currentTime = this.actx.currentTime;
@@ -301,76 +311,76 @@ export class AppComponent {
             this.updateTimeConstants();
             // Remove elements from the front of the array until the second event
             // of the timestack occurs in the future.
-            while(this.timestack.length > 1 && currentTime >= this.timestack[1][0]){
-                this.timestack.shift();
+            while(sequenceContext.timestack.length > 1 && currentTime >= sequenceContext.timestack[1][0]){
+                sequenceContext.timestack.shift();
             }
             // Shift the cursor up to the first event's tick, which may be a value in the past.
-            this.cursor = this.timestack[0][1] + (currentTime - this.timestack[0][0]) / this.secondsPerTick;
-            this.pianoRoll.setCursor(this.cursor);
+            sequenceContext.cursor = sequenceContext.timestack[0][1] + (currentTime - sequenceContext.timestack[0][0]) / this.secondsPerTick;
+            this.pianoRoll.setCursor(sequenceContext.cursor);
             // this.redrawMarker();
-            while(this.timeToPlayNextNote <= currentTime + this.preload){
-                let nextNote = sequence[this.indexOfNextSequenceNoteToPlay];
+            while(sequenceContext.timeToPlayNextNote <= currentTime + this.preload){
+                let nextNote = sequence[sequenceContext.indexOfNextSequenceNoteToPlay];
                 if( !nextNote || nextNote.t >= this.totalNumberOfTicksInProject){
                     // If the next note is missing or out of bounds, go back to
                     // the project's beginning.
-                    this.timestack.push([this.timeToPlayNextNote, 0]);
+                    sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, 0]);
                     const nextEvent = this.findNextEventAfterTick(0, sequence);
-                    this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
-                    this.indexOfNextSequenceNoteToPlay = nextEvent.i;
+                    sequenceContext.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
+                    sequenceContext.indexOfNextSequenceNoteToPlay = nextEvent.i;
                 }
                 else {
                     // Case where the next note is playable
-                    this.timestack.push([this.timeToPlayNextNote, nextNote.t]);
+                    sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, nextNote.t]);
                     let gmax = Math.min(nextNote.t + nextNote.g, this.totalNumberOfTicksInProject) - nextNote.t;
                     const nextNoteInGlobalTimeForm = {
-                        t: this.timeToPlayNextNote,
-                        g: this.timeToPlayNextNote + gmax * this.secondsPerTick,
+                        t: sequenceContext.timeToPlayNextNote,
+                        g: sequenceContext.timeToPlayNextNote + gmax * this.secondsPerTick,
                         n: nextNote.n,
                         note: nextNote.note,
                         octave: nextNote.octave
                     };
-                    this.playSequenceNote(nextNoteInGlobalTimeForm, this.timeToPlayNextNote);
+                    this.playSequenceNote(nextNoteInGlobalTimeForm, sequenceContext.timeToPlayNextNote);
                     let previousNote = nextNote;
-                    nextNote = sequence[++this.indexOfNextSequenceNoteToPlay];
+                    nextNote = sequence[++sequenceContext.indexOfNextSequenceNoteToPlay];
                     if(!nextNote || nextNote.t >= this.totalNumberOfTicksInProject){
-                        this.timeToPlayNextNote += (this.totalNumberOfTicksInProject - previousNote.t) * this.secondsPerTick;
+                        sequenceContext.timeToPlayNextNote += (this.totalNumberOfTicksInProject - previousNote.t) * this.secondsPerTick;
                         const nextEvent = this.findNextEventAfterTick(0, sequence);
-                        this.timestack.push([this.timeToPlayNextNote, 0]);
-                        this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
-                        this.indexOfNextSequenceNoteToPlay = nextEvent.i;
+                        sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, 0]);
+                        sequenceContext.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
+                        sequenceContext.indexOfNextSequenceNoteToPlay = nextEvent.i;
                     }
                     else {
-                        this.timeToPlayNextNote += (nextNote.t - previousNote.t) * this.secondsPerTick;
+                        sequenceContext.timeToPlayNextNote += (nextNote.t - previousNote.t) * this.secondsPerTick;
                     }
                 }
             }
         }
 
-        this.cursor = 0;
+        sequenceContext.cursor = 0;
         this.updateTimeConstants();
 
         // The timestack is a list of lists. Each sublist has 2 elements:
         // timestack_element[0] is the global time the note will be played, in seconds. 
         // timestack_element[1] is the time relative time the note will be played, in ticks.
-        this.timestack = [];
+        sequenceContext.timestack = [];
 
-        const nextEvent = this.findNextEventAfterTick(this.cursor, sequence);
+        const nextEvent = this.findNextEventAfterTick(sequenceContext.cursor, sequence);
         
-        this.indexOfNextSequenceNoteToPlay = nextEvent.i;
-        this.timestack.push([0, this.cursor]);
-        this.timeToPlayNextNote = this.actx.currentTime + 0.05;
-        this.timestack.push([this.timeToPlayNextNote, this.cursor]);
+        sequenceContext.indexOfNextSequenceNoteToPlay = nextEvent.i;
+        sequenceContext.timestack.push([0, sequenceContext.cursor]);
+        sequenceContext.timeToPlayNextNote = this.actx.currentTime + 0.05;
+        sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, sequenceContext.cursor]);
         // Set timeToPlayNextNote to represent the time at which the next note will be played.
-        this.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
+        sequenceContext.timeToPlayNextNote += nextEvent.dt * this.secondsPerTick;
         if(nextEvent.i < 0) {
             // The next note is out of bounds; this event will result in a loop. (?)
-            this.timestack.push([this.timeToPlayNextNote, 0]);
+            sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, 0]);
         } 
         else {
-            this.timestack.push([this.timeToPlayNextNote, nextEvent.t1]);
+            sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, nextEvent.t1]);
         }
         this.pendingIntervals.push(setInterval(Interval.bind(this), 25));
-        this.pianoRoll.setCursor(this.cursor);
+        this.pianoRoll.setCursor(sequenceContext.cursor);
     }
 
     findNextEventAfterTick(tick, sequence) {

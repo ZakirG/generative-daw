@@ -133,7 +133,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
             collt:              {type:String, value:"#a8efff"},
             coldk:              {type:String, value:"#77d1e6"},
             colgrid:            {type:String, value:"#eee"},
-            colnote:            {type:String, value:"#ff2e7b"},
+            colnote:            {type:String, value:"#03fca1"}, // #ff2e7b
             colnotesel:         {type:String, value:"#ff2e7b"},
             colnoteborder:      {type:String, value:"#000"},
             colnoteselborder:   {type:String, value:"#919090"},
