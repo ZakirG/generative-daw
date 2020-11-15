@@ -55,7 +55,7 @@ export class ConfigDataService {
       this.dawState.chord_names = [[]];
       this.dawState.chord_degrees = [[]];
       this.dawState.sequences = [[]];
-      this.playOffsetPerNoteDueToRoll = 0.01;
+      this.playOffsetPerNoteDueToRoll = 0.06;
       this.midiSpeedChange = 8; // 1;
       this.midiSpeedOptions = [0.125, 0.25, 0.5, 1, 2, 4, 8];
       this.changeTempoWithMidiImport = false;

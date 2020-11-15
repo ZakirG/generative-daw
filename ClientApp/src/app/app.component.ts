@@ -278,16 +278,20 @@ export class AppComponent {
         let currentOffset = this.configDataService.playOffsetPerNoteDueToRoll;
         for(let i = 0; i < sequence.length; i++) {
             let note = sequence[i];
+            sequence[i]['t'] = sequence[i]['t'] + currentOffset;
+            currentOffset = currentOffset + this.configDataService.playOffsetPerNoteDueToRoll;
+            
             if(lastTimeStep != note['t']) {
-                currentOffset += this.configDataService.playOffsetPerNoteDueToRoll;
                 lastTimeStep = note['t'];
                 sequence[i]['t'] = sequence[i]['t'] + currentOffset;
+                currentOffset = this.configDataService.playOffsetPerNoteDueToRoll
             }
         }
         return sequence;
     }
 
     sortSequence(sequence){
+        sequence.sort((x,y)=>{return x.n-y.n;});
         sequence.sort((x,y)=>{return x.t-y.t;});
         return sequence;
     };
@@ -302,7 +306,8 @@ export class AppComponent {
     }
 
     playSequence(sequenceIn) {
-        let sequence = this.sortSequence(this.rollSequence(sequenceIn));
+        let sequence =  JSON.parse(JSON.stringify(sequenceIn));
+        sequence = this.sortSequence(this.rollSequence(sequence));
         let sequenceContext = this.makePlayContext();
 
         function Interval() {
@@ -530,23 +535,6 @@ export class AppComponent {
         this.pianoRoll.refresh();
         
         this.registerTrackChange(null);
-        // this.pianoRoll.key = this.configDataService.key;
-        // this.pianoRoll.scale = this.configDataService.scale.name;
-        // this.pianoRoll.trackNumber = trackNumber;
-        // this.pianoRoll.setSequence(this.sequences[trackNumber]);
-        // this.tracks[trackNumber].thisTrackIsSelected = true;
-        // this.pianoRoll.noteDrawn.subscribe((event) => {
-        //     this.registerNoteDrawn(event);
-        // });
-        // this.pianoRoll.triggerQuickGenerate.subscribe((event) => {
-        //     this.registerTriggerQuickGenerate(event);
-        // });
-        // this.pianoRoll.newLogs.subscribe((event) => {
-        //     this.registerNewLogs(event);
-        // });
-        // this.pianoRoll.trackChange.subscribe((event) => {
-        //     this.registerTrackChange(event);
-        // });
     }
 
     updateDawState(callback=null) {
@@ -554,8 +542,7 @@ export class AppComponent {
 
         var minimizedTracks = [];
         for (let track of this.tracks) {
-            var minTrack = track.gridState;
-            // var minTrack = trackGridState.map((x, i, trackGridState) => ({'note' : x.note, 'octave' : x.octave, 'timeStates' : x.timeStates }));
+            var minTrack = track.sequence;
             minimizedTracks.push(minTrack);
         }
 
