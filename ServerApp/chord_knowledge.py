@@ -1,16 +1,20 @@
+# Populated during the lifecycle of the app
+chord_name_caches = {}
+
 chord_charts = {
     'maj': ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\xB0'],
     'min': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
     'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
     'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
-    # 'dhmaj': [] # TODO: fill this in
+    'dhmaj': ['I', 'II', 'iii', 'iv', 'V-flat-5'] # TODO: fill this in
 }
 
 roman_lower = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']
 roman_upper = list(map(lambda x: x.upper(), roman_lower))
 roman_dim = list(map(lambda x: x + '\xB0', roman_lower))
 roman_aug = list(map(lambda x: x + '+', roman_upper))
-all_roman = roman_lower + roman_upper + roman_dim + roman_aug
+roman_flat_5 = list(map(lambda x: x + '-flat-5', roman_upper))
+all_roman = roman_lower + roman_upper + roman_dim + roman_aug + roman_flat_5
 
 # When the chord leading constraint is applied, if a chord has no member
 # in this dictionary, it may lead to any chord.
@@ -233,5 +237,6 @@ good_chord_progressions = {
         # { 'roman_numerals': ['i', 'VI', 'i', 'V7'], 'name': 'Lil Tecca - Ransom progression'},
         { 'roman_numerals': [ 'i' , 'III', 'v'], 'name': '88Glam - On Sight progression'},
         { 'roman_numerals': [ 'iv', 'i', 'iv', 'VII'], 'name': 'J Balvin - Solitario progression'},
-    ]
+    ],
+    'dhmaj': []
 }

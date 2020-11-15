@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ComponentFactoryResolver, ViewContainerRef, ViewChild, AfterViewInit, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GenerationService } from './generation.service';
 import { ConfigDataService } from './configdata.service';
 import { interact } from '../assets/js/interact.min.js';
+import { WebAudioPianoRollComponent } from './webaudio-pianoroll.component';
 import { config } from 'process';
+import { DawStateService } from './dawstate.service';
 declare var require: any
 const interact = require('interactjs');
 
@@ -11,13 +13,15 @@ const interact = require('interactjs');
     selector:    'piano-roll',
     templateUrl: './piano-roll.component.html',
     providers:  [ ],
-    styleUrls: ['./piano-roll.component.css', './app.component.css']
+    styleUrls: ['./piano-roll.component.css', './app.component.css', './form-styles.css'],
 })
 
-export class PianoRollComponent {
+export class PianoRollComponent implements AfterViewInit{
+    @ViewChild("webAudioPianoRoll", { read: ViewContainerRef, static: true }) container : ViewContainerRef;
+    webAudioPianoRoll : any;
     gridState = [];
+    sequence = [];
     conformToKeyScale = true;
-    timeStateLength = 8;
     generationType = 'chords';
     octaveUpperBound = 4;
     octaveLowerBound = 3;
@@ -52,30 +56,14 @@ export class PianoRollComponent {
     @Output()
     trackChange = new EventEmitter<any>();
 
-    constructor(public generationService: GenerationService, public configDataService: ConfigDataService) {
-        this.initializeEmptyGridState();
+    constructor(
+            public generationService: GenerationService, 
+            public configDataService: ConfigDataService,
+            public dawStateService: DawStateService,
+            public resolver: ComponentFactoryResolver) {
         this.scale = this.configDataService.scale;
         this.key = this.configDataService.key;
         this.toplineContour = this.configDataService.toplineContour;
-    }
-
-    initializeEmptyGridState() {
-        var stateWidth = (100 / this.timeStateLength) + "%";
-
-        this.notes = this.configDataService.notes;
-
-        this.gridState = [];
-        for (let note of this.notes) {
-            var noteRow = {
-                'color' : note.color,
-                'octave' : note.octave,
-                'note' : note.note,
-                'timeStates' : Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0),
-                'stateWidth' : stateWidth,
-                'id' : note.note + note.octave
-            };
-            this.gridState.push(noteRow);
-        }
     }
 
     ngOnInit() {
@@ -103,18 +91,35 @@ export class PianoRollComponent {
         });
     }
 
-    clearPianoRoll() {
-        for (var i = 0; i < this.gridState.length; i++) {
-            this.gridState[i]['timeStates'] = Array.apply(null, Array(this.timeStateLength)).map(Number.prototype.valueOf,0);
-        }
-        this.noteDrawn.emit({'event': 'clear', 'track' : this.trackNumber});
+    ngAfterViewInit(){
+        const factory = this.resolver.resolveComponentFactory(WebAudioPianoRollComponent);
+        this.webAudioPianoRoll = this.container.createComponent(factory);
+        this.webAudioPianoRoll.instance._ref = this.webAudioPianoRoll;
+        this.webAudioPianoRoll.instance.trackNumber = this.trackNumber;
+        this.webAudioPianoRoll.instance.noteDrawn.subscribe((event) => {
+            this.registerNoteDrawn(event);
+        });
+        
+        // this.loadWebAudioPianoRollScript();
     }
 
-    noteDrawnHandler(noteName, noteOctave, noteState) {
-        this.noteDrawn.emit({
-            'event' : 'noteDrawn', 'note' : noteName + noteOctave,
-            'state' : noteState, 'track' : this.trackNumber
-        });
+    registerNoteDrawn(event) {
+        this.sequence = event['sequence'];
+
+        // this.updateDawState();
+        event['track'] = this.trackNumber;
+        if(event['event'] == 'noteDrawn' && event['state']) {
+            this.noteDrawn.emit(event);
+        }
+    }
+
+    clearPianoRoll() {
+        for (var i = 0; i < this.gridState.length; i++) {
+            this.gridState[i]['timeStates'] = this.configDataService.makeEmptyTimeState();
+        }
+        this.webAudioPianoRoll.instance.clear();
+        this.sequence = [];
+        this.noteDrawn.emit({'event': 'clear', 'track' : this.trackNumber});
     }
 
     destroyReference() {
@@ -123,17 +128,29 @@ export class PianoRollComponent {
 
     generate(generationOptions, isQuickGenerate) {
         var generatedNotes = [];
+        generationOptions['trackNumber'] = this.trackNumber;
         return this.generationService.generate(generationOptions).subscribe((data) => {
-            generatedNotes = data['generationResult'];
-            let logs = data['logs']
-            this.renderNotes(generatedNotes);
-            this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
-            this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
+            generatedNotes = data['generation_result'];
+            let chord_names = [];
+            let chord_degrees = [];
+            for (let i = 0; i < data['chord_names'].length; i+=1) {
+                chord_names.push(data['chord_names'][i][0]);
+                chord_degrees.push(data['chord_names'][i][1]);
+            }
+            this.configDataService.dawState.chord_names[this.trackNumber] = chord_names;
+            this.configDataService.dawState.chord_degrees[this.trackNumber] = chord_degrees;
+            this.renderNotesFromNoteList(generatedNotes);
+            let logs = data['logs'];
             
             if(isQuickGenerate) {
                 this.triggerQuickGenerate.emit({
-                    'event' : 'triggerQuickGenerate'
+                    'event' : 'triggerQuickGenerate',
+                    'track' : this.trackNumber,
+                    'logs' : logs
                 });
+            } else {
+                this.noteDrawn.emit({'event': 'generation', 'track' : this.trackNumber});
+                this.newLogs.emit({'event': 'writeLogs', 'logs' : logs});
             }
         });
     }
@@ -143,22 +160,29 @@ export class PianoRollComponent {
         this.generate(formValue, true);
     }
 
-    renderNotes(notesToRender) {
-        this.clearPianoRoll();
-        var timeStateIndex = 0;
-        for (var timeStateIndex = 0; timeStateIndex < notesToRender.length; timeStateIndex++) {
-            this.renderNotesInOneTimeStep(notesToRender[timeStateIndex], timeStateIndex);
-        }
+    renderNotes(sequence) {
+        this.webAudioPianoRoll.instance.renderNotes(sequence, false);
     }
 
-    renderNotesInOneTimeStep(notesToRenderInThisTimeStep, timeStateIndex) {
-        for (let noteToRender of notesToRenderInThisTimeStep) {
-            for (var noteIndex = 0; noteIndex < this.gridState.length; noteIndex++) {
-                if(this.gridState[noteIndex].note == noteToRender.note && this.gridState[noteIndex].octave == noteToRender.octave) {
-                    this.gridState[noteIndex]['timeStates'][timeStateIndex] = true;
-                    break;
-                }
-            }
-        }
+    setSequence(input) {
+        this.sequence = input;
+    }
+
+    // TODO: refactor to use new note format
+    renderNotesFromNoteList(notesToRender) {
+        this.clearPianoRoll();
+        this.sequence = this.configDataService.convertNoteListToSequence(notesToRender);
+        this.renderNotes(this.sequence);
+    }
+
+    setCursor(cursor) {
+        this.webAudioPianoRoll.instance.cursor = cursor;
+        this.webAudioPianoRoll.instance.redrawMarker();
+
+    }
+
+    refresh() {
+        this.webAudioPianoRoll.instance.clear();
+        this.renderNotes(this.sequence);
     }
 }

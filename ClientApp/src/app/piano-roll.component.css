@@ -9,7 +9,7 @@
     padding:0;
     resize:vertical;
     overflow:hidden;
-    height:240px;
+    height:440px;
 }
 
 .piano-roll-wrapper .row {
@@ -55,7 +55,7 @@ button[disabled] {
 .piano-roll-col {
     padding:0;
     height:100%;
-    background:#eafbff;
+    background: #008fa8;
 }
 
 
@@ -65,6 +65,7 @@ button[disabled] {
     border-left:0;
     border-right:0;
     overflow-y: scroll;
+    overflow-x: hidden;
     height:100%;
 }
 
@@ -149,7 +150,7 @@ span.note-label[data-note='C'] {
 }
 
 .note-rows li {
-    border-top: solid 1px #a5f2ff;
+    /* border-top: solid 1px #a5f2ff; */
     width:100%;
 }
 
@@ -174,11 +175,19 @@ span.note-label[data-note='C'] {
     top:-1px;
     position:relative;
     display:inline-block;
-    border-left: solid 1px white;
-    border-right: solid 1px white;
+    /* border-left: solid 1px white; */
+    border-right: solid 1px #ededed;
     height:100%;
     cursor:pointer;
     margin:0;
+}
+
+.grid-state-wrapper:nth-child(4n) {
+    border-right: solid 1px #d1d1d1;
+}
+
+.grid-state-wrapper:nth-child(8n) {
+    border-right: solid 1px #888 !important;
 }
 
 .grid-state-wrapper input {
@@ -218,147 +227,6 @@ span.note-label[data-note='C'] {
     position:relative;
 }
 
-.generation-modal.modal {
-    background: rgba(0,0,0,0.4);
-}
-
-.generation-modal .modal-dialog {
-    margin-top:10px;
-}
-
-.generation-modal .modal-content {
-    position:absolute;
-    width:650px;
-    max-height: 680px;
-    overflow-y: scroll;
-}
-
-.generation-modal .modal-body {
-    font-size:12px;
-    padding-bottom: 35px;
-}
-
-.generation-modal input, .generation-modal select {
-    display:inline-block;
-    margin:0 5px 3px 5px;
-    height: 28px !important;
-    border-radius:3px;
-    font-size:12px;
-}
-
-.generation-modal hr {
-    margin: 10px 0;
-}
-
-.form-label {
-    margin-bottom:3px;
-    height:30px;
-    padding-top:5px;
-}
-
-select.form-label {
-    margin-top:8px !important;
-}
-
-/* .form-label-text {
-    padding-top:9px;
-} */
-
-.custom-radio-button, .custom-checkbox, .form-label {
-    display: block;
-    position: relative;
-    font-weight:normal;
-}
-
-.custom-radio-button, .custom-checkbox {
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    padding-left: 20px;
-}
-
-.custom-checkbox {
-    height: 26px;
-}
-
-/* Hide the browser's default radio button */
-.custom-radio-button input, .custom-checkbox input {
-    position: absolute;
-    opacity: 0;
-}
-
-/* Create a custom radio button */
-.radio {
-    margin:0;
-    position: absolute;
-    top: 6px;
-    left: 0;
-    height: 15px;
-    width: 15px;
-    background-color: #eee;
-    border-radius: 50%;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-    margin:0 5px 5px 7px;
-    position: absolute;
-    top: 2px;
-    left: 0;
-    height: 15px;
-    width: 15px;
-    background-color: #eee;
-    margin-bottom:19px;
-    margin-top:7px;
-}
-
-/* On mouse-over, add a grey background color */
-.custom-radio-button:hover input ~ .radio, .custom-checkbox:hover input ~ .checkmark {
-    background-color: #ccc;
-}
-
-/* When the radio button is checked, add a blue background */
-.custom-radio-button input:checked ~ .radio, .custom-checkbox input:checked ~ .checkmark {
-    background-color: #2196F3;
-}
-
-/* Create the indicator (the dot/circle - hidden when not checked) */
-.radio:after, .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
-/* Show the indicator (dot/circle) when checked */
-.custom-radio-button input:checked ~ .radio:after, .custom-checkbox input:checked ~ .checkmark:after {
-    display: block;
-}
-
-/* Style the indicator (dot/circle) */
-.custom-radio-button .radio:after {
-    top: 4px;
-    left: 4px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: white;
-}
-
-/* Style the radio/indicator */
-.custom-checkbox .checkmark:after {
-    left: 5px;
-    top: 2px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
 .piano-roll-left-pane {
     background:linear-gradient(#008fa8, #019bb7);
     border-radius:0;
@@ -369,7 +237,7 @@ select.form-label {
     width:100%;
     display:inline-block;
     padding:10px 5px;
-    color:white;
+    color:#eee;
     user-select:none;
 }
 
@@ -385,44 +253,11 @@ label.disabled {
 .piano-roll-input-group {
     padding-left:5px;
     margin-top:15px;
-    color:black;
+    color:#eee;
 }
 
 .piano-roll-input-group input {
     width: 80px;
     height:30px;
 }
-
-.generation-modal-collapsible {
-    margin:0;
-    padding:0;
-}
-
-.generation-modal-collapsible-btn {
-    border: 0;
-    background: none;
-    padding: 10px 0;
-    margin-top:10px;
-    font-size:13px;
-    font-weight:500;
-    display:block;
-    border-bottom: solid 1px pink;
-    width: 100%;
-    text-align: left;
-}
-
-.generation-modal-collapsible-btn:after {
-    font-family: 'Glyphicons Halflings';
-    content: "\e114";
-    position:relative;
-    top:2px;
-}
-
-.generation-modal-collapsible-btn.collapsed:after {
-    font-family: 'Glyphicons Halflings';
-    content: "\e080";
-    position:relative;
-    top:3px;
-}
-
 

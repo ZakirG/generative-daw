@@ -1,0 +1,10 @@
+#wacWrapper {
+    max-width: 100%;
+    /* overflow:scroll; */
+    /* display:inline-block; */
+    /* position:absolute; */
+}
+
+#wac-body {
+    overflow:hidden;
+}

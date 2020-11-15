@@ -1,42 +1,20 @@
 <div class='track' [class.track-selected]="thisTrackIsSelected">
     <div class='row'>
-        <div class='col-1 track-controls'>
-            <span class='track-number'>{{ trackNumber + 1 }}</span>
+        <div class='col-2 track-controls' (click)="toggleRegionSelected()">
+            <div class='track-header'>
+                <span class='track-number'>{{ trackNumber + 1 }}.</span>
+                <span class='track-name'>{{ trackName }}</span>
+            </div>
         </div>
 
-        <div class="col region-preview" (click)="toggleRegionSelected()">
-            <div class='col note-grid'>
-                <ul class='note-rows'>
-                    <li *ngFor="let note of gridState"
-                        class="{{ note.color }} {{ note.note }}" attr.data-octave="{{ note.octave }}">
-                        <label class="grid-state-wrapper"
-                            *ngFor="let state of note.timeStates; let index= index;"
-                            [style.width]="configDataService.stateWidth"
-                            attr.data-active="{{ note.timeStates[index] }}"
-                            [attr.id]="note.id"
-                            [attr.data-step]="index"
-                            >
-                            <input class='grid-state' type='checkbox'
-                                attr.data-active="{{ state }}"
-                                [(ngModel)]="note.timeStates[index]"
-                                disabled
-                                >
-                        </label>
-                    </li>
-                </ul>
-             </div>
-             <div class='row piano-metadata'>
-                    <!--
-<div class="col-1">
+        <div class="col-9 region-preview">
+            <div class='row piano-metadata'>
+                    <div class='col chord-data' *ngIf="configDataService.dawState.chord_names[trackNumber]">
+                        <span class='track-metadata-header'>Chords</span>: {{ configDataService.dawState.chord_degrees[trackNumber].toString().replaceAll(",", " -> ") }}
+                        <br/>
+                        <span class='track-metadata-header' *ngIf="importedFileName != ''">Imported from:</span> {{ importedFileName }}
                     </div>
- -->
-                    <div class='col chord-data' >
-                        <span *ngFor="let chord of configDataService.dawState.chord_names[trackNumber]"
-                                class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
-                        <span *ngFor="let chord of configDataService.dawState.chord_degrees[trackNumber]"
-                            class="chord-name" [style.width]="configDataService.stateWidth">{{ chord }} </span>
-                    </div>
-                </div>
+            </div>
         </div>
 
         <div class='col-1 track-right-pane'>

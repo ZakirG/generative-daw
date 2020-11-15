@@ -8,13 +8,23 @@
     </div>
     <mat-menu #filemenu="matMenu" id='file-menu' class='toolbar-menu'>
         <button mat-menu-item (click)="exportToMidi()">
-          <mat-icon>music_note</mat-icon>
+          <mat-icon>get_app</mat-icon>
           <span>Export to MIDI</span>
         </button>
         <button mat-menu-item (click)="exportToMidiWithLog()">
             <mat-icon>assignment_returned</mat-icon>
             <span>Download MIDI & last generation log</span>
-          </button>
+        </button>
+        <input #uploadedMIDIFileInput 
+            id="uploaded-midi-file" type="file"
+            accept=".mid,.midi"
+            style="visibility:hidden; position:absolute; opacity:0;"
+            (change)="importMidi($event.target.files[0], $event.target)"
+        />
+        <button mat-menu-item (click)="uploadedMIDIFileInput.click()">
+            <mat-icon>library_add</mat-icon>
+            <span>Import MIDI</span>
+        </button>
     </mat-menu>
     <header class="row primary-color">
         <div class="col-4 text-left">
@@ -29,7 +39,7 @@
             <form [formGroup]='controlPanelForm' id='control-panel-form' (change)='updateConfigState()' style='display:inline-block'>
                 <div class='control-panel'>
                     <button id='play-button' class='top-bar-button' (click)="togglePlayState()">
-                        <span class='glyphicon' [class.glyphicon-play]="!configDataService.inPlayState" [class.glyphicon-pause]="configDataService.inPlayState"></span>
+                        <span class='glyphicon' [class.glyphicon-play]="!configDataService.inPlayState" [class.glyphicon-stop]="configDataService.inPlayState"></span>
                     </button>
                     <span class='divider'></span>
                     <span class='top-bar-input-group'>
@@ -56,7 +66,7 @@
                     </span>
                     <span class='divider'></span>
                     <span class='top-bar-input-group' >
-                        <input class='top-bar-input' type='number' max='500'  style='width:50px;' formControlName="timeStateLength" value="timeStateLength"/>
+                        <input class='top-bar-input' type='number' max='500'  style='width:50px;' formControlName="numBeatsInProject" value="numBeatsInProject"/>
                         <span id='time-state-length-label' class='no-select'>LENGTH</span>
                     </span>
                 </div>
@@ -99,6 +109,53 @@
     <div class='header-space'></div>
     <template #newTrack></template>
     <template #pianoRoll></template>
+
+    <button data-toggle="modal" data-target="#import-modal" id='import-midi-toggle' style='position:absolute;opacity:0;bottom:0;right:0;'></button>
+    <div class="modal fade custom-modal" id='import-modal' tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Configure import</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="custom-modal-collapsible collapse show" id="import-midi-modal">
+                        <div class='row'>
+                            <div class='col-6'>
+                                <label class='form-label form-label-text' style='display:inline-block;'>
+                                    Alter project tempo to match imported file?
+                                </label>
+                                <label class='form-label form-label-text' style='display:inline-block;'>
+                                    Speed up MIDI by a factor of
+                                </label>
+                            </div>
+                            <div class='col-6'>
+                                <form [formGroup]='importMidiForm' class='import-midi-form'  (change)='updateImportMidiForm()' >
+                                    <label class='custom-checkbox' style='display:block;'>
+                                        <input class='form-control' style='width:70px; display:inline-block' formControlName="changeTempoWithMidiImport"
+                                        type="checkbox" name="changeTempoWithMidiImport"/>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <select name="scale" style="text-align-last:center;width:190px; display:inline-block" class='form-control' formControlName="midiSpeedChange">
+                                        <option *ngFor="let val of configDataService.midiSpeedOptions" [ngValue]="val" >
+                                            {{ val }}
+                                        </option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
+                    <button type="button" (click)="renderMidi()" class="btn btn-success"
+                        data-dismiss="modal">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class='bottom-space'></div>
 </div>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

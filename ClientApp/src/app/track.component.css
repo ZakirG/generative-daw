@@ -5,16 +5,37 @@
 
 .track-controls, .track-right-pane {
     background: linear-gradient(#009ab5, #019bb7);
+    /* background: linear-gradient(#1d626d, #019bb7); */
     color:white;
     border-bottom:solid 1px #1d626d;
 }
 
+.track-number-column {
+    background: linear-gradient(#1d626d, #019bb7);
+    color:white;
+    border-bottom:solid 1px #1d626d;
+}
+
+.track-header {
+    display:block;
+    margin-top:10px;
+}
+
 .track-number {
     display:inline-block;
-    color:white;
-    font-weight:bold;
+    color:#eee;
+    /* font-weight:bold; */
     font-size:16px;
     padding:6px 5px 10px 13px;
+}
+
+.track-name {
+    margin-left:5px;
+    font-size:16px;
+    /* font-weight:bold; */
+    display:inline-block;
+    color:#eee;
+    padding:6px 5px 10px 0px;
 }
 
 .delete-track-button {
@@ -30,7 +51,6 @@
     margin: 0;
     padding:0;
     display:inline-block;
-    cursor:pointer;
     background:linear-gradient(#a8efff, #98e8f9);
     border-bottom:solid 1px #1d626d;
 }
@@ -53,11 +73,16 @@
     border:0;
 }
 
-.track {
-    opacity:0.8;
+.track-controls, .region-preview {
+    height:140px;
 }
 
-.track.track-selected {
+.track .track-controls {
+    opacity:0.8;
+    cursor:pointer;
+}
+
+.track.track-selected .track-controls {
     opacity:1;
 }
 
@@ -142,13 +167,13 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
 
 .piano-metadata {
     margin:0px 0 10px 0;
-    padding:0 15px 0 5px;
+    padding:10px 15px 0 5px;
+    font-size:12px;
+    color:#212529;
 }
 
 .chord-data {
     border-radius: 2px;
-    font-size:10px;
-    color:#1d626d;
 }
 
 .chord-name {
@@ -157,5 +182,8 @@ Adjacent active notes are to be interpreted as sustained.grid-state-wrapper[data
     height:15px;
 }
 
+.track-metadata-header {
+    font-weight:bold;
+}
 
 
