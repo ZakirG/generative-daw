@@ -10,7 +10,7 @@ joblib==0.16.0
 MarkupSafe==1.1.1
 MIDIUtil==1.2.1
 more-itertools==8.5.0
-music21==6.1.0
+music21==6.3.0
 six==1.15.0
 typing==3.6.1
 webcolors==1.11.1
