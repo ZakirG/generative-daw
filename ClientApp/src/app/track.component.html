@@ -12,6 +12,8 @@
                     <div class='col chord-data' *ngIf="configDataService.dawState.chord_names[trackNumber]">
                         <span class='track-metadata-header'>Chords</span>: {{ configDataService.dawState.chord_degrees[trackNumber].toString().replaceAll(",", " -> ") }}
                         <br/>
+                        <span class='track-metadata-header'>Notes used</span>: {{ configDataService.dawState.trackMetadata[trackNumber]['notesUsed']  }}
+                        <br/>
                         <span class='track-metadata-header' *ngIf="importedFileName != ''">Imported from:</span> {{ importedFileName }}
                     </div>
             </div>

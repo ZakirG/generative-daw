@@ -524,7 +524,12 @@ class ChordsGenerator(Generator):
             use_chord_progression_from_library = decide_will_event_occur(self.chance_to_use_common_progression)
             # Which chord progressions fit in the remaining space?
             allowed_progressions = []
-            for progression in good_chord_progressions[self.parent_scale_code]:
+            good_progressions = []
+            if self.parent_scale_code in good_chord_progressions:
+                good_progressions = good_chord_progressions[self.parent_scale_code]
+            else:
+                good_progressions = good_chord_progressions[self.contains_scale]
+            for progression in good_progressions:
                 if len(progression['roman_numerals']) + len(result_chord_progression) < self.length:
                     allowed_progressions.append(progression)
             

@@ -6,7 +6,9 @@ chord_charts = {
     'min': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
     'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
     'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
-    'dhmaj': ['I', 'II', 'iii', 'iv', 'V-flat-5'] # TODO: fill this in
+    'bebopmaj': ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\xB0'],
+    'bebopmin': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
+    'dhmaj': ['I', 'II', 'iii', 'iv', 'V-flat-5']
 }
 
 roman_lower = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']

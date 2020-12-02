@@ -22,6 +22,7 @@ export class TrackComponent {
     @Input() thisTrackIsSelected: boolean;
     
     _ref: any;
+    JSON: any;
 
     @Output()
     noteDrawn = new EventEmitter<any>();
@@ -32,6 +33,7 @@ export class TrackComponent {
 
     constructor(public configDataService: ConfigDataService) { 
         this.sequence = [];
+        this.JSON = JSON;
     }
 
     ngOnInit() { }

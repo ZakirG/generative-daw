@@ -54,11 +54,14 @@ export class ConfigDataService {
       this.dawState = {};
       this.dawState.chord_names = [[]];
       this.dawState.chord_degrees = [[]];
+      this.dawState.trackMetadata = [{'notesUsed': []}];
       this.dawState.sequences = [[]];
       this.playOffsetPerNoteDueToRoll = 0.06;
       this.midiSpeedChange = 8; // 1;
       this.midiSpeedOptions = [0.125, 0.25, 0.5, 1, 2, 4, 8];
       this.changeTempoWithMidiImport = false;
+
+      this.clientSideDawStateUpdates();
 
       var noteColors = [
         {'color' : 'white', 'note' : 'b' },
@@ -155,6 +158,44 @@ export class ConfigDataService {
     var names = namesArr[rnote] + octave
     
     return names;
+  }
+
+  noteToDisplayForm(note) {
+    let rv = note.slice();
+    if (note.length > 1) {
+      rv = rv.replaceAll("S", "#").replaceAll("s", "#");
+      if(rv[1] == 'B') {
+        rv = rv.slice(-1) + 'b'
+      }
+    }
+    return rv;
+  }
+
+  sortRelativeToC(noteList) {
+    let rv = noteList.sort();
+    let beforeC = [];
+    let afterC = [];
+    for (let i = 0; i < noteList.length; i += 1) {
+      if ( noteList[i].toLowerCase() >= 'c'  ) {
+        afterC.push(noteList[i]);
+      } else {
+        beforeC.push(noteList[i]);
+      }
+    }
+    return afterC.concat(beforeC);
+  }
+
+  clientSideDawStateUpdates() {
+    // Update track metadata
+    this.dawState.trackMetadata = [];
+    for(let i = 0; i < this.dawState.sequences.length; i += 1) {
+      let notesUsed = this.dawState.sequences[i].map(x => this.noteToDisplayForm(this.numeral_to_note(x['n']).slice(0,-1).toUpperCase()));
+      let notesUsedSet = new Set(notesUsed);
+      notesUsed = this.sortRelativeToC(Array.from(notesUsedSet));
+      this.dawState.trackMetadata.push({
+        'notesUsed':  notesUsed.length == 0 ? '?' : JSON.stringify(notesUsed).slice(1,-1).replace(/\"/g, "").replace(/\,/g, ", ")
+      });
+    }
   }
 }
 

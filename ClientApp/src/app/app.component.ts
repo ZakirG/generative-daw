@@ -561,6 +561,7 @@ export class AppComponent {
 
         return this.dawStateService.updateDawState(dawState).subscribe((data) => {
             this.configDataService.dawState = data;
+            this.configDataService.clientSideDawStateUpdates();
             if (typeof callback !== 'undefined' && callback !== null) {
                 callback.apply(this);
             }

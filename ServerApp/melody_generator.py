@@ -1,6 +1,5 @@
 import random
 from constants import constants
-from chord_knowledge import chord_leading_chart, good_voicings, chord_charts, good_chord_progressions
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set, pick_n_random_notes, pretty_print_progression
 from client_logging import ClientLogger
 import midi_tools
