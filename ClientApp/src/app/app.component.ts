@@ -45,7 +45,6 @@ export class AppComponent {
     secondsPerTick : any;
     indexOfNextSequenceNoteToPlay : any;
     timeToPlayNextNote : any;
-    cursor = 0;
     playcallback : any;
     totalNumberOfTicksInProject = 240;
     preload = 1.0;
@@ -55,6 +54,7 @@ export class AppComponent {
     importedMidiTempo : number;
     importedMidiFileName : string;
     selectedTrackNumber = 0;
+    currentBeat = 0;
 
     public constructor(
         public titleService: Title,
@@ -81,7 +81,6 @@ export class AppComponent {
     ngOnInit() {
         this.setTitle('GenerativeDAW');
         this.audioContext = new AudioContext();
-        this.actx = new AudioContext();
 
         this.controlPanelForm = new FormGroup({
             scale: new FormControl(this.configDataService.scale),
@@ -233,6 +232,10 @@ export class AppComponent {
 
         this.queuedSounds = [];
         this.configDataService.inPlayState = true;
+        if(this.actx) {
+            this.actx.close();
+        }
+        this.actx = new AudioContext();
         
         // Build chords
         for (let track of this.tracks) {
@@ -244,6 +247,7 @@ export class AppComponent {
     
         if(this.inCycleMode) {
             var pendingTimeout = setTimeout(function(){
+                this.currentBeat = 0;
                 root.configDataService.inPlayState = false;
                 root.togglePlayState();
             }, 1000 * root.configDataService.numBeatsInProject * (60 / root.configDataService.tempo) );
@@ -269,7 +273,7 @@ export class AppComponent {
         // taking the 4 away, so bars are the same thing as beats.
         // (seconds / beat) / (ticks / beat) = (seconds / tick)
         this.secondsPerTick = 60 / this.configDataService.tempo / this.numTicksPerBar;
-        this.releaseTime = this.secondsPerTick * 2; // 1 tick of release
+        this.releaseTime = this.secondsPerTick * 2; // 2 seconds of release
     }
 
     rollSequence(sequence) {
@@ -305,12 +309,24 @@ export class AppComponent {
         };
     }
 
+    updateCurrentBeat(cursor) {
+        // Note: updating the current beat does not affect play position, only whether
+        // playback continues.
+        let currentBeat = (cursor * this.secondsPerTick);
+        this.currentBeat = currentBeat;
+    }
+
     playSequence(sequenceIn) {
         let sequence =  JSON.parse(JSON.stringify(sequenceIn));
         sequence = this.sortSequence(this.rollSequence(sequence));
-        let sequenceContext = this.makePlayContext();
-
-        function Interval() {
+        
+        function Interval(sequenceContext) {
+            this.updateCurrentBeat(sequenceContext.cursor);
+            if (this.currentBeat >= this.configDataService.numBeatsInProject) {
+                // Exit if we're at the cycle length, so as to loop
+                this.stopSequence();
+                return;
+            }
             const currentTime = this.actx.currentTime;
             // Update the secondsPerTick just in case the tempo was changed
             this.updateTimeConstants();
@@ -322,10 +338,17 @@ export class AppComponent {
             // Shift the cursor up to the first event's tick, which may be a value in the past.
             sequenceContext.cursor = sequenceContext.timestack[0][1] + (currentTime - sequenceContext.timestack[0][0]) / this.secondsPerTick;
             this.pianoRoll.setCursor(sequenceContext.cursor);
+            this.updateCurrentBeat(sequenceContext.cursor);
+            if (this.currentBeat >= this.configDataService.numBeatsInProject) {
+                // Exit if we're at the cycle length, so as to loop
+                this.stopSequence();
+                return;
+            }
             // this.redrawMarker();
             while(sequenceContext.timeToPlayNextNote <= currentTime + this.preload){
                 let nextNote = sequence[sequenceContext.indexOfNextSequenceNoteToPlay];
-                if( !nextNote || nextNote.t >= this.totalNumberOfTicksInProject){
+                let numTicksInCycle = this.configDataService.numBeatsInProject;
+                if( !nextNote || nextNote.t >= this.totalNumberOfTicksInProject || (nextNote.t / 8) >= numTicksInCycle) {
                     // If the next note is missing or out of bounds, go back to
                     // the project's beginning.
                     sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, 0]);
@@ -361,6 +384,7 @@ export class AppComponent {
             }
         }
 
+        let sequenceContext = this.makePlayContext();
         sequenceContext.cursor = 0;
         this.updateTimeConstants();
 
@@ -384,7 +408,7 @@ export class AppComponent {
         else {
             sequenceContext.timestack.push([sequenceContext.timeToPlayNextNote, nextEvent.t1]);
         }
-        this.pendingIntervals.push(setInterval(Interval.bind(this), 25));
+        this.pendingIntervals.push(setInterval(Interval.bind(this, sequenceContext), 25));
         this.pianoRoll.setCursor(sequenceContext.cursor);
     }
 
@@ -447,13 +471,15 @@ export class AppComponent {
         this.queuedSounds.push({ 'bufferSource': bufferSource, 'gainNode': gainNode});
     }
 
-    stopSequence(){
+    stopSequence() {
         if(this.pendingIntervals.length > 0) {
             for (let i = 0; i < this.pendingIntervals.length; i++) {
                 clearInterval(this.pendingIntervals[i]);
             }
         }
         this.pendingIntervals = [];
+        this.actx.close();
+        this.actx = new AudioContext();
     };
 
     fetchNoteSample(filename) : Promise<any> {

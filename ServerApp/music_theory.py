@@ -1,6 +1,6 @@
 from constants import constants
 import chord_knowledge
-from chord_knowledge import chord_charts, good_voicings, chord_name_caches
+from chord_knowledge import good_voicings, chord_name_caches
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set
 import music21
 import midi_tools
@@ -253,7 +253,11 @@ def roman_numeral_to_note(roman_numeral_in, allowed_notes):
         traceback.print_exception(*exc_info)
         print(e)
         return -1
-    
+    if roman_numeral_in[0] == '#':
+        chord_root_note = chord_root_note + 1
+    if roman_numeral_in[0] == 'b':
+        chord_root_note = chord_root_note - 1
+
     return chord_root_note
 
 def determine_chord_roman_name(chord_name, key, scale, chord_object):

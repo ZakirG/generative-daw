@@ -6,8 +6,8 @@ chord_charts = {
     'min': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
     'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
     'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
-    'bebopmaj': ['I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii\xB0'],
-    'bebopmin': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
+    'bebopmaj': ['I', 'ii', 'III', 'IV', 'V', 'vi', '#v', 'vii\xB0'], # I choose to hard-code the major III for now. (the minor and major 3 are both diatonic) 
+    'bebopmin': ['i', 'ii\xB0', 'III', 'iv', 'V', 'VI', 'VII', '#VII' ], # I choose to hard-code the major V for now. (the minor and major 5 are both diatonic)
     'dhmaj': ['I', 'II', 'iii', 'iv', 'V-flat-5']
 }
 
