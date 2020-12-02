@@ -763,7 +763,7 @@ export class WebAudioPianoRollComponent implements AfterViewInit {
                 break;
             }
         }
-        this.noteDrawnHandler();
+        this.noteDrawnHandler(-1);
     }
     
     editGridDown(pos){
