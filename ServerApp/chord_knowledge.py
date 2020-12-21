@@ -6,8 +6,8 @@ chord_charts = {
     'min': ['i', 'ii\xB0', 'III', 'iv', 'v', 'VI', 'VII' ],
     'majpent': ['I', 'ii', 'iii', 'V', 'vi' ],
     'minpent': ['i', 'III', 'iv', 'v', 'VII' ],
-    'bebopmaj': ['I', 'ii', 'III', 'IV', 'V', 'vi', '#v', 'vii\xB0'], # I choose to hard-code the major III for now. (the minor and major 3 are both diatonic) 
-    'bebopmin': ['i', 'ii\xB0', 'III', 'iv', 'V', 'VI', 'VII', '#VII' ], # I choose to hard-code the major V for now. (the minor and major 5 are both diatonic)
+    'bebopmaj': ['I', 'ii', 'iii', 'III', 'IV', 'V', 'vi', '#v', 'vii\xB0'], # I choose to hard-code the major III for now. (the minor and major 3 are both diatonic) 
+    'bebopmin': ['i', 'ii\xB0', 'III', 'iv', 'v', 'V', 'VI', 'VII', '#VII' ], # I choose to hard-code the major V for now. (the minor and major 5 are both diatonic)
     'dhmaj': ['I', 'II', 'iii', 'iv', 'V-flat-5']
 }
 
@@ -15,8 +15,10 @@ roman_lower = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii']
 roman_upper = list(map(lambda x: x.upper(), roman_lower))
 roman_dim = list(map(lambda x: x + '\xB0', roman_lower))
 roman_aug = list(map(lambda x: x + '+', roman_upper))
-roman_flat_5 = list(map(lambda x: x + '-flat-5', roman_upper))
-all_roman = roman_lower + roman_upper + roman_dim + roman_aug + roman_flat_5
+# roman_flat_5 = list(map(lambda x: x + '-flat-5', roman_upper))
+roman_sharp = list(map(lambda x: '#' + x, roman_upper))
+roman_flat = list(map(lambda x: 'b' + x, roman_upper))
+all_roman = roman_lower + roman_upper + roman_dim + roman_aug + roman_sharp + roman_flat
 
 # When the chord leading constraint is applied, if a chord has no member
 # in this dictionary, it may lead to any chord.

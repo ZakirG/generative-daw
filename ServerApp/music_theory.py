@@ -1,6 +1,6 @@
 from constants import constants
 import chord_knowledge
-from chord_knowledge import good_voicings, chord_name_caches
+from chord_knowledge import good_voicings, chord_name_caches, chord_charts
 from utils import roman_to_int, decide_will_event_occur, flatten_note_set
 import music21
 import midi_tools
@@ -209,8 +209,8 @@ def note_to_roman_numeral(note, sorted_allowed_notes):
     Note: this function disrespects key signatures. It just biases sharps over flats.
     """
     degree = 1
-    for note in sorted_allowed_notes:
-        if are_notes_enharmonically_equivalent(note['note'], note['note']):
+    for note_to_check in sorted_allowed_notes:
+        if are_notes_enharmonically_equivalent(note_to_check['note'], note):
             break
         degree += 1
     
@@ -236,27 +236,34 @@ def note_to_roman_numeral(note, sorted_allowed_notes):
     
     return roman_numeral
 
-def roman_numeral_to_note(roman_numeral_in, allowed_notes):
+def roman_numeral_to_note(roman_numeral_in, allowed_notes, scale):
     # Translate the roman numeral to a note in the context of a key.
     # Remove diminished marks, seventh chord notation, augmented notation, sharps, flats
-    roman_numeral_upper = roman_numeral_in.replace('b',''
+    roman_numeral = roman_numeral_in.replace('b',''
         ).replace('#','').replace('+','').replace('\xB0', ''
-        ).replace('7', '').replace('6', '').replace('-flat-5', '').upper()
-    target_digit = roman_to_int(roman_numeral_upper)
+        ).replace('7', '').replace('6', '').replace('-flat-5', '')
+
+    # We need to find the index of the roman numeral base (e.g., the base of #V is V)
+    if roman_numeral_in in chord_charts[scale]:
+        target_digit = chord_charts[scale].index(roman_numeral_in)
+    elif roman_numeral != roman_numeral_in and ('#' in roman_numeral_in or 'b' in roman_numeral_in) and roman_numeral in chord_charts[scale]:
+        target_digit = chord_charts[scale].index(roman_numeral)
+        if roman_numeral_in[0] == '#':
+            target_digit = target_digit + 1
+        if roman_numeral_in[0] == 'b':
+            target_digit = target_digit - 1
+    else:
+        return -1  
 
     # Lists are zero-indexed while roman numerals are 1-indexed, so subtract 1 from the target_digit
     try:
-        chord_root_note = allowed_notes[target_digit - 1]
+        chord_root_note = allowed_notes[target_digit]
     except Exception as e:
         # The chord root in question is not in the allowed scale. 
         exc_info = sys.exc_info()
         traceback.print_exception(*exc_info)
         print(e)
         return -1
-    if roman_numeral_in[0] == '#':
-        chord_root_note = chord_root_note + 1
-    if roman_numeral_in[0] == 'b':
-        chord_root_note = chord_root_note - 1
 
     return chord_root_note
 
@@ -551,7 +558,7 @@ def label_voicings_with_metadata(key, scale, octave_range):
 
     allowed_notes = get_key_scale_letters(key, scale)
     full_allowed_notes = allowed_notes
-    
+    parent_scale_code = scale
     if len(constants['scales'][scale]['intervals']) < 7:
         parent_scale_code = constants['scales'][scale]['parent_scale']
         full_allowed_notes = get_allowed_notes(key, parent_scale_code, [3])
@@ -565,7 +572,7 @@ def label_voicings_with_metadata(key, scale, octave_range):
             # Here we iterate over a full list of possible chord roman numerals, including non-diatonic ones
             # so as to calculate metadata
             for roman_numeral in chord_knowledge.all_roman:
-                chord_root = roman_numeral_to_note(roman_numeral, full_allowed_notes)
+                chord_root = roman_numeral_to_note(roman_numeral, full_allowed_notes, parent_scale_code)
                 if chord_root == -1:
                     continue
                 chord = build_chord_from_voicing(voicing, { 'note': chord_root, 'octave': octave_range[0] }, roman_numeral, octave_range)

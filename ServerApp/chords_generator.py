@@ -224,7 +224,11 @@ class ChordsGenerator(Generator):
         #     The Neapolitan chord https://www.youtube.com/watch?v=K8Z6MTonoXE&ab_channel=MusicTheoryForGuitar
 
         chord_size = len(voicing['intervals']) + 1
-        candidate_metadata = voicing['roman_numerals_to_metadata'][chosen_target_degree]
+        if chosen_target_degree in voicing['roman_numerals_to_metadata']:
+            candidate_metadata = voicing['roman_numerals_to_metadata'][chosen_target_degree]
+        else:
+            print('Automatically failing roman numeral {} for scale {}.'.format(chosen_target_degree, self.scale))
+            return False, None, None, None, None
 
         passes_chord_size_constraint = (chord_size >= self.chord_size_lower_bound and chord_size <= self.chord_size_upper_bound)
         # Whether this voicing will fit on this scale degree has been precalculated.
@@ -310,7 +314,8 @@ class ChordsGenerator(Generator):
         """
         Returns (built_chord, name_of_chord, generation_method)
         """
-        chord_root_note = roman_numeral_to_note(chosen_target_degree, self.parent_scale_allowed_notes)
+        print('Inside build_chord_from_roman_numeral with chosen_target_degree: ', chosen_target_degree)
+        chord_root_note = roman_numeral_to_note(chosen_target_degree, self.parent_scale_allowed_notes, self.parent_scale_code)
 
         # Perform weighted coin toss
         use_chord_voicing_from_library = decide_will_event_occur(self.chance_to_use_voicing_from_library)
